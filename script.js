@@ -225,18 +225,16 @@ const fireHandEvent = (context, hand, eventName) => {
 //========//
 const global = {
 	screens: [],
-	baseScreen: undefined,
+	colours: {},
 	hand: {
 		state: HAND_STATE.START,
-		colour: COLOUR_IDS[Colour.Blue.hex],
+		colour: COLOUR_IDS[Colour.Green.hex],
 	},
 }
 
-global.baseScreen = createScreen({
-	x: 0,
-	y: 0,
-	width: 1,
-	height: 1,
+createScreen({
+	a: [0, 0],
+	b: [1, 1],
 })
 
 //======//

@@ -37,9 +37,22 @@ HAND_STATE.FREE = {
 		if (Mouse.Left) {
 
 			const [mx, my] = Mouse.position
-			const [x, y] = [mx / context.canvas.width, my / context.canvas.width]
+			const [x, y] = [mx / context.canvas.width, my / context.canvas.height]
+			hand.startPosition = [mx, my]
 
-			const screen = pickScreen([x, y], global.world)
+			const parent = pickScreen([x, y], global.world, global.world.corners)
+
+			hand.screen = makeScreen({
+				colour: hand.colour,
+				corners: [
+					[x, y],
+					[x, y],
+					[x, y],
+					[x, y],
+				],
+			})
+
+			registerScreen(hand.screen, parent.colour)
 
 			return HAND_STATE.DRAWING
 		}
@@ -55,6 +68,19 @@ HAND_STATE.DRAWING = {
 		if (!Mouse.Left) {
 			return HAND_STATE.FREE
 		}
+
+		const [mx, my] = Mouse.position
+		const [sx, sy] = hand.startPosition
+		const [dx, dy] = [mx - sx, my - sy]
+		const [width, height] = [dx / context.canvas.width, dy / context.canvas.height]
+
+		const [[x, y]] = hand.screen.corners
+		hand.screen.corners = [
+			[x, y],
+			[x + width, y],
+			[x + width, y + height],
+			[x, y + height],
+		]
 
 		return HAND_STATE.DRAWING
 
@@ -94,7 +120,7 @@ const getPositionInCorners = ([x, y], corners) => {
 	return [x, y]
 }
 
-const drawScreen = (context, screen, corners) => {
+const drawScreenBorder = (context, screen, corners) => {
 
 	const [head, ...tail] = screen.corners
 		.map(corner => getPositionInCorners(corner, corners))
@@ -111,15 +137,29 @@ const drawScreen = (context, screen, corners) => {
 	context.stroke()
 }
 
-const pickScreen = ([x, y], parent) => {
+const drawScreenInner = (context, screen, corners) => {
+	const screens = global.screens[screen.colour]
+
+	const innerCorners = screen.corners.map(corner => getPositionInCorners(corner, corners))
+
+	for (const child of screens) {
+		//print(child.corners)
+		drawScreenBorder(context, child, innerCorners)
+	}
+
+}
+
+const pickScreen = (position, parent, corners) => {
 
 	const screens = global.screens[parent.colour]
 
+	const [x, y] = getPositionInCorners(position, corners)
+
 	for (const screen of screens) {
-		print(screen)
+		// TODO: check for being inside a different screen
 	}
 
-	return parent.d
+	return parent
 
 }
 
@@ -160,12 +200,8 @@ const show = Show.start()
 show.tick = (context) => {
 	fireHandEvent(context, global.hand, "update")
 
-	drawScreen(context, global.world, [
-		[0, 0],
-		[1, 0],
-		[1, 1],
-		[0, 1],
-	])
+	drawScreenBorder(context, global.world, global.world.corners)
+	drawScreenInner(context, global.world, global.world.corners)
 
 }
 

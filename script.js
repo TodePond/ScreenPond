@@ -36,7 +36,10 @@ HAND_STATE.FREE = {
 		
 		if (Mouse.Left) {
 
-			const [x, y] = Mouse.position
+			const [mx, my] = Mouse.position
+			const [x, y] = [mx / context.canvas.width, my / context.canvas.width]
+
+			const screen = pickScreen([x, y], global.world)
 
 			return HAND_STATE.DRAWING
 		}
@@ -106,6 +109,18 @@ const drawScreen = (context, screen, corners) => {
 	context.strokeStyle = screen.colour
 	context.lineWidth = BORDER_THICKNESS
 	context.stroke()
+}
+
+const pickScreen = ([x, y], parent) => {
+
+	const screens = global.screens[parent.colour]
+
+	for (const screen of screens) {
+		print(screen)
+	}
+
+	return parent.d
+
 }
 
 //========//

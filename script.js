@@ -36,6 +36,8 @@ HAND_STATE.FREE = {
 		
 		if (Mouse.Left) {
 
+			const [x, y] = Mouse.position
+
 			return HAND_STATE.DRAWING
 		}
 
@@ -85,8 +87,25 @@ const registerScreen = (screen, colour) => {
 	global.screens[colour].push(screen)
 }
 
-const drawScreen = (screen, corners) => {
-	
+const getPositionInCorners = ([x, y], corners) => {
+	return [x, y]
+}
+
+const drawScreen = (context, screen, corners) => {
+
+	const [head, ...tail] = screen.corners
+		.map(corner => getPositionInCorners(corner, corners))
+		.map(([x, y]) => [x * context.canvas.width-1, y * context.canvas.height-1])
+
+	context.beginPath()
+	context.moveTo(...head)
+	for (const corner of tail) {
+		context.lineTo(...corner)
+	}
+	context.closePath()
+	context.strokeStyle = screen.colour
+	context.lineWidth = BORDER_THICKNESS
+	context.stroke()
 }
 
 //========//
@@ -126,7 +145,7 @@ const show = Show.start()
 show.tick = (context) => {
 	fireHandEvent(context, global.hand, "update")
 
-	drawScreen(world, [
+	drawScreen(context, global.world, [
 		[0, 0],
 		[1, 0],
 		[1, 1],

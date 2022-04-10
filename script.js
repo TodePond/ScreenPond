@@ -15,13 +15,18 @@ const COLOURS = [
 	Colour.Purple.hex,
 ]
 
-const COLOUR_DISPLAY_IDS = COLOURS.map((v, i) => ({[v]: i+1})).reduce((a, b) => ({...a, ...b}))
-
 const MULTI_DISPLAY_MODE = true
 const DISPLAY_COLUMN_COUNT = MULTI_DISPLAY_MODE? Math.ceil(Math.sqrt(COLOURS.length + 1)) : 1
 const DISPLAY_ROW_COUNT = MULTI_DISPLAY_MODE? Math.ceil((COLOURS.length + 1) / DISPLAY_COLUMN_COUNT) : 1
 const DISPLAY_WIDTH = 1.0 / DISPLAY_COLUMN_COUNT
 const DISPLAY_HEIGHT = 1.0 / DISPLAY_ROW_COUNT
+
+const WORLD_CORNERS = [
+	[0.0, 0.0],
+	[DISPLAY_WIDTH, 0.0],
+	[DISPLAY_WIDTH, DISPLAY_HEIGHT],
+	[0.0, DISPLAY_HEIGHT],
+]
 
 //======//
 // HAND //
@@ -115,8 +120,7 @@ const fireHandEvent = (context, eventName) => {
 // DRAW //
 //======//
 const drawWorld = (context) => {
-	const corners = getWorldCorners(context)
-	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
+	const [head, ...tail] = WORLD_CORNERS.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()
 	context.moveTo(...head)
@@ -126,12 +130,18 @@ const drawWorld = (context) => {
 	context.closePath()
 	context.fillStyle = Colour.Black.hex
 	context.fill()
+
+	for (const screen of global.screens) {
+		stampSource(context, screen.colour, screen.corners)
+	}
 }
 
-const drawSource = (context, colour) => {
-	const id = COLOUR_DISPLAY_IDS[colour]
-	const corners = getDisplayCorners(id)
-	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
+const stampSource = (context, colour, corners) => {
+
+}
+
+const drawSource = (context, source) => {
+	const [head, ...tail] = source.corners.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()
 	context.moveTo(...head)
@@ -139,11 +149,9 @@ const drawSource = (context, colour) => {
 		context.lineTo(...corner)
 	}
 	context.closePath()
-	context.fillStyle = colour
+	context.fillStyle = source.colour
 	context.fill()
 }
-
-
 
 //=============//
 // POSITIONING //
@@ -180,15 +188,11 @@ const getDisplayCorners = (index) => {
 	return corners
 }
 
-const getWorldCorners = () => {
-	return getDisplayCorners(0)
-}
-
 //========//
 // GLOBAL //
 //========//
 const global = {
-	world: [],
+	screens: [],
 	sources: {},
 	hand: {
 		state: HAND_STATE.START,
@@ -196,8 +200,13 @@ const global = {
 	},
 }
 
-for (const colour of COLOURS) {
-	global.sources[colour] = []
+for (const i of (0).to(COLOURS.length-1)) {
+	const colour = COLOURS[i]
+	global.sources[colour] = {
+		id: i+1,
+		colour,
+		corners: getDisplayCorners(i+1),
+	}
 }
 
 //======//
@@ -210,8 +219,8 @@ show.tick = (context) => {
 
 	drawWorld(context)
 
-	for (const colour of COLOURS) {
-		drawSource(context, colour)
+	for (const source of global.sources) {
+		drawSource(context, source)
 	}
 }
 

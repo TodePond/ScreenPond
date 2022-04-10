@@ -25,7 +25,7 @@ const WORLD_CORNERS = [
 	[0.1, 0.0],
 	[DISPLAY_WIDTH, 0.1],
 	[DISPLAY_WIDTH-0.1, DISPLAY_HEIGHT],
-	[0.0, DISPLAY_HEIGHT-0.1],
+	[0.05, DISPLAY_HEIGHT-0.1],
 ]
 
 //======//
@@ -42,10 +42,12 @@ HAND_STATE.FREE = {
 	cursor: "crosshair",
 	update: (context) => {
 		
+
+		const [x, y] = getViewPosition(context, Mouse.position)
+		const worldPosition = getRelativePosition(WORLD_CORNERS, [x, y])
+
 		if (Mouse.Left) {
 
-			const [x, y] = getViewPosition(context, Mouse.position)
-			const worldPosition = getRelativePosition(WORLD_CORNERS, [x, y])
 
 			/*
 			const [mx, my] = Mouse.position
@@ -81,6 +83,7 @@ HAND_STATE.DRAWING = {
 		if (!Mouse.Left) {
 			return HAND_STATE.FREE
 		}
+
 		/*
 		const [mx, my] = Mouse.position
 		const [sx, sy] = hand.startPosition
@@ -192,22 +195,23 @@ const getRelativePosition = (corners, [x, y]) => {
 	const [cx, cy] = c
 	const [dx, dy] = d
 
-	const left = ax
-	const top = ay
-	const right = cx
-	const bottom = cy
-
-	const topHeight = by - ay
-	const bottomHeight = cy - dy
-	const leftWidth = dx - ax
-	const rightWidth = cx - bx
-
 	const leftHeight = dy - ay
 	const rightHeight = cy - by
 	const topWidth = bx - ax
 	const bottomWidth = cx - dx
 
-	
+	const topx = (x - ax) / topWidth
+	const bottomx = (x - dx) / bottomWidth
+	const lefty = (y - ay) / leftHeight
+	const righty = (y - by) / rightHeight
+
+	const leftx = (1-lefty)*topx + lefty*bottomx
+	const rightx = (1-righty)*topx + righty*bottomx
+	const topy = (1-topx)*lefty + topx*righty
+	const bottomy = (1-bottomx)*lefty + bottomx*righty
+
+	//print([topx, bottomx, lefty, righty].map(n => n.toFixed(2)))
+	print([leftx, topy, rightx, bottomy].map(n => n.toFixed(1)))
 
 }
 

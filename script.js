@@ -166,6 +166,27 @@ const getMultiDisplayArrangement = (context) => {
 	return {numberOfColumns, numberOfRows, columnWidth, rowHeight}
 }
 
+const getWorldCorners = (context) => {
+
+	if (DISPLAY_MODE === "single") return [
+		[0, 0],
+		[1, 0],
+		[1, 1],
+		[0, 1],
+	]
+
+	const arrangement = getMultiDisplayArrangement(context)
+	const {columnWidth, rowHeight} = arrangement
+
+	const corners = [
+		[0.0, 0.0],
+		[columnWidth, 0.0],
+		[columnWidth, rowHeight],
+		[0.0, rowHeight],
+	]
+	return corners
+}
+
 //========//
 // GLOBAL //
 //========//
@@ -208,12 +229,8 @@ DISPLAY_MODES["multi"] = (context) => {
 	const arrangement = getMultiDisplayArrangement(context)
 	const {numberOfColumns, columnWidth, rowHeight} = arrangement
 
-	drawWorld(context, global.world, [
-		[0.0, 0.0],
-		[columnWidth, 0.0],
-		[columnWidth, rowHeight],
-		[0.0, rowHeight],
-	])
+	const worldCorners = getWorldCorners(context)
+	drawWorld(context, global.world, worldCorners)
 
 	let x = 1
 	let y = 0

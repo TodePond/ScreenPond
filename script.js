@@ -15,6 +15,8 @@ const COLOURS = [
 	Colour.Purple.hex,
 ]
 
+const COLOUR_DISPLAY_IDS = COLOURS.map((v, i) => ({[v]: i+1})).reduce((a, b) => ({...a, ...b}))
+
 const MULTI_DISPLAY_MODE = true
 const DISPLAY_COLUMN_COUNT = MULTI_DISPLAY_MODE? Math.ceil(Math.sqrt(COLOURS.length + 1)) : 1
 const DISPLAY_ROW_COUNT = MULTI_DISPLAY_MODE? Math.ceil((COLOURS.length + 1) / DISPLAY_COLUMN_COUNT) : 1
@@ -33,7 +35,7 @@ HAND_STATE.START = {
 
 HAND_STATE.FREE = {
 	cursor: "crosshair",
-	update: (context, hand) => {
+	update: (context) => {
 		
 		if (Mouse.Left) {
 			/*
@@ -65,7 +67,7 @@ HAND_STATE.FREE = {
 
 HAND_STATE.DRAWING = {
 	cursor: "crosshair",
-	update: (context, hand) => {
+	update: (context) => {
 
 		if (!Mouse.Left) {
 			return HAND_STATE.FREE
@@ -90,29 +92,29 @@ HAND_STATE.DRAWING = {
 	},
 }
 
-const fireHandEvent = (context, hand, eventName) => {
+const fireHandEvent = (context, eventName) => {
 	
-	let oldState = hand.state
-	let newState = hand.state
+	let oldState = global.hand.state
+	let newState = global.hand.state
 
 	do {
 		oldState = newState
 		const event = oldState[eventName]
 		if (event === undefined) break
-		newState = event(context, hand)
+		newState = event(context, global.hand)
 	} while (oldState !== newState)
 
-	if (newState.cursor !== hand.state.cursor) {
+	if (newState.cursor !== global.hand.state.cursor) {
 		context.canvas.style["cursor"] = newState.cursor
 	}
 
-	hand.state = newState
+	global.hand.state = newState
 }
 
 //======//
 // DRAW //
 //======//
-const drawWorld = (context, world) => {
+const drawWorld = (context) => {
 	const corners = getWorldCorners(context)
 	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
 
@@ -126,7 +128,9 @@ const drawWorld = (context, world) => {
 	context.fill()
 }
 
-const drawColour = (context, colour, corners) => {
+const drawSource = (context, colour) => {
+	const id = COLOUR_DISPLAY_IDS[colour]
+	const corners = getDisplayCorners(id)
 	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()
@@ -138,6 +142,8 @@ const drawColour = (context, colour, corners) => {
 	context.fillStyle = colour
 	context.fill()
 }
+
+
 
 //=============//
 // POSITIONING //
@@ -183,7 +189,7 @@ const getWorldCorners = () => {
 //========//
 const global = {
 	world: [],
-	colours: {},
+	sources: {},
 	hand: {
 		state: HAND_STATE.START,
 		colour: Colour.Green.hex,
@@ -191,7 +197,7 @@ const global = {
 }
 
 for (const colour of COLOURS) {
-	global.colours[colour] = []
+	global.sources[colour] = []
 }
 
 //======//
@@ -200,15 +206,12 @@ for (const colour of COLOURS) {
 const show = Show.start()
 
 show.tick = (context) => {
-	fireHandEvent(context, global.hand, "update")
+	fireHandEvent(context, "update")
 
-	drawWorld(context, global.world)
+	drawWorld(context)
 
-	let x = 1
-	let y = 0
-	let i = 1
-	for (const i of (0).to(COLOURS.length-1)) {
-		const corners = getDisplayCorners(i)
+	for (const colour of COLOURS) {
+		drawSource(context, colour)
 	}
 }
 

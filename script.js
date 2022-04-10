@@ -2,13 +2,8 @@
 // CONFIG //
 //========//
 const urlParams = new URLSearchParams(location.search)
-const DISPLAY_MODE = urlParams.get("display") === null? "multi" : urlParams.get("display")
-
 const BORDER_THICKNESS = 6
 
-//========//
-// COLOUR //
-//========//
 const COLOURS = [
 	Colour.Green.hex,
 	Colour.Red.hex,
@@ -19,6 +14,12 @@ const COLOURS = [
 	Colour.Cyan.hex,
 	Colour.Purple.hex,
 ]
+
+const MULTI_DISPLAY_MODE = true
+const DISPLAY_COLUMN_COUNT = MULTI_DISPLAY_MODE? Math.ceil(Math.sqrt(COLOURS.length + 1)) : 1
+const DISPLAY_ROW_COUNT = MULTI_DISPLAY_MODE? Math.ceil((COLOURS.length + 1) / DISPLAY_COLUMN_COUNT) : 1
+const DISPLAY_WIDTH = 1.0 / DISPLAY_COLUMN_COUNT
+const DISPLAY_HEIGHT = 1.0 / DISPLAY_ROW_COUNT
 
 //======//
 // HAND //
@@ -111,7 +112,8 @@ const fireHandEvent = (context, hand, eventName) => {
 //======//
 // DRAW //
 //======//
-const drawWorld = (context, world, corners) => {
+const drawWorld = (context, world) => {
+	const corners = getWorldCorners(context)
 	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()
@@ -155,36 +157,25 @@ const getInnerCorners = (corners) => {
 	]
 }
 
-const getMultiDisplayArrangement = (context) => {
-
-	const numberOfColumns = Math.ceil(Math.sqrt(COLOURS.length + 1))
-	const numberOfRows = Math.ceil(COLOURS.length / numberOfColumns)
-
-	const columnWidth = 1.0 / numberOfColumns
-	const rowHeight = 1.0 / numberOfRows
-
-	return {numberOfColumns, numberOfRows, columnWidth, rowHeight}
+const getDisplayPosition = (index) => {
+	const x = index % DISPLAY_COLUMN_COUNT
+	const y = Math.floor(index / DISPLAY_COLUMN_COUNT)
+	return [x, y]
 }
 
-const getWorldCorners = (context) => {
-
-	if (DISPLAY_MODE === "single") return [
-		[0, 0],
-		[1, 0],
-		[1, 1],
-		[0, 1],
-	]
-
-	const arrangement = getMultiDisplayArrangement(context)
-	const {columnWidth, rowHeight} = arrangement
-
+const getDisplayCorners = (index) => {
+	const [x, y] = getDisplayPosition(index)
 	const corners = [
-		[0.0, 0.0],
-		[columnWidth, 0.0],
-		[columnWidth, rowHeight],
-		[0.0, rowHeight],
+		[x*DISPLAY_WIDTH, y*DISPLAY_HEIGHT],
+		[(x+1)*DISPLAY_WIDTH, y*DISPLAY_HEIGHT],
+		[(x+1)*DISPLAY_WIDTH, (y+1)*DISPLAY_HEIGHT],
+		[x*DISPLAY_WIDTH, (y+1)*DISPLAY_HEIGHT],
 	]
 	return corners
+}
+
+const getWorldCorners = () => {
+	return getDisplayCorners(0)
 }
 
 //========//
@@ -210,43 +201,14 @@ const show = Show.start()
 
 show.tick = (context) => {
 	fireHandEvent(context, global.hand, "update")
-	const display = DISPLAY_MODES[DISPLAY_MODE]
-	display(context)
-}
 
-const DISPLAY_MODES = {}
-DISPLAY_MODES["single"] = (context) => {
-	drawWorld(context, global.world, [
-		[0.0, 0.0],
-		[1.0, 0.0],
-		[1.0, 1.0],
-		[0.0, 1.0],
-	])
-}
-
-DISPLAY_MODES["multi"] = (context) => {
-
-	const arrangement = getMultiDisplayArrangement(context)
-	const {numberOfColumns, columnWidth, rowHeight} = arrangement
-
-	const worldCorners = getWorldCorners(context)
-	drawWorld(context, global.world, worldCorners)
+	drawWorld(context, global.world)
 
 	let x = 1
 	let y = 0
-	for (const colour of COLOURS) {
-		const corners = [
-			[x*columnWidth, y*rowHeight],
-			[(x+1)*columnWidth, y*rowHeight],
-			[(x+1)*columnWidth, (y+1)*rowHeight],
-			[x*columnWidth, (y+1)*rowHeight],
-		]
-		drawColour(context, colour, corners)
-		x++
-		if (x >= numberOfColumns) {
-			x = 0
-			y++
-		}
+	let i = 1
+	for (const i of (0).to(COLOURS.length-1)) {
+		const corners = getDisplayCorners(i)
 	}
 }
 

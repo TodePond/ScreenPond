@@ -43,6 +43,10 @@ HAND_STATE.FREE = {
 	update: (context) => {
 		
 		if (Mouse.Left) {
+
+			const [x, y] = getViewPosition(context, Mouse.position)
+			const worldPosition = getRelativePosition(WORLD_CORNERS, [x, y])
+
 			/*
 			const [mx, my] = Mouse.position
 			const [x, y] = [mx / context.canvas.width, my / context.canvas.height]
@@ -116,6 +120,22 @@ const fireHandEvent = (context, eventName) => {
 	global.hand.state = newState
 }
 
+//========//
+// SCREEN //
+//========//
+const makeScreen = ({colour, parent, corners} = {}) => {
+	if (colour === undefined) colour = Colour.Blue.hex
+	if (parent === undefined) parent = undefined
+	if (corners === undefined) corners = [
+		[0.0, 0.0],
+		[0.0, 0.0],
+		[0.0, 0.0],
+		[0.0, 0.0],
+	]
+
+	return {colour, parent, corners}
+}
+
 //======//
 // DRAW //
 //======//
@@ -160,15 +180,12 @@ const getCanvasPosition = (context, [x, y]) => {
 	return [x * context.canvas.width, y * context.canvas.height]
 }
 
-// TODO: fix this. currently it mixes canvas positioning (BORDER_THICKNESS) with view positioning (corners)
-const getInnerCorners = (corners) => {
-	const [[ax, ay], [bx, by], [cx, cy], [dx, dy]] = corners
-	return [
-		[ax + BORDER_THICKNESS, ay + BORDER_THICKNESS],
-		[bx - BORDER_THICKNESS, by + BORDER_THICKNESS],
-		[cx - BORDER_THICKNESS, cy - BORDER_THICKNESS],
-		[dx + BORDER_THICKNESS, dy - BORDER_THICKNESS],
-	]
+const getViewPosition = (context, [x, y]) => {
+	return [x / context.canvas.width, y / context.canvas.height]
+}
+
+const getRelativePosition = (corners, [x, y]) => {
+
 }
 
 const getDisplayPosition = (index) => {
@@ -206,6 +223,7 @@ for (const i of (0).to(COLOURS.length-1)) {
 		id: i+1,
 		colour,
 		corners: getDisplayCorners(i+1),
+		screens: [],
 	}
 }
 

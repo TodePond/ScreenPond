@@ -1,6 +1,9 @@
 //========//
 // CONFIG //
 //========//
+const urlParams = new URLSearchParams(location.search)
+const DISPLAY_MODE = urlParams.get("display") === null? "multi" : urlParams.get("display")
+
 const BORDER_THICKNESS = 6
 
 //========//
@@ -12,12 +15,9 @@ const COLOURS = [
 	Colour.Blue.hex,
 	Colour.Yellow.hex,
 	Colour.Orange.hex,
-	Colour.Pink.hex,
 	Colour.Rose.hex,
 	Colour.Cyan.hex,
 	Colour.Purple.hex,
-	
-	Colour.Void.hex,
 ]
 
 //======//
@@ -36,7 +36,7 @@ HAND_STATE.FREE = {
 		
 		if (Mouse.Left) {
 
-			const [mx, my] = Mouse.position
+			/*const [mx, my] = Mouse.position
 			const [x, y] = [mx / context.canvas.width, my / context.canvas.height]
 			hand.startPosition = [mx, my]
 
@@ -53,6 +53,7 @@ HAND_STATE.FREE = {
 			})
 
 			registerScreen(hand.screen, parent.colour)
+			parent.needsInnerDraw */
 
 			return HAND_STATE.DRAWING
 		}
@@ -68,7 +69,7 @@ HAND_STATE.DRAWING = {
 		if (!Mouse.Left) {
 			return HAND_STATE.FREE
 		}
-
+		/*
 		const [mx, my] = Mouse.position
 		const [sx, sy] = hand.startPosition
 		const [dx, dy] = [mx - sx, my - sy]
@@ -81,6 +82,7 @@ HAND_STATE.DRAWING = {
 			[x + width, y + height],
 			[x, y + height],
 		]
+		*/
 
 		return HAND_STATE.DRAWING
 
@@ -94,7 +96,9 @@ const fireHandEvent = (context, hand, eventName) => {
 
 	do {
 		oldState = newState
-		newState = oldState[eventName](context, hand)
+		const event = oldState[eventName]
+		if (event === undefined) break
+		newState = event(context, hand)
 	} while (oldState !== newState)
 
 	if (newState.cursor !== hand.state.cursor) {
@@ -104,27 +108,11 @@ const fireHandEvent = (context, hand, eventName) => {
 	hand.state = newState
 }
 
-//========//
-// SCREEN //
-//========//
-const makeScreen = ({colour = Colour.Blue.hex, corners = []} = {}) => {
-	const screen = {colour, corners}
-	return screen
-}
-
-const registerScreen = (screen, colour) => {
-	global.screens[colour].push(screen)
-}
-
-const getPositionInCorners = ([x, y], corners) => {
-	return [x, y]
-}
-
-const drawScreenBorder = (context, screen, corners) => {
-
-	const [head, ...tail] = screen.corners
-		.map(corner => getPositionInCorners(corner, corners))
-		.map(([x, y]) => [x * context.canvas.width-1, y * context.canvas.height-1])
+//======//
+// DRAW //
+//======//
+const drawWorld = (context, world, corners) => {
+	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()
 	context.moveTo(...head)
@@ -132,54 +120,42 @@ const drawScreenBorder = (context, screen, corners) => {
 		context.lineTo(...corner)
 	}
 	context.closePath()
-	context.strokeStyle = screen.colour
-	context.lineWidth = BORDER_THICKNESS
-	context.stroke()
+	context.fillStyle = Colour.Black.hex
+	context.fill()
 }
 
-const drawScreenInner = (context, screen, corners) => {
-	const screens = global.screens[screen.colour]
+const drawColour = (context, colour, corners) => {
 
-	const innerCorners = screen.corners.map(corner => getPositionInCorners(corner, corners))
+	const innerCorners = [
+		corners[0] + BORDER_THICKNESS, corners[0]
+	]
 
-	for (const child of screens) {
-		//print(child.corners)
-		drawScreenBorder(context, child, innerCorners)
+	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
+
+	context.beginPath()
+	context.moveTo(...head)
+	for (const corner of tail) {
+		context.lineTo(...corner)
 	}
+	context.closePath()
 
+	context.fillStyle = colour
+	context.fill("evenodd")
 }
 
-const pickScreen = (position, parent, corners) => {
-
-	const screens = global.screens[parent.colour]
-
-	const [x, y] = getPositionInCorners(position, corners)
-
-	for (const screen of screens) {
-		// TODO: check for being inside a different screen
-	}
-
-	return parent
-
+//==========//
+// POSITION //
+//==========//
+const getCanvasPosition = (context, [x, y]) => {
+	return [x * context.canvas.width, y * context.canvas.height]
 }
 
 //========//
 // GLOBAL //
 //========//
 const global = {
-	screens: {},
-	shadows: {},
-
-	world: makeScreen({
-		colour: Colour.Blue.hex,
-		corners: [
-			[0, 0],
-			[1, 0],
-			[1, 1],
-			[0, 1],
-		],
-	}),
-
+	world: [],
+	colours: {},
 	hand: {
 		state: HAND_STATE.START,
 		colour: Colour.Green.hex,
@@ -187,22 +163,62 @@ const global = {
 }
 
 for (const colour of COLOURS) {
-	global.screens[colour] = []
+	global.colours[colour] = []
 }
-
-registerScreen(global.world, Colour.Void.hex)
 
 //======//
 // SHOW //
 //======//
 const show = Show.start()
 
+
 show.tick = (context) => {
 	fireHandEvent(context, global.hand, "update")
+	const display = DISPLAY_MODES[DISPLAY_MODE]
+	display(context)
+}
 
-	drawScreenBorder(context, global.world, global.world.corners)
-	drawScreenInner(context, global.world, global.world.corners)
+const DISPLAY_MODES = {}
+DISPLAY_MODES["single"] = (context) => {
+	drawWorld(context, global.world, [
+		[0.0, 0.0],
+		[1.0, 0.0],
+		[1.0, 1.0],
+		[0.0, 1.0],
+	])
+}
 
+DISPLAY_MODES["multi"] = (context) => {
+
+	const numberOfColumns = Math.ceil(Math.sqrt(COLOURS.length + 1))
+	const numberOfRows = Math.ceil(COLOURS.length / numberOfColumns)
+
+	const columnWidth = 1.0 / numberOfColumns
+	const rowHeight = 1.0 / numberOfRows
+
+	drawWorld(context, global.world, [
+		[0.0, 0.0],
+		[columnWidth, 0.0],
+		[columnWidth, rowHeight],
+		[0.0, rowHeight],
+	])
+
+	let x = 1
+	let y = 0
+	for (const colour of COLOURS) {
+		const corners = [
+			[x*columnWidth, y*rowHeight],
+			[(x+1)*columnWidth, y*rowHeight],
+			[(x+1)*columnWidth, (y+1)*rowHeight],
+			[x*columnWidth, (y+1)*rowHeight],
+		]
+		drawColour(context, colour, corners)
+		x++
+		if (x >= numberOfColumns) {
+			x = 0
+			y++
+		}
+	}
 }
 
 //=======//

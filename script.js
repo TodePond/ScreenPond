@@ -22,10 +22,10 @@ const DISPLAY_WIDTH = 1.0 / DISPLAY_COLUMN_COUNT
 const DISPLAY_HEIGHT = 1.0 / DISPLAY_ROW_COUNT
 
 const WORLD_CORNERS = [
-	[0.0, 0.0],
-	[DISPLAY_WIDTH, 0.0],
-	[DISPLAY_WIDTH, DISPLAY_HEIGHT],
-	[0.0, DISPLAY_HEIGHT],
+	[0.1, 0.0],
+	[DISPLAY_WIDTH, 0.1],
+	[DISPLAY_WIDTH-0.1, DISPLAY_HEIGHT],
+	[0.0, DISPLAY_HEIGHT-0.1],
 ]
 
 //======//
@@ -185,6 +185,29 @@ const getViewPosition = (context, [x, y]) => {
 }
 
 const getRelativePosition = (corners, [x, y]) => {
+
+	const [a, b, c, d] = corners
+	const [ax, ay] = a
+	const [bx, by] = b
+	const [cx, cy] = c
+	const [dx, dy] = d
+
+	const left = ax
+	const top = ay
+	const right = cx
+	const bottom = cy
+
+	const topHeight = by - ay
+	const bottomHeight = cy - dy
+	const leftWidth = dx - ax
+	const rightWidth = cx - bx
+
+	const leftHeight = dy - ay
+	const rightHeight = cy - by
+	const topWidth = bx - ax
+	const bottomWidth = cx - dx
+
+	
 
 }
 

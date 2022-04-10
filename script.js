@@ -35,8 +35,8 @@ HAND_STATE.FREE = {
 	update: (context, hand) => {
 		
 		if (Mouse.Left) {
-
-			/*const [mx, my] = Mouse.position
+			/*
+			const [mx, my] = Mouse.position
 			const [x, y] = [mx / context.canvas.width, my / context.canvas.height]
 			hand.startPosition = [mx, my]
 
@@ -125,11 +125,6 @@ const drawWorld = (context, world, corners) => {
 }
 
 const drawColour = (context, colour, corners) => {
-
-	const innerCorners = [
-		corners[0] + BORDER_THICKNESS, corners[0]
-	]
-
 	const [head, ...tail] = corners.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()
@@ -138,16 +133,37 @@ const drawColour = (context, colour, corners) => {
 		context.lineTo(...corner)
 	}
 	context.closePath()
-
 	context.fillStyle = colour
-	context.fill("evenodd")
+	context.fill()
 }
 
-//==========//
-// POSITION //
-//==========//
+//=============//
+// POSITIONING //
+//=============//
 const getCanvasPosition = (context, [x, y]) => {
 	return [x * context.canvas.width, y * context.canvas.height]
+}
+
+// TODO: fix this. currently it mixes canvas positioning (BORDER_THICKNESS) with view positioning (corners)
+const getInnerCorners = (corners) => {
+	const [[ax, ay], [bx, by], [cx, cy], [dx, dy]] = corners
+	return [
+		[ax + BORDER_THICKNESS, ay + BORDER_THICKNESS],
+		[bx - BORDER_THICKNESS, by + BORDER_THICKNESS],
+		[cx - BORDER_THICKNESS, cy - BORDER_THICKNESS],
+		[dx + BORDER_THICKNESS, dy - BORDER_THICKNESS],
+	]
+}
+
+const getMultiDisplayArrangement = (context) => {
+
+	const numberOfColumns = Math.ceil(Math.sqrt(COLOURS.length + 1))
+	const numberOfRows = Math.ceil(COLOURS.length / numberOfColumns)
+
+	const columnWidth = 1.0 / numberOfColumns
+	const rowHeight = 1.0 / numberOfRows
+
+	return {numberOfColumns, numberOfRows, columnWidth, rowHeight}
 }
 
 //========//
@@ -171,7 +187,6 @@ for (const colour of COLOURS) {
 //======//
 const show = Show.start()
 
-
 show.tick = (context) => {
 	fireHandEvent(context, global.hand, "update")
 	const display = DISPLAY_MODES[DISPLAY_MODE]
@@ -190,11 +205,8 @@ DISPLAY_MODES["single"] = (context) => {
 
 DISPLAY_MODES["multi"] = (context) => {
 
-	const numberOfColumns = Math.ceil(Math.sqrt(COLOURS.length + 1))
-	const numberOfRows = Math.ceil(COLOURS.length / numberOfColumns)
-
-	const columnWidth = 1.0 / numberOfColumns
-	const rowHeight = 1.0 / numberOfRows
+	const arrangement = getMultiDisplayArrangement(context)
+	const {numberOfColumns, columnWidth, rowHeight} = arrangement
 
 	drawWorld(context, global.world, [
 		[0.0, 0.0],

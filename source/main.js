@@ -1,19 +1,9 @@
-//========//
-// GLOBAL //
-//========//
-const global = {
-	screens: [],
-	sources: {},
-	multi: false,
-	hand: {
-		state: HAND_STATE.START,
-		colour: Colour.Green.hex,
-	},
-}
-
 //=======//
 // SETUP //
 //=======//
+
+// Create default screens!
+// TODO: move this
 for (const i of (0).to(COLOURS.length-1)) {
 	const colour = COLOURS[i]
 	global.sources[colour] = {
@@ -25,15 +15,15 @@ for (const i of (0).to(COLOURS.length-1)) {
 }
 
 //======//
-// SHOW //
+// MAIN //
 //======//
 const show = Show.start()
 show.tick = (context) => {
-	fireHandEvent(context, global.hand, "update")
 
-	drawWorld(context, global.screens)
+	fireHandEvent(context, global.hand, "tick")
 
 	for (const source of global.sources) {
 		drawSource(context, source)
 	}
+
 }

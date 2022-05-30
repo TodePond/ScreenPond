@@ -1,16 +1,21 @@
 //======//
 // HAND //
 //======//
+const makeHand = () => ({
+	state: HAND_STATE.START,
+	colour: Colour.Green.hex,
+})
+
 const HAND_STATE = {}
 
 HAND_STATE.START = {
 	cursor: "default",
-	update: () => HAND_STATE.FREE,
+	tick: () => HAND_STATE.FREE,
 }
 
 HAND_STATE.FREE = {
 	cursor: "crosshair",
-	update: (context) => {
+	tick: (context) => {
 		
 
 		const [x, y] = getViewPosition(context, Mouse.position)
@@ -48,7 +53,7 @@ HAND_STATE.FREE = {
 
 HAND_STATE.DRAWING = {
 	cursor: "crosshair",
-	update: (context) => {
+	tick: (context) => {
 
 		if (!Mouse.Left) {
 			return HAND_STATE.FREE

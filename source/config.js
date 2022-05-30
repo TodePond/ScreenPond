@@ -5,6 +5,7 @@ const urlParams = new URLSearchParams(location.search)
 const BORDER_THICKNESS = 6
 
 const COLOURS = [
+	Colour.Black.hex,
 	Colour.Green.hex,
 	Colour.Red.hex,
 	Colour.Blue.hex,
@@ -15,7 +16,7 @@ const COLOURS = [
 	Colour.Purple.hex,
 ]
 
-const MULTI_DISPLAY_MODE = urlParams
+const MULTI_DISPLAY_MODE = true
 const DISPLAY_COLUMN_COUNT = MULTI_DISPLAY_MODE? Math.ceil(Math.sqrt(COLOURS.length + 1)) : 1
 const DISPLAY_ROW_COUNT = MULTI_DISPLAY_MODE? Math.ceil((COLOURS.length + 1) / DISPLAY_COLUMN_COUNT) : 1
 const DISPLAY_WIDTH = 1.0 / DISPLAY_COLUMN_COUNT

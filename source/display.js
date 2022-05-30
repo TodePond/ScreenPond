@@ -1,24 +1,19 @@
 //=========//
 // DISPLAY //
 //=========//
-const makeDisplay = () => {
-	const display = {}
-	setDisplayMode(display, false)
-	return display
+const getDisplayArrangementPosition = (display, arrangement) => {
+	const x = display % arrangement.columnCount
+	const y = Math.floor(display / arrangement.columnCount)
+	return [x, y]
 }
 
-// true = show all colours
-// false = show only first colour
-const setDisplayMode = (display, mode) => {
-	display.mode = mode
-	if (mode) {
-		display.columnCount = Math.ceil(Math.sqrt(COLOURS.length+1))
-		display.rowCount = Math.ceil((COLOURS.length+1) / display.columnCount)
-	} else {
-		display.columnCount = 1
-		display.rowCount = 1
-	}
-	
-	display.width = 1.0 / display.columnCount
-	display.height = 1.0 / display.rowCount
+const getDisplayCorners = (display, arrangement) => {
+	const [x, y] = getDisplayArrangementPosition(display, arrangement)
+	const corners = [
+		[x * arrangement.width, y * arrangement.height],
+		[(x+1) * arrangement.width, y * arrangement.height],
+		[(x+1) * arrangement.width, (y+1) * arrangement.height],
+		[x * arrangement.width, (y+1) * arrangement.height],
+	]
+	return corners
 }

@@ -2,14 +2,14 @@
 // SETUP //
 //=======//
 
-// Create default screens!
+// Create default sources!
 // TODO: move this
 for (const i of (0).to(COLOURS.length-1)) {
 	const colour = COLOURS[i]
 	global.sources[colour] = {
-		id: i+1,
+		id: i,
 		colour,
-		corners: getDisplayCorners(i+1),
+		corners: getDisplayCorners(i, global.arrangement),
 		screens: [],
 	}
 }

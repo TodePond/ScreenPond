@@ -6,79 +6,6 @@ const makeHand = () => ({
 	colour: Colour.Green.hex,
 })
 
-const HAND_STATE = {}
-
-HAND_STATE.START = {
-	cursor: "default",
-	tick: () => HAND_STATE.FREE,
-}
-
-HAND_STATE.FREE = {
-	cursor: "crosshair",
-	tick: (context) => {
-		
-
-		const [x, y] = getViewPosition(context, Mouse.position)
-		const worldPosition = getRelativePosition(WORLD_CORNERS, [x, y])
-
-		if (Mouse.Left) {
-
-
-			/*
-			const [mx, my] = Mouse.position
-			const [x, y] = [mx / context.canvas.width, my / context.canvas.height]
-			hand.startPosition = [mx, my]
-
-			const parent = pickScreen([x, y], global.world, global.world.corners)
-
-			hand.screen = makeScreen({
-				colour: hand.colour,
-				corners: [
-					[x, y],
-					[x, y],
-					[x, y],
-					[x, y],
-				],
-			})
-
-			registerScreen(hand.screen, parent.colour)
-			parent.needsInnerDraw */
-
-			return HAND_STATE.DRAWING
-		}
-
-		return HAND_STATE.FREE
-	},
-}
-
-HAND_STATE.DRAWING = {
-	cursor: "crosshair",
-	tick: (context) => {
-
-		if (!Mouse.Left) {
-			return HAND_STATE.FREE
-		}
-
-		/*
-		const [mx, my] = Mouse.position
-		const [sx, sy] = hand.startPosition
-		const [dx, dy] = [mx - sx, my - sy]
-		const [width, height] = [dx / context.canvas.width, dy / context.canvas.height]
-
-		const [[x, y]] = hand.screen.corners
-		hand.screen.corners = [
-			[x, y],
-			[x + width, y],
-			[x + width, y + height],
-			[x, y + height],
-		]
-		*/
-
-		return HAND_STATE.DRAWING
-
-	},
-}
-
 const fireHandEvent = (context, hand, eventName) => {
 	
 	let oldState = hand.state
@@ -96,4 +23,43 @@ const fireHandEvent = (context, hand, eventName) => {
 	}
 
 	hand.state = newState
+}
+
+//=======//
+// STATE //
+//=======//
+const HAND_STATE = {}
+
+HAND_STATE.START = {
+	cursor: "default",
+	tick: () => HAND_STATE.FREE,
+}
+
+HAND_STATE.FREE = {
+	cursor: "crosshair",
+	tick: (context) => {
+		
+
+		const [x, y] = getViewPosition(context, Mouse.position)
+
+		if (Mouse.Left) {
+
+			return HAND_STATE.DRAWING
+		}
+
+		return HAND_STATE.FREE
+	},
+}
+
+HAND_STATE.DRAWING = {
+	cursor: "crosshair",
+	tick: (context) => {
+
+		if (!Mouse.Left) {
+			return HAND_STATE.FREE
+		}
+
+		return HAND_STATE.DRAWING
+
+	},
 }

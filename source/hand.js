@@ -1,12 +1,12 @@
 //======//
 // HAND //
 //======//
-const makeHand = () => ({
+export const makeHand = () => ({
 	state: HAND_STATE.START,
 	colour: Colour.Green.hex,
 })
 
-const fireHandEvent = (context, hand, eventName) => {
+export const fireHandEvent = (context, hand, eventName) => {
 	
 	let oldState = hand.state
 	let newState = hand.state
@@ -40,7 +40,7 @@ HAND_STATE.FREE = {
 	tick: (context) => {
 		
 
-		const [x, y] = getViewPosition(context, Mouse.position)
+		//const [x, y] = getViewPosition(context, Mouse.position)
 
 		if (Mouse.Left) {
 

@@ -1,7 +1,9 @@
+import { getCanvasPosition } from "./position.js"
+
 //======//
 // DRAW //
 //======//
-const drawWorld = (context, world) => {
+export const drawWorld = (context, world) => {
 	const [head, ...tail] = WORLD_CORNERS.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()
@@ -18,11 +20,11 @@ const drawWorld = (context, world) => {
 	}
 }
 
-const stampSource = (context, colour, corners) => {
+export const stampSource = (context, colour, corners) => {
 
 }
 
-const drawSource = (context, source) => {
+export const drawSource = (context, source) => {
 	const [head, ...tail] = source.corners.map(corner => getCanvasPosition(context, corner))
 
 	context.beginPath()

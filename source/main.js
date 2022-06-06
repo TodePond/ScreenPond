@@ -1,3 +1,9 @@
+import { COLOURS } from "./config.js"
+import { global } from "./global.js"
+import { getDisplayCorners } from "./display.js"
+import { fireHandEvent } from "./hand.js"
+import { drawSource } from "./draw.js"
+
 //=======//
 // SETUP //
 //=======//

@@ -1,13 +1,13 @@
 //=========//
 // DISPLAY //
 //=========//
-const getDisplayArrangementPosition = (display, arrangement) => {
+export const getDisplayArrangementPosition = (display, arrangement) => {
 	const x = display % arrangement.columnCount
 	const y = Math.floor(display / arrangement.columnCount)
 	return [x, y]
 }
 
-const getDisplayCorners = (display, arrangement) => {
+export const getDisplayCorners = (display, arrangement) => {
 	const [x, y] = getDisplayArrangementPosition(display, arrangement)
 	const corners = [
 		[x * arrangement.width, y * arrangement.height],

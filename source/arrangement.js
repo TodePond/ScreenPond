@@ -1,15 +1,22 @@
+import { COLOURS } from "./config.js"
+
 //=============//
 // ARRANGEMENT //
 //=============//
-const makeArrangement = (mode) => {
-	const arrangement = {}
+export const makeArrangement = (mode) => {
+	const arrangement = {
+		columnCount: 1,
+		rowCount: 1,
+		width: 1.0,
+		height: 1.0,
+	}
 	setArrangementMode(arrangement, mode)
 	return arrangement
 }
 
 // true = show all colours
 // false = show only first colour
-const setArrangementMode = (arrangement, mode) => {
+export const setArrangementMode = (arrangement, mode) => {
 
 	arrangement.mode = mode
 

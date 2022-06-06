@@ -1,7 +1,7 @@
 //========//
 // SCREEN //
 //========//
-const makeScreen = ({colour, parent, corners} = {}) => {
+export const makeScreen = ({colour, parent, corners} = {}) => {
 	if (colour === undefined) colour = Colour.Blue.hex
 	if (parent === undefined) parent = undefined
 	if (corners === undefined) corners = [

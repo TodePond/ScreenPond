@@ -3,9 +3,9 @@
 //========//
 const urlParams = new URLSearchParams(location.search)
 
-const PARAM_ARRANGEMENT_MODE = urlParams.get("multi")
-const BORDER_THICKNESS = 6
-const COLOURS = [
+export const PARAM_ARRANGEMENT_MODE = urlParams.get("multi")
+export const BORDER_THICKNESS = 6
+export const COLOURS = [
 	Colour.Black.hex,
 	Colour.Green.hex,
 	Colour.Red.hex,

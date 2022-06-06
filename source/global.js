@@ -1,16 +1,16 @@
-import { makeArrangement } from "./arrangement.js"
 import { makeHand } from "./hand.js"
-import { PARAM_ARRANGEMENT_MODE } from "./config.js"
+import { makeColours } from "./colour.js"
+import { makeWorld } from "./world.js"
 
 //========//
 // GLOBAL //
 //========//
+const hand = makeHand()
+const colours = makeColours()
+const world = makeWorld(colours)
+
 export const global = {
-
-	arrangement: makeArrangement(PARAM_ARRANGEMENT_MODE),
-	hand: makeHand(),
-	
-	screens: [],
-	sources: {},
-
+	hand,
+	colours,
+	world,
 }

@@ -1,14 +1,15 @@
 
 Hand = object that stores state about the cursor/touch
 
-Arrangement = object that stores state about the arrangement of displays
-Display = index of a visible rendering of a colour
+Canvas = client's whole screen (0 to max pixel)
+View = client's whole screen (0.0 to 1.0)
 
-Colour = hex or index of a colour
-Source = object that stores what screens are within a colour
-Screen = source with positioning
+CanvasPosition = a place in the canvas (0 to max pixel)
+ViewPosition = a place in the view (0.0 to 1.0)
 
-Canvas = client's whole screen (from 0 to max pixel - in each axis)
-View = client's whole screen (from 0.0 to 1.0 - in each axis)
+Corners = four view positions (from 0.0 to 1.0) that show where the corners of a quadrilateral are
 
-Corners = four floats (from 0.0 to 1.0) that show where the corners of a quadrilateral are
+Hex = a hex string
+Colour = an object with a hex and list of screens
+Screen = a positioned colour
+World = a single screen that covers the whole view

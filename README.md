@@ -5,9 +5,8 @@ I'm making this engine for my next video about SCREENS inside screens inside scr
 for my channel: [youtube.com/c/TodePond](https://youtube.com/c/TodePond)
 
 ## Try it out!
-You can try it at [screenpond.cool](https://screenpond.cool)
-
-Currently, you can see different presets by pressing keys on your keyboard. All presets are listed in [this file](https://github.com/TodePond/ScreenPond/blob/main/source/preset.js).
+You can try it at [screenpond.cool](https://screenpond.cool)<br>
+But it's not really ready yet :) I'm still building it
 
 ## Running
 To run locally...<br>

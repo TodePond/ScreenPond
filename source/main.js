@@ -7,7 +7,7 @@ import { rotateCorners, moveCorners } from "./corners.js"
 //======//
 // MAIN //
 //======//
-const show = Show.start({paused: true})
+const show = Show.start({paused: false})
 
 show.resize = (context) => {
 	const {world} = global

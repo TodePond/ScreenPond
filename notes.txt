@@ -1,6 +1,6 @@
 
 >> ALL global state is kept in the 'global' object
->> ALL other exports are pure functions
+>> ALL other exports are pure functions or immutable constants
 
 =============================================================
 

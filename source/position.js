@@ -19,3 +19,14 @@ export const getCanvasPositions = (context, viewPositions) => {
 	const canvasPositions = viewPositions.map(viewPosition => getCanvasPosition(context, viewPosition))
 	return canvasPositions
 }
+
+export const getRelativePosition = (position, corners) => {
+	// TODO: pull over the code from the codepen
+	const relativePosition = position
+	return relativePosition
+}
+
+export const getRelativePositions = (positions, corners) => {
+	const relativePositions = positions.map(position => getRelativePosition(position, corners))
+	return relativePositions
+}

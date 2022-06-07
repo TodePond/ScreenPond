@@ -6,6 +6,7 @@ export const makeHand = () => ({
 	colour: Colour.Green.hex,
 })
 
+const HAND_STATE = {}
 export const fireHandEvent = (context, hand, eventName, args = {}) => {
 	
 	let oldState = hand.state
@@ -27,11 +28,9 @@ export const fireHandEvent = (context, hand, eventName, args = {}) => {
 	hand.state = newState
 }
 
-//=======//
-// STATE //
-//=======//
-const HAND_STATE = {}
-
+//========//
+// STATES //
+//========//
 HAND_STATE.START = {
 	cursor: "default",
 	tick: () => HAND_STATE.FREE,

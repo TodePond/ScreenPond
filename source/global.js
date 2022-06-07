@@ -14,3 +14,5 @@ export const global = {
 	colours,
 	world,
 }
+
+window.global = global

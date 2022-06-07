@@ -9,7 +9,7 @@ const Show = {}
 		if (document.body === null) {
 			addEventListener("load", () => start(show))
 		} else {
-			start(show)
+			requestAnimationFrame(() => start(show))
 		}
 		
 		return show
@@ -34,20 +34,10 @@ const Show = {}
 		}
 		
 		const resize = () => {
-
-			//const size = Math.min(innerWidth, innerHeight)
-			//const margin = `${(100 - show.scale*100)/2}` + (innerWidth > innerHeight? "vh" : "vw")
-
 			show.canvas.width = Math.round(innerWidth * show.scale)
 			show.canvas.height = Math.round(innerHeight * show.scale)
 			show.canvas.style["width"] = show.canvas.width
 			show.canvas.style["height"] = show.canvas.height
-			
-			/*show.canvas.style["margin-top"] = margin
-			show.canvas.style["margin-bottom"] = margin
-			show.canvas.style["margin-left"] = margin
-			show.canvas.style["margin-right"] = margin*/
-			
 			show.resize(show.context, show.canvas)
 		}
 

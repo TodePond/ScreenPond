@@ -81,9 +81,9 @@ PRESET.INFINITE = createPreset({
 	key: "f",
 	colours: {
 		[BLACK]: [
-			{hex: RED, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
+			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
-		[RED]: [
+		[GREEN]: [
 			{hex: BLACK, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.92, 0.92), 0.0)},
 		],
 	}

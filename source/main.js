@@ -28,13 +28,13 @@ show.tick = (context) => {
 	drawChildren(context, colour, corners)
 
 	// DEBUG
-	const red = colours[BLACK].screens[0]
-	red.corners = rotateCorners(red.corners, 0.005)
-	red.corners = moveCorners(red.corners, [Math.sin(t) * 0.001, -Math.cos(t) * 0.001])
+	const green = colours[BLACK].screens[0]
+	green.corners = rotateCorners(green.corners, Math.sin(t) * 0.001)
+	//green.corners = moveCorners(green.corners, [Math.sin(t) * 0.001, -Math.cos(t) * 0.001])
 	t += 0.01
 	
-	const black = colours[RED].screens[0]
-	black.corners = rotateCorners(black.corners, -0.001)
+	const black = colours[GREEN].screens[0]
+	black.corners = rotateCorners(black.corners, Math.cos(t) * -0.002)
 
 }
 

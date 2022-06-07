@@ -3,20 +3,15 @@ import { getCanvasPositions, getRelativePositions } from "./position.js"
 //======//
 // DRAW //
 //======//
-export const drawScreenBackground = (context, screen) => {
-	const {colour, corners} = screen
-	drawColourBackground(context, colour, corners)
-}
-
-export const drawScreenChildren = (context, screen) => {
-	for (const child of screen.colour.screens) {
-		const {colour} = child
-		const corners = getRelativePositions(child.corners, screen.corners)
-		drawColourBackground(context, colour, corners)
+export const drawChildren = (context, colour, corners) => {
+	for (const child of colour.screens) {
+		const relativeCorners = getRelativePositions(child.corners, corners)
+		drawBackground(context, child.colour, relativeCorners)
+		drawChildren(context, child.colour, relativeCorners)
 	}
 }
 
-export const drawColourBackground = (context, colour, corners) => {
+export const drawBackground = (context, colour, corners) => {
 
 	const canvasCornerPositions = getCanvasPositions(context, corners)
 	const [head, ...tail] = canvasCornerPositions

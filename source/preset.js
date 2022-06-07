@@ -71,6 +71,9 @@ PRESET.MINI_GRID = makePreset({
 			{hex: GREEN, corners: makeRectangleCorners(1/2, 0, 1/2, 1/2)},
 			{hex: RED, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
 			{hex: BLUE, corners: makeRectangleCorners(1/2, 1/2, 1/2, 1/2)},
-		]
+		],
+		[GREY]: [
+			{hex: RED, corners: makeRectangleCorners(0, 0, 1/2, 1/2)},
+		],
 	}
 })

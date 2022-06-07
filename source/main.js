@@ -1,6 +1,6 @@
 import { global } from "./global.js"
 import { fireHandEvent } from "./hand.js"
-import { drawScreenBackground, drawScreenChildren } from "./draw.js"
+import { drawBackground, drawChildren } from "./draw.js"
 
 //======//
 // MAIN //
@@ -11,7 +11,9 @@ show.tick = (context) => {
 	const {hand, world} = global
 
 	fireHandEvent(context, hand, "tick")
-	drawScreenBackground(context, world)
-	drawScreenChildren(context, world)
+
+	const {colour, corners} = world
+	drawBackground(context, colour, corners)
+	drawChildren(context, colour, corners)
 
 }

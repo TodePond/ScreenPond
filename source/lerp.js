@@ -3,15 +3,32 @@ import { add, sub, cross } from "./vector.js"
 //======//
 // LERP //
 //======//
-export const lerp = (t, a, b) => {
+export const lerp = (distance, line) => {
+
+	const [a, b] = line
 	const [ax, ay] = a
 	const [bx, by] = b
-	const x = ax + (bx - ax) * t
-	const y = ay + (by - ay) * t
-	return [x, y]
+	
+	const x = ax + (bx - ax) * distance
+	const y = ay + (by - ay) * distance
+
+	const point = [x, y]
+	return point
+
 }
 
-export const bilerp = (t, [a, b, c, d]) => lerp(t[1], lerp(t[0], a, b), lerp(t[0], c, d))
+export const bilerp = (displacement, corners) => {
+
+	const [dx, dy] = displacement
+	const [a, b, c, d] = corners
+
+	const la = lerp(dx, [a, b])
+	const lb = lerp(dx, [c, d])
+	const line = [la, lb]
+
+	const point = lerp(dy, line)
+	return point
+}
 
 // https://iquilezles.org/articles/ibilinear/
 export const invBilinear = (p, [a, b, d, c]) => {

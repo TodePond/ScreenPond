@@ -37,7 +37,7 @@ HAND_STATE.START = {
 }
 
 HAND_STATE.FREE = {
-	cursor: "crosshair",
+	cursor: "default",
 	tick: ({context}) => {
 		
 
@@ -53,7 +53,7 @@ HAND_STATE.FREE = {
 }
 
 HAND_STATE.DRAWING = {
-	cursor: "crosshair",
+	cursor: "default",
 	tick: (context) => {
 
 		if (!Mouse.Left) {

@@ -31,7 +31,11 @@ export const bilerp = (displacement, corners) => {
 }
 
 // https://iquilezles.org/articles/ibilinear/
-export const invBilinear = (p, [a, b, d, c]) => {
+export const ibilerp = (point, corners) => {
+
+	const p = point
+	const [a, b, d, c] = corners
+
 	const e = sub(b, a)
 	const f = sub(d, a)
 	const g = add(sub(a, b), sub(c, d))

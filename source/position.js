@@ -31,3 +31,19 @@ export const getRelativePositions = (positions, corners) => {
 	const relativePositions = positions.map(position => getRelativePosition(position, corners))
 	return relativePositions
 }
+
+export const rotatePosition = (position, origin, angle) => {
+
+	const [px, py] = position
+	const [ox, oy] = origin
+
+	const cos = Math.cos(angle)
+	const sin = Math.sin(angle)
+	const dy = py - oy
+	const dx = px - ox
+
+	const x = dx*cos + dy*sin + ox
+	const y = dy*cos - dx*sin + oy
+	return [x, y]
+
+}

@@ -20,7 +20,7 @@ export const subtractVector = (a, b) => {
 export const crossProductVector = (a, b) => {
 	const [ax, ay] = a
 	const [bx, by] = b
-	return (ax * bx) - (ay * by)
+	return ax*bx - ay*by
 }
 
 export const scaleVector = ([x, y], n) => [x * n, y * n]

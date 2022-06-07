@@ -1,11 +1,12 @@
-
+import { addVector, scaleVector } from "./vector.js"
+import { rotatePosition } from "./position.js"
 
 //=========//
 // CORNERS //
 //=========//
 // a b
 // c d
-export const makeRectangle = (x, y, width, height) => {
+export const makeRectangleCorners = (x, y, width, height) => {
 	const a = [x, y]
 	const b = [x + width, y]
 	const c = [x, y + height]
@@ -14,7 +15,14 @@ export const makeRectangle = (x, y, width, height) => {
 	return corners
 }
 
-export const rotate = (corners, radians) => {
-	const [a, b, c, d] = corners
+export const rotateCorners = (corners, angle) => {
+	const center = getCornersCenter(corners)
+	const rotatedCorners = corners.map(corner => rotatePosition(corner, center, angle))
+	return rotatedCorners
+}
 
+export const getCornersCenter = (corners) => {
+	const sum = corners.reduce((a, b) => addVector(a, b))
+	const center = scaleVector(sum, 1/4)
+	return center
 }

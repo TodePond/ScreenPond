@@ -1,5 +1,5 @@
 import { makeWorld } from "./world.js"
-import { makeRectangle } from "./corners.js"
+import { makeRectangleCorners, rotateCorners } from "./corners.js"
 import { addScreen, removeAllScreens } from "./colour.js"
 import { makeScreen } from "./screen.js"
 import { onkeydown } from "./keyboard.js"
@@ -60,7 +60,7 @@ PRESET.SINGLE = createPreset({
 	key: "s",
 	colours: {
 		[BLACK]: [
-			{hex: BLUE, corners: makeRectangle(1/3, 1/3, 1/3, 1/3)},
+			{hex: BLUE, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
 		]
 	}
 })
@@ -69,10 +69,10 @@ PRESET.DOUBLE = createPreset({
 	key: "d",
 	colours: {
 		[BLACK]: [
-			{hex: BLUE, corners: makeRectangle(1/3, 1/3, 1/3, 1/3)},
+			{hex: BLUE, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
 		],
 		[BLUE]: [
-			{hex: RED, corners: makeRectangle(1/3, 1/3, 1/3, 1/3)},
+			{hex: RED, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
 		],
 	}
 })
@@ -81,13 +81,13 @@ PRESET.INFINITE = createPreset({
 	key: "f",
 	colours: {
 		[BLACK]: [
-			{hex: BLUE, corners: makeRectangle(0.05, 0.05, 0.9, 0.9)},
+			{hex: BLUE, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[BLUE]: [
-			{hex: GREEN, corners: makeRectangle(0.05, 0.05, 0.9, 0.9)},
+			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[GREEN]: [
-			{hex: BLUE, corners: makeRectangle(0.1, 0.1, 0.7, 0.7)},
+			{hex: BLUE, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.92, 0.92), 0.1)},
 		],
 	}
 })
@@ -96,15 +96,15 @@ PRESET.GRID = createPreset({
 	key: "v",
 	colours: {
 		[BLACK]: [
-			{hex: GREY, corners: makeRectangle(0, 0, 1/3, 1/3)},
-			{hex: GREEN, corners: makeRectangle(1/3, 0, 1/3, 1/3)},
-			{hex: RED, corners: makeRectangle(2/3, 0, 1/3, 1/3)},
-			{hex: BLUE, corners: makeRectangle(0, 1/3, 1/3, 1/3)},
-			{hex: YELLOW, corners: makeRectangle(1/3, 1/3, 1/3, 1/3)},
-			{hex: ORANGE, corners: makeRectangle(2/3, 1/3, 1/3, 1/3)},
-			{hex: ROSE, corners: makeRectangle(0, 2/3, 1/3, 1/3)},
-			{hex: CYAN, corners: makeRectangle(1/3, 2/3, 1/3, 1/3)},
-			{hex: PURPLE, corners: makeRectangle(2/3, 2/3, 1/3, 1/3)},
+			{hex: GREY, corners: makeRectangleCorners(0, 0, 1/3, 1/3)},
+			{hex: GREEN, corners: makeRectangleCorners(1/3, 0, 1/3, 1/3)},
+			{hex: RED, corners: makeRectangleCorners(2/3, 0, 1/3, 1/3)},
+			{hex: BLUE, corners: makeRectangleCorners(0, 1/3, 1/3, 1/3)},
+			{hex: YELLOW, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
+			{hex: ORANGE, corners: makeRectangleCorners(2/3, 1/3, 1/3, 1/3)},
+			{hex: ROSE, corners: makeRectangleCorners(0, 2/3, 1/3, 1/3)},
+			{hex: CYAN, corners: makeRectangleCorners(1/3, 2/3, 1/3, 1/3)},
+			{hex: PURPLE, corners: makeRectangleCorners(2/3, 2/3, 1/3, 1/3)},
 		]
 	}
 })
@@ -113,13 +113,13 @@ PRESET.MINI_GRID = createPreset({
 	key: "b",
 	colours: {
 		[BLACK]: [
-			{hex: GREY, corners: makeRectangle(0, 0, 1/2, 1/2)},
-			{hex: GREEN, corners: makeRectangle(1/2, 0, 1/2, 1/2)},
-			{hex: RED, corners: makeRectangle(0, 1/2, 1/2, 1/2)},
-			{hex: BLUE, corners: makeRectangle(1/2, 1/2, 1/2, 1/2)},
+			{hex: GREY, corners: makeRectangleCorners(0, 0, 1/2, 1/2)},
+			{hex: GREEN, corners: makeRectangleCorners(1/2, 0, 1/2, 1/2)},
+			{hex: RED, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
+			{hex: BLUE, corners: makeRectangleCorners(1/2, 1/2, 1/2, 1/2)},
 		],
 		[GREY]: [
-			{hex: RED, corners: makeRectangle(0, 0, 1/2, 1/2)},
+			{hex: RED, corners: makeRectangleCorners(0, 0, 1/2, 1/2)},
 		],
 	}
 })

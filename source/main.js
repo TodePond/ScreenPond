@@ -8,7 +8,9 @@ import { drawScreen } from "./draw.js"
 const show = Show.start()
 show.tick = (context) => {
 
-	fireHandEvent(context, global.hand, "tick")
-	drawScreen(context, global.world)
+	const {hand, world} = global
+
+	fireHandEvent(context, hand, "tick")
+	drawScreen(context, world)
 
 }

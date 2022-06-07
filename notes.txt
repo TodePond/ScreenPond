@@ -1,15 +1,21 @@
 
-Hand = object that stores state about the cursor/touch
+>> ALL global state is kept in the 'global' object
+>> ALL other exports are pure functions
+
+=============================================================
+
+Hand = object that stores information about the cursor/touch
 
 Canvas = client's whole screen (0 to max pixel)
 View = client's whole screen (0.0 to 1.0)
 
-CanvasPosition = a place in the canvas (0 to max pixel)
-ViewPosition = a place in the view (0.0 to 1.0)
+CanvasPosition = vector representing a location in the canvas (0 to max pixel)
+ViewPosition = vector representing a location in the view (0.0 to 1.0)
 
-Corners = four view positions (from 0.0 to 1.0) that show where the corners of a quadrilateral are
+Corners = four view positions (from 0.0 to 1.0) representing the corners of a quadrilateral
 
-Hex = a hex string
-Colour = an object with a hex and list of screens
-Screen = a positioned colour
+Hex = hex string representing a colour value
+Colour = object containing a hex and list of screens
+Screen = object representing a positioned colour
+
 World = a single screen that covers the whole view

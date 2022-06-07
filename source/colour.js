@@ -1,7 +1,7 @@
 //========//
 // COLOUR //
 //========//
-export const COLOUR_HEXES = [
+const COLOUR_HEXES = [
 	Colour.Black.hex,
 	Colour.Silver.hex,
 	Colour.Green.hex,

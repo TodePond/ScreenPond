@@ -1,4 +1,4 @@
-import { getCanvasCorners } from "./view.js"
+import { getCanvasPositions } from "./position.js"
 
 //======//
 // DRAW //
@@ -10,8 +10,8 @@ export const drawScreen = (context, screen) => {
 
 export const drawColour = (context, colour, corners) => {
 
-	const canvasCorners = getCanvasCorners(context, corners)
-	const [head, ...tail] = canvasCorners
+	const canvasCornerPositions = getCanvasPositions(context, corners)
+	const [head, ...tail] = canvasCornerPositions
 
 	context.beginPath()
 	context.moveTo(...head)
@@ -19,6 +19,7 @@ export const drawColour = (context, colour, corners) => {
 		context.lineTo(...corner)
 	}
 	context.closePath()
+
 	context.fillStyle = colour.hex
 	context.fill()
 }

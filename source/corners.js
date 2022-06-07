@@ -1,3 +1,5 @@
+
+
 //=========//
 // CORNERS //
 //=========//
@@ -10,4 +12,9 @@ export const makeRectangle = (x, y, width, height) => {
 	const d = [x + width, y + height]
 	const corners = [a, b, c, d]
 	return corners
+}
+
+export const rotate = (corners, radians) => {
+	const [a, b, c, d] = corners
+
 }

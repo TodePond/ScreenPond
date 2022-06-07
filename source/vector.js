@@ -1,6 +1,26 @@
 //========//
 // VECTOR //
 //========//
-export const add = (a, b) => [a[0]+b[0], a[1]+b[1]]
-export const sub = (a, b) => [a[0]-b[0], a[1]-b[1]]
-export const cross = (a, b) => a[0]*b[1] - a[1]*b[0]
+export const addVector = (a, b) => {
+	const [ax, ay] = a
+	const [bx, by] = b
+	const x = ax + bx
+	const y = ay + by
+	return [x, y]
+}
+
+export const subtractVector = (a, b) => {
+	const [ax, ay] = a
+	const [bx, by] = b
+	const x = ax - bx
+	const y = ay - by
+	return [x, y]
+}
+
+export const crossProductVector = (a, b) => {
+	const [ax, ay] = a
+	const [bx, by] = b
+	return (ax * bx) - (ay * by)
+}
+
+export const scaleVector = ([x, y], n) => [x * n, y * n]

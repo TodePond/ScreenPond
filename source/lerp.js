@@ -1,4 +1,4 @@
-import { add, sub, cross } from "./vector.js"
+import { addVector, subtractVector, crossProductVector } from "./vector.js"
 
 //======//
 // LERP //
@@ -36,14 +36,14 @@ export const ibilerp = (point, corners) => {
 	const p = point
 	const [a, b, d, c] = corners
 
-	const e = sub(b, a)
-	const f = sub(d, a)
-	const g = add(sub(a, b), sub(c, d))
-	const h = sub(p, a)
+	const e = subtractVector(b, a)
+	const f = subtractVector(d, a)
+	const g = addVector(subtractVector(a, b), subtractVector(c, d))
+	const h = subtractVector(p, a)
 
-	const k2 = cross(g, f)
-	const k1 = cross(e, f) + cross(h, g)
-	const k0 = cross(h, e)
+	const k2 = crossProductVector(g, f)
+	const k1 = crossProductVector(e, f) + crossProductVector(h, g)
+	const k0 = crossProductVector(h, e)
 		
 	// if edges are parallel, this is a linear equation
 	if (Math.abs(k2) < 0.001) {

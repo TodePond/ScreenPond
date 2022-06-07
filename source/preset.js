@@ -2,18 +2,21 @@ import { makeWorld } from "./world.js"
 import { makeRectangleCorners } from "./corners.js"
 import { addScreen, removeAllScreens } from "./colour.js"
 import { makeScreen } from "./screen.js"
+import { onkeydown } from "./keyboard.js"
 
 //========//
 // PRESET //
 //========//
 const PRESET = {}
-export const loadPreset = (global, presetName) => {
-
-	
+export const loadPresetName = (global, presetName) => {
 	const preset = PRESET[presetName]
 	if (preset === undefined) {
 		throw new Error(`Could not find preset: '${presetName}'`)
 	}
+	return loadPreset(global, preset)
+}
+
+export const loadPreset = (global, preset) => {
 
 	const {colours} = global
 	for (const colour of colours) {
@@ -38,17 +41,59 @@ export const loadPreset = (global, presetName) => {
 
 }
 
-const makePreset = ({world, colours = {}} = {}) => {
+const createPreset = ({key, world, colours = {}} = {}) => {
 	const preset = {world, colours}
+	if (key !== undefined) {
+		onkeydown(key, () => loadPreset(global, preset))
+	}
 	return preset
 }
 
 //=========//
 // PRESETS //
 //=========//
-PRESET.EMPTY = makePreset()
+PRESET.EMPTY = createPreset({
+	key: "c",
+})
 
-PRESET.GRID = makePreset({
+PRESET.SINGLE = createPreset({
+	key: "s",
+	colours: {
+		[BLACK]: [
+			{hex: BLUE, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
+		]
+	}
+})
+
+PRESET.DOUBLE = createPreset({
+	key: "d",
+	colours: {
+		[BLACK]: [
+			{hex: BLUE, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
+		],
+		[BLUE]: [
+			{hex: RED, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
+		],
+	}
+})
+
+PRESET.INFINITE = createPreset({
+	key: "f",
+	colours: {
+		[BLACK]: [
+			{hex: BLUE, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
+		],
+		[BLUE]: [
+			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.7, 0.7)},
+		],
+		[RED]: [
+			{hex: BLUE, corners: makeRectangleCorners(0.1, 0.1, 0.7, 0.7)},
+		],
+	}
+})
+
+PRESET.GRID = createPreset({
+	key: "v",
 	colours: {
 		[BLACK]: [
 			{hex: GREY, corners: makeRectangleCorners(0, 0, 1/3, 1/3)},
@@ -64,7 +109,8 @@ PRESET.GRID = makePreset({
 	}
 })
 
-PRESET.MINI_GRID = makePreset({
+PRESET.MINI_GRID = createPreset({
+	key: "b",
 	colours: {
 		[BLACK]: [
 			{hex: GREY, corners: makeRectangleCorners(0, 0, 1/2, 1/2)},

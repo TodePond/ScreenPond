@@ -1,6 +1,3 @@
-import { global } from "./global.js"
-import { loadPreset } from "./preset.js"
-
 //==========//
 // KEYBOARD //
 //==========//
@@ -12,9 +9,4 @@ on.keydown(e => {
 	event(e)
 })
 
-//======//
-// KEYS //
-//======//
-KEYDOWN["c"] = () => loadPreset(global, "EMPTY")
-KEYDOWN["v"] = () => loadPreset(global, "GRID")
-KEYDOWN["b"] = () => loadPreset(global, "MINI_GRID")
+export const onkeydown = (key, func) => KEYDOWN[key] = func

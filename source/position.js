@@ -1,3 +1,5 @@
+import { bilerp } from "./lerp.js"
+
 //======//
 // VIEW //
 //======//
@@ -21,8 +23,7 @@ export const getCanvasPositions = (context, viewPositions) => {
 }
 
 export const getRelativePosition = (position, corners) => {
-	// TODO: pull over the code from the codepen
-	const relativePosition = position
+	const relativePosition = bilerp(position, corners)
 	return relativePosition
 }
 

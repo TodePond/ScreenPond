@@ -2,6 +2,8 @@
 >> ALL global state is kept in the 'global' object
 >> ALL other exports are pure functions or immutable constants
 
+exceptions: 'onkeydown'
+
 =============================================================
 
 Hand = object that stores information about the cursor/touch

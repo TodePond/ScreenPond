@@ -26,3 +26,8 @@ export const getCornersCenter = (corners) => {
 	const center = scaleVector(sum, 1/4)
 	return center
 }
+
+export const moveCorners = (corners, displacement) => {
+	const movedCorners = corners.map(corner => addVector(corner, displacement))
+	return movedCorners
+}

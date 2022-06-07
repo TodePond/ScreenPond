@@ -2,7 +2,7 @@ import { global } from "./global.js"
 import { fireHandEvent } from "./hand.js"
 import { drawBackground, drawChildren } from "./draw.js"
 import { loadPresetName } from "./preset.js"
-import { rotateCorners } from "./corners.js"
+import { rotateCorners, moveCorners } from "./corners.js"
 
 //======//
 // MAIN //
@@ -16,6 +16,7 @@ show.resize = (context) => {
 	drawChildren(context, colour, corners)
 }
 
+let t = 0
 show.tick = (context) => {
 
 	const {hand, world, colours} = global
@@ -27,11 +28,13 @@ show.tick = (context) => {
 	drawChildren(context, colour, corners)
 
 	// DEBUG
-	const blue = colours[GREEN].screens[0]
-	blue.corners = rotateCorners(blue.corners, 0.005)
+	const red = colours[BLACK].screens[0]
+	red.corners = rotateCorners(red.corners, 0.005)
+	red.corners = moveCorners(red.corners, [Math.sin(t) * 0.001, -Math.cos(t) * 0.001])
+	t += 0.01
 	
-	const green = colours[BLUE].screens[0]
-	green.corners = rotateCorners(green.corners, 0.00)
+	const black = colours[RED].screens[0]
+	black.corners = rotateCorners(black.corners, -0.001)
 
 }
 

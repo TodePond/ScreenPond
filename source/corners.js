@@ -3,7 +3,7 @@
 //=========//
 // a b
 // c d
-export const makeRectangleCorners = (x, y, width, height) => {
+export const makeRectangle = (x, y, width, height) => {
 	const a = [x, y]
 	const b = [x + width, y]
 	const c = [x, y + height]

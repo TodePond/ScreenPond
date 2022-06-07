@@ -3,10 +3,17 @@ import { add, sub, cross } from "./vector.js"
 //======//
 // LERP //
 //======//
-export const lerp = (t, a, b) => [a[0] + (b[0]-a[0])*t, a[1] + (b[1]-a[1])*t]
+export const lerp = (t, a, b) => {
+	const [ax, ay] = a
+	const [bx, by] = b
+	const x = ax + (bx - ax) * t
+	const y = ay + (by - ay) * t
+	return [x, y]
+}
+
 export const bilerp = (t, [a, b, c, d]) => lerp(t[1], lerp(t[0], a, b), lerp(t[0], c, d))
 
-// the magic transpiled from https://iquilezles.org/articles/ibilinear/
+// https://iquilezles.org/articles/ibilinear/
 export const invBilinear = (p, [a, b, d, c]) => {
 	const e = sub(b, a)
 	const f = sub(d, a)

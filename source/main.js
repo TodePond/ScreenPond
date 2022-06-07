@@ -1,6 +1,7 @@
 import { global } from "./global.js"
 import { fireHandEvent } from "./hand.js"
 import { drawBackground, drawChildren } from "./draw.js"
+import { loadPresetName } from "./preset.js"
 
 //======//
 // MAIN //
@@ -17,3 +18,5 @@ show.tick = (context) => {
 	drawChildren(context, colour, corners)
 
 }
+
+loadPresetName(global, "INFINITE")

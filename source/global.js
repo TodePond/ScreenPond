@@ -1,18 +1,18 @@
 import { makeHand } from "./hand.js"
 import { makeColours } from "./colour.js"
-import { makeWorld } from "./world.js"
+import { makeCamera } from "./camera.js"
 
 //========//
 // GLOBAL //
 //========//
 const hand = makeHand()
 const colours = makeColours()
-const world = makeWorld(colours)
+const camera = makeCamera(colours)
 
 export const global = {
 	hand,
 	colours,
-	world,
+	camera,
 }
 
 window.global = global

@@ -4,18 +4,21 @@ import { getCornersPerimeter } from "./corners.js"
 //======//
 // DRAW //
 //======//
-export const stampColour = (context, colour, corners) => {
-	context.drawImage(colour.context.canvas, 0, 0)
+// Used for drawing a colour to the camera view
+export const stampColour = (context, colour) => {
+	const {canvas} = context
+	context.drawImage(colour.context.canvas, 0, 0, canvas.width, canvas.height)
 }
 
 export const drawChildren = (context, colour, corners, depth = 0) => {
+
 	for (const child of colour.screens) {
 		const relativeCorners = getRelativePositions(child.corners, corners)
 
 		if (depth >= 5) {
 			const perimeter = getCornersPerimeter(relativeCorners)
 			if (perimeter < 0.1) {
-				fillBackground(context, child.colour, relativeCorners)
+				fillBackground(context, colour, relativeCorners)
 				return
 			}
 		}
@@ -26,6 +29,8 @@ export const drawChildren = (context, colour, corners, depth = 0) => {
 }
 
 export const drawBackground = (context, colour, corners) => {
+
+	fillBackground(context, Colour.Black, corners)
 
 	const canvasCornerPositions = getCanvasPositions(context, corners)
 	const [a, b, c, d] = canvasCornerPositions

@@ -1,4 +1,4 @@
-import { makeWorld } from "./world.js"
+import { makeCamera } from "./camera.js"
 import { makeRectangleCorners, rotateCorners, moveCorners } from "./corners.js"
 import { addScreen, removeAllScreens } from "./colour.js"
 import { makeScreen } from "./screen.js"
@@ -33,16 +33,16 @@ export const loadPreset = (global, preset) => {
 		}
 	}
 
-	if (preset.world === undefined) {
-		preset.world = makeWorld(colours)
+	if (preset.camera === undefined) {
+		preset.camera = makeCamera(colours)
 	} 
 	
-	global.world = preset.world
+	global.camera = preset.camera
 
 }
 
-const createPreset = ({key, world, colours = {}} = {}) => {
-	const preset = {world, colours}
+const createPreset = ({key, camera, colours = {}} = {}) => {
+	const preset = {camera, colours}
 	if (key !== undefined) {
 		onkeydown(key, () => loadPreset(global, preset))
 	}
@@ -69,10 +69,14 @@ PRESET.DOUBLE = createPreset({
 	key: "d",
 	colours: {
 		[GREY]: [
-			{hex: BLUE, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
+			{hex: BLUE, corners: makeRectangleCorners(0.05, 0.05, 0.425, 0.9)},
+			{hex: RED, corners: makeRectangleCorners(0.525, 0.05, 0.425, 0.9)},
 		],
 		[BLUE]: [
-			{hex: RED, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
+			{hex: BLUE, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
+		],
+		[RED]: [
+			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
 		],
 	}
 })
@@ -84,7 +88,7 @@ PRESET.INFINITE = createPreset({
 			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[GREEN]: [
-			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.92, 0.92), 0.1)},
+			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.90, 0.90), 0.2)},
 		],
 	}
 })

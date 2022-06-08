@@ -20,4 +20,4 @@ Hex = hex string representing a colour value
 Colour = object containing a hex and list of screens
 Screen = object representing a positioned colour
 
-World = a single screen that covers the whole view
+Camera = an object storing what colour the user is looking at, and its positioning

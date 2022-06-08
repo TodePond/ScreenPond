@@ -7,10 +7,10 @@ export const COLOUR_HEXES = [
 	RED,
 	BLUE,
 	YELLOW,
-	/*ORANGE,
+	ORANGE,
 	ROSE,
 	CYAN,
-	PURPLE,*/
+	PURPLE,
 ]
 
 export const makeColours = () => {

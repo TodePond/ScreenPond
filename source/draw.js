@@ -4,6 +4,10 @@ import { getCornersPerimeter } from "./corners.js"
 //======//
 // DRAW //
 //======//
+export const stampColour = (context, colour, corners) => {
+	// TODO: draw an image from the colour worker
+}
+
 export const drawChildren = (context, colour, corners, depth = 0) => {
 	for (const child of colour.screens) {
 		const relativeCorners = getRelativePositions(child.corners, corners)
@@ -33,9 +37,6 @@ export const drawBackground = (context, colour, corners) => {
 	context.lineTo(...c)
 	context.closePath()
 
-	//context.fillStyle = Colour.Black
-	//context.fill()
-	
 	context.strokeStyle = colour.hex
 	context.stroke()
 }

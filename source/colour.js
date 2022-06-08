@@ -2,16 +2,15 @@
 // COLOUR //
 //========//
 export const COLOUR_HEXES = [
-	//BLACK,
 	GREY,
 	GREEN,
 	RED,
 	BLUE,
 	YELLOW,
-	ORANGE,
+	/*ORANGE,
 	ROSE,
 	CYAN,
-	PURPLE,
+	PURPLE,*/
 ]
 
 export const makeColours = () => {
@@ -23,8 +22,19 @@ export const makeColours = () => {
 }
 
 export const makeColour = (hex) => {
-	const colour = {hex, screens: []}
+	const canvas = new OffscreenCanvas(1920, 1080)
+	const worker = new Worker("source/worker.js", {type: "module"})
+	worker.onmessage = (e) => {
+		//print(e.data)
+	}
+	callWorker(worker, "receiveCanvas", [canvas], [canvas])
+	
+	const colour = {hex, worker, canvas, screens: []}
 	return colour
+}
+
+export const callWorker = (worker, funcName, args = [], transfers) => {
+	worker.postMessage({funcName, args}, transfers)
 }
 
 //=========//

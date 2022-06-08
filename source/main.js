@@ -1,8 +1,8 @@
-import { global } from "./global.js"
-import { fireHandEvent } from "./hand.js"
-import { drawBackground, drawChildren, stampColour } from "./draw.js"
-import { loadPresetName } from "./preset.js"
-import { VIEW_CORNERS, rotateCorners } from "./corners.js"
+import {global} from "./global.js"
+import {fireHandEvent} from "./hand.js"
+import {stampColour, continueDrawingColour} from "./colour.js"
+import {loadPresetName} from "./preset.js"
+import {rotateCorners} from "./corners.js"
 
 //======//
 // MAIN //
@@ -18,14 +18,9 @@ show.tick = (context) => {
 	const {hand, camera, colours} = global
 	fireHandEvent(context, hand, "tick")
 	
-	for (const colour of colours) {
-		const {canvas} = colour.context
-		colour.context.clearRect(0, 0, canvas.width, canvas.height)
-		drawBackground(colour.context, colour, VIEW_CORNERS)
-		drawChildren(colour.context, colour, VIEW_CORNERS)
-	}
-
 	const {colour} = camera
+	continueDrawingColour(colour)
+
 	const {canvas} = context
 	context.clearRect(0, 0, canvas.width, canvas.height)
 	stampColour(context, colour)

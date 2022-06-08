@@ -1,36 +1,36 @@
-import { getCanvasPositions, getRelativePositions } from "./position.js"
-import { getCornersPerimeter } from "./corners.js"
+import {getCanvasPositions, getRelativePositions} from "./position.js"
+import {getCornersPerimeter} from "./corners.js"
+import {makeScreen} from "./screen.js"
 
 //======//
 // DRAW //
 //======//
-// Used for drawing a colour to the camera view
-export const stampColour = (context, colour) => {
-	const {canvas} = context
-	context.drawImage(colour.context.canvas, 0, 0, canvas.width, canvas.height)
-}
+// This file contains primitive + agnostic drawing functions
+// For higher-level drawing functions, go to 'colour.js'
 
-export const drawChildren = (context, colour, corners, depth = 0) => {
+export const drawChildren = (context, colour, corners, parent = colour, depth = 0) => {
 
 	for (const child of colour.screens) {
 		const relativeCorners = getRelativePositions(child.corners, corners)
 
 		if (depth >= 5) {
 			const perimeter = getCornersPerimeter(relativeCorners)
-			if (perimeter < 0.1) {
-				fillBackground(context, colour, relativeCorners)
+			if (perimeter < Infinity) {
+				//fillBackground(context, Colour.Black, relativeCorners)
+				const screen = makeScreen(child.colour, relativeCorners)
+				parent.queue.push(screen)
 				return
 			}
 		}
 
 		drawBackground(context, child.colour, relativeCorners)
-		drawChildren(context, child.colour, relativeCorners, depth + 1)
+		drawChildren(context, child.colour, relativeCorners, parent, depth + 1)
 	}
 }
 
 export const drawBackground = (context, colour, corners) => {
 
-	fillBackground(context, Colour.Black, corners)
+	//fillBackground(context, Colour.Black, corners)
 
 	const canvasCornerPositions = getCanvasPositions(context, corners)
 	const [a, b, c, d] = canvasCornerPositions

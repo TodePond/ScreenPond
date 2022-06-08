@@ -1,4 +1,4 @@
-import { bilerp } from "./lerp.js"
+import {bilerp} from "./lerp.js"
 
 //======//
 // VIEW //

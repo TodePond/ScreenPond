@@ -1,5 +1,5 @@
-import { addVector, scaleVector, distanceBetweenVectors } from "./vector.js"
-import { rotatePosition } from "./position.js"
+import {addVector, scaleVector, distanceBetweenVectors} from "./vector.js"
+import {rotatePosition} from "./position.js"
 
 //=========//
 // CORNERS //

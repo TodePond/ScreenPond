@@ -2,7 +2,7 @@
 // COLOUR //
 //========//
 export const COLOUR_HEXES = [
-	BLACK,
+	//BLACK,
 	GREY,
 	GREEN,
 	RED,

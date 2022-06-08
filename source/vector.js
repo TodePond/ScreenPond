@@ -1,6 +1,8 @@
 //========//
 // VECTOR //
 //========//
+export const scaleVector = ([x, y], n) => [x * n, y * n]
+
 export const addVector = (a, b) => {
 	const [ax, ay] = a
 	const [bx, by] = b
@@ -23,4 +25,10 @@ export const crossProductVector = (a, b) => {
 	return ax*bx - ay*by
 }
 
-export const scaleVector = ([x, y], n) => [x * n, y * n]
+
+export const distanceBetweenVectors = (a, b) => {
+	const displacement = subtractVector(a, b)
+	const [dx, dy] = displacement
+	const distance = Math.hypot(dx, dy)
+	return distance
+}

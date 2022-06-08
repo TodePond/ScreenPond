@@ -1,4 +1,4 @@
-import { addVector, scaleVector } from "./vector.js"
+import { addVector, scaleVector, distanceBetweenVectors } from "./vector.js"
 import { rotatePosition } from "./position.js"
 
 //=========//
@@ -30,4 +30,14 @@ export const getCornersCenter = (corners) => {
 export const moveCorners = (corners, displacement) => {
 	const movedCorners = corners.map(corner => addVector(corner, displacement))
 	return movedCorners
+}
+
+export const getCornersPerimeter = (corners) => {
+	const [a, b, c, d] = corners
+	const ab = distanceBetweenVectors(a, b)
+	const bd = distanceBetweenVectors(b, d)
+	const dc = distanceBetweenVectors(d, c)
+	const ca = distanceBetweenVectors(c, a)
+	const perimeter = ab + bd + dc + ca
+	return perimeter
 }

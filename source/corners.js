@@ -41,3 +41,5 @@ export const getCornersPerimeter = (corners) => {
 	const perimeter = ab + bd + dc + ca
 	return perimeter
 }
+
+export const VIEW_CORNERS = makeRectangleCorners(0, 0, 1, 1)

@@ -4,8 +4,8 @@ import { getCornersPerimeter } from "./corners.js"
 //======//
 // DRAW //
 //======//
-export const stampColour = (context, colour, corners) => {
-	// TODO: draw an image from the colour worker
+export const stampColour = (context, colour, corners, colours) => {
+	
 }
 
 export const drawChildren = (context, colour, corners, depth = 0) => {

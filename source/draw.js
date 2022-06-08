@@ -13,7 +13,7 @@ export const drawChildren = (context, colour, corners, parent = colour, depth = 
 	for (const child of colour.screens) {
 		const relativeCorners = getRelativePositions(child.corners, corners)
 
-		if (depth >= 5) {
+		if (depth >= 1) {
 			const perimeter = getCornersPerimeter(relativeCorners)
 			if (perimeter < Infinity) {
 				//fillBackground(context, Colour.Black, relativeCorners)

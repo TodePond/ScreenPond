@@ -1,5 +1,6 @@
 import {VIEW_CORNERS} from "./corners.js"
 import {drawChildren} from "./draw.js"
+import {LinkedList} from "./list.js"
 
 //========//
 // COLOUR //
@@ -27,7 +28,7 @@ export const makeColours = () => {
 export const makeColour = (hex) => {
 	const canvas = new OffscreenCanvas(1920, 1080)
 	const context = canvas.getContext("2d")
-	const queue = []
+	const queue = new LinkedList()
 	const colour = {hex, context, queue, screens: []}
 	return colour
 }
@@ -39,23 +40,26 @@ export const resetColourCanvas = (colour) => {
 	const {context} = colour
 	const {canvas} = context
 	context.clearRect(0, 0, canvas.width, canvas.height)
-	colour.queue.length = 0
+	colour.queue.clear()
 }
 
 export const continueDrawingColour = (colour) => {
 	const {context, queue} = colour
-	if (queue.length === 0) {
+	if (queue.isEmpty) {
 		drawChildren(context, colour, VIEW_CORNERS)
 		return
 	}
 
-	colour.queue = []
-	//queue.shuffle()
-
-	let depth = 0
-	for (const screen of queue) {
-		drawChildren(context, screen.colour, screen.corners, colour, depth)
-		depth++
+	// TODO: this doesn't work properly when there's multiple of the same colour or something (check out all the presets to see what I mean)
+	let i = 0
+	for (const link of queue) {
+		const {item} = link
+		if (i >= 1) {
+			queue.setStart(link)
+			break
+		}
+		drawChildren(context, item.colour, item.corners, colour)
+		i++
 	}
 }
 

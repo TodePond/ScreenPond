@@ -4,20 +4,20 @@ import { getCornersPerimeter } from "./corners.js"
 //======//
 // DRAW //
 //======//
-export const drawChildren = (context, colour, corners, depth = 5) => {
+export const drawChildren = (context, colour, corners, depth = 0) => {
 	for (const child of colour.screens) {
 		const relativeCorners = getRelativePositions(child.corners, corners)
 
-		if (depth <= 0) {
+		if (depth >= 5) {
 			const perimeter = getCornersPerimeter(relativeCorners)
-			if (perimeter < 0.01) {
+			if (perimeter < 0.1) {
 				fillBackground(context, child.colour, relativeCorners)
 				return
 			}
 		}
 
 		drawBackground(context, child.colour, relativeCorners)
-		drawChildren(context, child.colour, relativeCorners, depth-1)
+		drawChildren(context, child.colour, relativeCorners, depth + 1)
 	}
 }
 
@@ -33,9 +33,8 @@ export const drawBackground = (context, colour, corners) => {
 	context.lineTo(...c)
 	context.closePath()
 
-	
-	context.fillStyle = Colour.Black
-	context.fill()
+	//context.fillStyle = Colour.Black
+	//context.fill()
 	
 	context.strokeStyle = colour.hex
 	context.stroke()

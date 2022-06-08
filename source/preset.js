@@ -84,7 +84,7 @@ PRESET.INFINITE = createPreset({
 			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[GREEN]: [
-			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.92, 0.92), 0.02)},
+			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.92, 0.92), 0.1)},
 		],
 	}
 })
@@ -112,7 +112,7 @@ PRESET.MINI_GRID = createPreset({
 		[GREY]: [
 			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0, 0, 1/2, 1/2), -0.0)},
 			{hex: BLUE, corners: makeRectangleCorners(1/2, 0.0, 1/2, 1/2)},
-			{hex: RED, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
+			{hex: GREY, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
 			{hex: GREY, corners: makeRectangleCorners(1/2, 1/2, 1/2, 1/2)},
 		],
 	}

@@ -19,7 +19,7 @@ export const COLOUR_HEXES = [
 	PURPLE,
 ]
 
-export const COLOUR_CANVAS_SCALE = 2.0
+export const COLOUR_CANVAS_SCALE = 1.0
 
 export const makeColours = () => {
 	const colours = {}
@@ -55,13 +55,12 @@ export const continueDrawingColour = (colour) => {
 
 	// If the draw queue is empty, that means we've drawn everything already :)
 	if (queue.isEmpty) {
-		print("done")
 		return
 	}
 
 	let i = 0
 	while (!queue.isEmpty) {
-		if (i >= 1000) break
+		if (i >= 1_000) break
 		const screen = queue.shift()
 		drawBorder(context, screen)
 		addChildrenToQueue(queue, screen)

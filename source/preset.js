@@ -120,15 +120,20 @@ PRESET.MINI_GRID = createPreset({
 	key: "b",
 	colours: {
 		[GREY]: [
-			{hex: RED, corners: makeRectangleCorners(0, 0, 1, 1)}
+			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)}
 		],
 		[RED]: [
-			{hex: BLUE, corners: rotateCorners(makeRectangleCorners(0, 0, 1/2, 1/2), -0.0)},
-			{hex: RED, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
-			{hex: RED, corners: makeRectangleCorners(1/2, 1/2, 1/2, 1/2)},
-			{hex: RED, corners: makeRectangleCorners(1/2, 0.0, 1/2, 1/2)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(0, 0, 1/2, 1/2), 0.2)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(0, 1/2, 1/2, 1/2), 0.0)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(1/2, 1/2, 1/2, 1/2), -0.2)},
+			{hex: BLUE, corners: makeRectangleCorners(1/2, 0.0, 1/2, 1/2)},
 		],
 	},
+	update: (colours) => {
+		//const s = colours[RED].screens[3]
+		//s.corners = rotateCorners(s.corners, 0.001)
+		//resetColourCanvas(colours[GREY])
+	}
 })
 
 PRESET.GRID2 = createPreset({

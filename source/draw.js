@@ -1,6 +1,6 @@
-import {getCanvasPositions, getRelativePositions} from "./position.js"
-import {getCornersPerimeter} from "./corners.js"
-import {makeScreen} from "./screen.js"
+import { getCanvasPositions, getRelativePositions } from "./position.js"
+import { getCornersPerimeter} from "./corners.js"
+import { makeScreen} from "./screen.js"
 
 //======//
 // DRAW //

@@ -1,4 +1,4 @@
-import {addVector, subtractVector, crossProductVector} from "./vector.js"
+import { addVector, subtractVector, crossProductVector } from "./vector.js"
 
 //======//
 // LERP //

@@ -1,6 +1,6 @@
-import {makeHand} from "./hand.js"
-import {makeColours} from "./colour.js"
-import {makeCamera} from "./camera.js"
+import { makeHand } from "./hand.js"
+import { makeColours } from "./colour.js"
+import { makeCamera } from "./camera.js"
 
 //========//
 // GLOBAL //

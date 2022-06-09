@@ -1,7 +1,7 @@
-import {VIEW_CORNERS} from "./corners.js"
-import {drawChildren, drawBorder} from "./draw.js"
-import {LinkedList} from "./list.js"
-import {makeScreen} from "./screen.js"
+import { VIEW_CORNERS } from "./corners.js"
+import { drawChildren, drawBorder } from "./draw.js"
+import { LinkedList } from "./list.js"
+import { makeScreen } from "./screen.js"
 
 //========//
 // COLOUR //
@@ -17,6 +17,8 @@ export const COLOUR_HEXES = [
 	CYAN,
 	PURPLE,
 ]
+
+export const COLOUR_CANVAS_SCALE = 2.0
 
 export const makeColours = () => {
 	const colours = {}

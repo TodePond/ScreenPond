@@ -1,15 +1,15 @@
-import {global} from "./global.js"
-import {fireHandEvent} from "./hand.js"
-import {stampColour, continueDrawingColour, resetColourCanvas} from "./colour.js"
-import {loadPresetName} from "./preset.js"
-import {rotateCorners} from "./corners.js"
+import { global } from "./global.js"
+import { fireHandEvent } from "./hand.js"
+import { stampColour, continueDrawingColour, resetColourCanvas } from "./colour.js"
+import { loadPresetName } from "./preset.js"
+import { rotateCorners } from "./corners.js"
+import { COLOUR_CANVAS_SCALE } from "./colour.js"
 
 //======//
 // MAIN //
 //======//
 const show = Show.start({paused: false})
 
-const COLOUR_CANVAS_SCALE = 2.0
 show.resize = (context) => {
 	show.tick(context)
 	const {canvas} = context

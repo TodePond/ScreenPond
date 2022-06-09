@@ -1,8 +1,8 @@
-import {makeCamera} from "./camera.js"
-import {makeRectangleCorners, rotateCorners, moveCorners} from "./corners.js"
-import {addScreen, removeAllScreens, resetColourCanvas} from "./colour.js"
-import {makeScreen} from "./screen.js"
-import {onkeydown} from "./keyboard.js"
+import { makeCamera } from "./camera.js"
+import { makeRectangleCorners, rotateCorners, moveCorners } from "./corners.js"
+import { addScreen, removeAllScreens, resetColourCanvas } from "./colour.js"
+import { makeScreen } from "./screen.js"
+import { onkeydown } from "./keyboard.js"
 
 //========//
 // PRESET //

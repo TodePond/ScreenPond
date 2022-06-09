@@ -16,7 +16,7 @@ export const drawChildren = (context, colour, corners, parent = colour, depth = 
 		if (depth >= 1) {
 			const perimeter = getCornersPerimeter(relativeCorners)
 			if (perimeter < Infinity) {
-				//fillBackground(context, Colour.Black, relativeCorners)
+				drawBackground(context, child.colour, relativeCorners)
 				const screen = makeScreen(child.colour, relativeCorners)
 				parent.queue.push(screen)
 				return

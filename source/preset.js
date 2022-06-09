@@ -1,6 +1,6 @@
 import {makeCamera} from "./camera.js"
 import {makeRectangleCorners, rotateCorners, moveCorners} from "./corners.js"
-import {addScreen, removeAllScreens} from "./colour.js"
+import {addScreen, removeAllScreens, resetColourCanvas} from "./colour.js"
 import {makeScreen} from "./screen.js"
 import {onkeydown} from "./keyboard.js"
 
@@ -38,11 +38,12 @@ export const loadPreset = (global, preset) => {
 	} 
 	
 	global.camera = preset.camera
+	global.update = preset.update
 
 }
 
-const createPreset = ({key, camera, colours = {}} = {}) => {
-	const preset = {camera, colours}
+const createPreset = ({key, camera, colours = {}, update = () => {}} = {}) => {
+	const preset = {camera, colours, update}
 	if (key !== undefined) {
 		onkeydown(key, () => loadPreset(global, preset))
 	}
@@ -73,10 +74,10 @@ PRESET.DOUBLE = createPreset({
 			{hex: RED, corners: makeRectangleCorners(0.525, 0.05, 0.425, 0.9)},
 		],
 		[BLUE]: [
-			{hex: BLUE, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
+			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
 		],
 		[RED]: [
-			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
+			{hex: BLUE, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
 		],
 	}
 })
@@ -90,6 +91,11 @@ PRESET.INFINITE = createPreset({
 		[GREEN]: [
 			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.90, 0.90), 0.2)},
 		],
+	},
+	update: (colours) => {
+		const s1 = colours[GREEN].screens[0]
+		s1.corners = rotateCorners(s1.corners, 0.0001)
+		resetColourCanvas(colours[GREY])
 	}
 })
 
@@ -118,6 +124,16 @@ PRESET.MINI_GRID = createPreset({
 			{hex: BLUE, corners: makeRectangleCorners(1/2, 0.0, 1/2, 1/2)},
 			{hex: GREY, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
 			{hex: GREY, corners: makeRectangleCorners(1/2, 1/2, 1/2, 1/2)},
+		],
+	}
+})
+
+PRESET.GRID2 = createPreset({
+	key: "g",
+	colours: {
+		[GREY]: [
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.3, 0.3), 0.0)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(0.6, 0.1, 0.3, 0.3), 0.0)},
 		],
 	}
 })

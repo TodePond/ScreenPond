@@ -40,6 +40,10 @@ export const resetColourCanvas = (colour) => {
 	const {context} = colour
 	const {canvas} = context
 	context.clearRect(0, 0, canvas.width, canvas.height)
+	/*context.globalAlpha = 0.05
+	context.fillStyle = Colour.Black
+	context.fillRect(0, 0, canvas.width, canvas.height)
+	context.globalAlpha = 1.0*/
 	colour.queue.clear()
 }
 

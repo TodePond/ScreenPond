@@ -92,15 +92,15 @@ PRESET.INFINITE = createPreset({
 	key: "f",
 	colours: {
 		[GREY]: [
-			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
+			//{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[GREEN]: [
-			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.90, 0.90), 0.2)},
+			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.90, 0.90), 0.0)},
 		],
 	},
 	update: (colours) => {
 		const s1 = colours[GREEN].screens[0]
-		s1.corners = rotateCorners(s1.corners, 0.0001)
+		s1.corners = rotateCorners(s1.corners, 0.005)
 		resetColourCanvas(colours[GREY])
 	}
 })
@@ -149,7 +149,7 @@ PRESET.GRID2 = createPreset({
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.6, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
-			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.5, 0.5, 0.45, 0.45), 0.1)},
+			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.25, 0.25, 0.5, 0.5), 0.1)},
 		],
 		[RED]: [
 			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
@@ -157,7 +157,7 @@ PRESET.GRID2 = createPreset({
 	},
 	update: (colours) => {
 		const s = colours[GREY].screens[0]
-		//s.corners = rotateCorners(s.corners, 0.01)
-		//resetColourCanvas(colours[GREY])
+		s.corners = rotateCorners(s.corners, 0.005)
+		resetColourCanvas(colours[GREY])
 	}
 })

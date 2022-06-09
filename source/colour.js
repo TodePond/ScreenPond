@@ -61,7 +61,7 @@ export const continueDrawingColour = (colour) => {
 
 	let i = 0
 	while (!queue.isEmpty) {
-		if (i >= 10_000) break
+		if (i >= 5_000) break
 		const screen = queue.shift()
 		drawBorder(context, screen)
 		i += addChildrenToQueue(queue, screen)
@@ -72,7 +72,8 @@ export const continueDrawingColour = (colour) => {
 export const addChildrenToQueue = (queue, screen) => {
 	let i = 1
 	const {colour, corners} = screen
-	for (const child of colour.screens) {
+	for (let c = colour.screens.length-1; c >= 0; c--) {
+		const child = colour.screens[c]
 		const relativeCorners = getRelativePositions(child.corners, corners)
 		const screen = makeScreen(child.colour, relativeCorners)
 		queue.push(screen)

@@ -24,17 +24,22 @@ show.resize = (context) => {
 
 show.tick = (context) => {
 
-	const {hand, camera, colours, update} = global
+	const {hand, colours, update} = global
 	fireHandEvent(context, hand, "tick")
-	
+
+	update(colours)
+
+}
+
+show.supertick = (context) => {
+
+	const {camera} = global
 	const {colour} = camera
 	continueDrawingColour(colour)
 
 	const {canvas} = context
 	context.clearRect(0, 0, canvas.width, canvas.height)
 	stampColour(context, colour)
-
-	update(colours)
 
 }
 

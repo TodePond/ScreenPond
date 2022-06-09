@@ -1,35 +1,17 @@
 import { getCanvasPositions, getRelativePositions } from "./position.js"
 import { getCornersPerimeter} from "./corners.js"
 import { makeScreen} from "./screen.js"
+import { COLOUR_CANVAS_SCALE } from "./colour.js"
 
 //======//
 // DRAW //
 //======//
 // This file contains primitive + agnostic drawing functions
 // For higher-level drawing functions, go to 'colour.js'
+export const SCREEN_BORDER_WIDTH = 1
+export const drawBorder = (context, screen) => {
 
-export const drawChildren = (context, colour, corners, queue) => {
-
-	for (const child of colour.screens) {
-		const relativeCorners = getRelativePositions(child.corners, corners)
-
-		/*if (depth >= 1) {
-			const perimeter = getCornersPerimeter(relativeCorners)
-			if (perimeter < Infinity) {
-				drawBackground(context, child.colour, relativeCorners)
-				const screen = makeScreen(child.colour, relativeCorners)
-				parent.queue.push(screen)
-				return
-			}
-		}*/
-
-		drawBorder(context, child.colour, relativeCorners)
-		//drawChildren(context, child.colour, relativeCorners, parent, depth + 1)
-	}
-}
-
-export const drawBorder = (context, colour, corners) => {
-
+	const {colour, corners} = screen
 	//fillBackground(context, Colour.Black, corners)
 
 	const canvasCornerPositions = getCanvasPositions(context, corners)
@@ -42,13 +24,14 @@ export const drawBorder = (context, colour, corners) => {
 	context.lineTo(...c)
 	context.closePath()
 
-	context.lineWidth = 10
+	context.lineWidth = SCREEN_BORDER_WIDTH * COLOUR_CANVAS_SCALE
 	context.strokeStyle = colour.hex
 	context.stroke()
 }
 
-export const fillBackground = (context, colour, corners) => {
+export const fillBackground = (context, screen) => {
 
+	const {colour, corners} = screen
 	const canvasCornerPositions = getCanvasPositions(context, corners)
 	const [a, b, c, d] = canvasCornerPositions
 

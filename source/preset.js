@@ -93,9 +93,9 @@ PRESET.INFINITE = createPreset({
 		],
 	},
 	update: (colours) => {
-		//const s1 = colours[GREEN].screens[0]
-		//s1.corners = rotateCorners(s1.corners, 0.0001)
-		//resetColourCanvas(colours[GREY])
+		const s1 = colours[GREEN].screens[0]
+		s1.corners = rotateCorners(s1.corners, 0.0001)
+		resetColourCanvas(colours[GREY])
 	}
 })
 
@@ -120,12 +120,15 @@ PRESET.MINI_GRID = createPreset({
 	key: "b",
 	colours: {
 		[GREY]: [
-			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0, 0, 1/2, 1/2), -0.0)},
-			{hex: BLUE, corners: makeRectangleCorners(1/2, 0.0, 1/2, 1/2)},
-			{hex: GREY, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
-			{hex: GREY, corners: makeRectangleCorners(1/2, 1/2, 1/2, 1/2)},
+			{hex: RED, corners: makeRectangleCorners(0, 0, 1, 1)}
 		],
-	}
+		[RED]: [
+			{hex: BLUE, corners: rotateCorners(makeRectangleCorners(0, 0, 1/2, 1/2), -0.0)},
+			{hex: RED, corners: makeRectangleCorners(0, 1/2, 1/2, 1/2)},
+			{hex: RED, corners: makeRectangleCorners(1/2, 1/2, 1/2, 1/2)},
+			{hex: RED, corners: makeRectangleCorners(1/2, 0.0, 1/2, 1/2)},
+		],
+	},
 })
 
 PRESET.GRID2 = createPreset({
@@ -134,6 +137,16 @@ PRESET.GRID2 = createPreset({
 		[GREY]: [
 			{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.3, 0.3), 0.0)},
 			{hex: RED, corners: rotateCorners(makeRectangleCorners(0.6, 0.1, 0.3, 0.3), 0.0)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(0.6, 0.6, 0.3, 0.3), 0.0)},
 		],
+		[RED]: [
+			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
+		],
+	},
+	update: (colours) => {
+		const s = colours[RED].screens[0]
+		s.corners = rotateCorners(s.corners, 0.01)
+		resetColourCanvas(colours[GREY])
 	}
 })

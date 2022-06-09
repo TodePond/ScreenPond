@@ -1,7 +1,8 @@
 import { VIEW_CORNERS } from "./corners.js"
-import { drawChildren, drawBorder } from "./draw.js"
+import { drawBorder } from "./draw.js"
 import { LinkedList } from "./list.js"
 import { makeScreen } from "./screen.js"
+import { getRelativePositions } from "./position.js"
 
 //========//
 // COLOUR //
@@ -60,23 +61,22 @@ export const continueDrawingColour = (colour) => {
 
 	let i = 0
 	while (!queue.isEmpty) {
-		if (i >= 1) break
+		if (i >= 1000) break
 		const screen = queue.shift()
-		drawBorder(context, screen.colour, screen.corners)
-		drawChildren(context, screen.colour, screen.corners, queue)
+		drawBorder(context, screen)
+		addChildrenToQueue(queue, screen)
 		i++
 	}
 
-	/*let i = 0
-	for (const link of queue) {
-		const {item} = link
-		if (i >= 1) {
-			queue.setStart(link)
-			break
-		}
-		drawChildren(context, item.colour, item.corners, colour)
-		i++
-	}*/
+}
+
+export const addChildrenToQueue = (queue, screen) => {
+	const {colour, corners} = screen
+	for (const child of colour.screens) {
+		const relativeCorners = getRelativePositions(child.corners, corners)
+		const screen = makeScreen(child.colour, relativeCorners)
+		queue.push(screen)
+	}
 }
 
 

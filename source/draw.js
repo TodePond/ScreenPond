@@ -8,11 +8,11 @@ import { COLOUR_CANVAS_SCALE } from "./colour.js"
 //======//
 // This file contains primitive + agnostic drawing functions
 // For higher-level drawing functions, go to 'colour.js'
-export const SCREEN_BORDER_WIDTH = 1.0
+export const SCREEN_BORDER_WIDTH = 1
 export const drawBorder = (context, screen) => {
 
 	const {colour, corners} = screen
-	fillBackground(context, {colour: Colour.Black, corners})
+	//fillBackground(context, {colour: Colour.Black, corners})
 
 	const canvasCornerPositions = getCanvasPositions(context, corners)
 	const [a, b, c, d] = canvasCornerPositions

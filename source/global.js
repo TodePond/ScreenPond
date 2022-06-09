@@ -5,8 +5,8 @@ import { makeCamera } from "./camera.js"
 //========//
 // GLOBAL //
 //========//
-const hand = makeHand()
 const colours = makeColours()
+const hand = makeHand(colours)
 const camera = makeCamera(colours)
 const update = () => {}
 

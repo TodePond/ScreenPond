@@ -24,8 +24,8 @@ show.resize = (context) => {
 
 show.tick = (context) => {
 
-	const {hand, colours, update} = global
-	fireHandEvent(context, hand, "tick")
+	const {hand, colours, update, camera} = global
+	fireHandEvent(context, hand, "tick", {camera})
 
 	update(colours)
 
@@ -43,4 +43,4 @@ show.supertick = (context) => {
 
 }
 
-loadPresetName(global, "INFINITE")
+loadPresetName(global, "GRID2")

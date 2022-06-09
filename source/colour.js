@@ -61,7 +61,7 @@ export const continueDrawingColour = (colour) => {
 
 	let i = 0
 	while (!queue.isEmpty) {
-		if (i >= 3_000) break
+		if (i >= 10_000) break
 		const screen = queue.shift()
 		drawBorder(context, screen)
 		i += addChildrenToQueue(queue, screen)

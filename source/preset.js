@@ -149,14 +149,14 @@ PRESET.GRID2 = createPreset({
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.6, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
-			{hex: RED, corners: rotateCorners(makeRectangleCorners(0.5, 0.5, 0.45, 0.45), 0.0)},
+			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.5, 0.5, 0.45, 0.45), 0.1)},
 		],
 		[RED]: [
 			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
 		],
 	},
 	update: (colours) => {
-		//const s = colours[RED].screens[0]
+		const s = colours[GREY].screens[0]
 		//s.corners = rotateCorners(s.corners, 0.01)
 		//resetColourCanvas(colours[GREY])
 	}

@@ -1,6 +1,6 @@
 import { makeCamera } from "./camera.js"
 import { makeRectangleCorners, rotateCorners, moveCorners } from "./corners.js"
-import { addScreen, removeAllScreens, resetColourCanvas } from "./colour.js"
+import { addScreen, removeAllScreens, resetColourCanvas, rotateScreenNumber } from "./colour.js"
 import { makeScreen } from "./screen.js"
 import { onkeydown } from "./keyboard.js"
 
@@ -40,6 +40,8 @@ export const loadPreset = (global, preset) => {
 	global.camera = preset.camera
 	global.update = preset.update
 
+	resetColourCanvas(global.camera.colour)
+
 }
 
 const createPreset = ({key, camera, colours = {}, update = () => {}} = {}) => {
@@ -74,11 +76,15 @@ PRESET.DOUBLE = createPreset({
 			{hex: RED, corners: makeRectangleCorners(0.525, 0.05, 0.425, 0.9)},
 		],
 		[BLUE]: [
-			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
-		],
-		[RED]: [
 			{hex: BLUE, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
 		],
+		[RED]: [
+			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
+		],
+	},
+	update: (colours) => {
+		rotateScreenNumber(colours[RED], 0, 0.002)
+		resetColourCanvas(colours[GREY])
 	}
 })
 

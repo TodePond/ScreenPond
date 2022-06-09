@@ -3,6 +3,7 @@ import { drawBorder } from "./draw.js"
 import { LinkedList } from "./list.js"
 import { makeScreen } from "./screen.js"
 import { getRelativePositions } from "./position.js"
+import { rotateCorners } from "./corners.js"
 
 //========//
 // COLOUR //
@@ -60,28 +61,30 @@ export const continueDrawingColour = (colour) => {
 
 	let i = 0
 	while (!queue.isEmpty) {
-		if (i >= 1_000) break
+		if (i >= 3_000) break
 		const screen = queue.shift()
 		drawBorder(context, screen)
-		addChildrenToQueue(queue, screen)
-		i++
+		i += addChildrenToQueue(queue, screen)
 	}
 
 }
 
 export const addChildrenToQueue = (queue, screen) => {
+	let i = 1
 	const {colour, corners} = screen
 	for (const child of colour.screens) {
 		const relativeCorners = getRelativePositions(child.corners, corners)
 		const screen = makeScreen(child.colour, relativeCorners)
 		queue.push(screen)
+		i++
 	}
+	return i
 }
 
 
 export const stampColour = (context, colour) => {
 	const {canvas} = context
-	context.drawImage(colour.context.canvas, 0, 0, canvas.width, canvas.height)
+	context.drawImage(colour.context.canvas, 0, 0)
 }
 
 //=========//
@@ -89,10 +92,13 @@ export const stampColour = (context, colour) => {
 //=========//
 export const removeAllScreens = (colour) => {
 	colour.screens.length = 0
-	resetColourCanvas(colour)
 }
 
 export const addScreen = (colour, screen) => {
 	colour.screens.push(screen)
-	resetColourCanvas(colour)
+}
+
+export const rotateScreenNumber = (colour, number, angle) => {
+	const screen = colour.screens[number]
+	screen.corners = rotateCorners(screen.corners, angle)
 }

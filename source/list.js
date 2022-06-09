@@ -34,13 +34,21 @@ export class LinkedList {
 	}
 
 	shift() {
+
+		if (this.isEmpty) {
+			return undefined
+		}
+
+		const item = this.start.item
+
 		if (this.start === this.end) {
 			this.clear()
-			return
+			return item
 		}
 
 		this.start = this.start.next
 		this.start.previous = undefined
+		return item
 	}
 
 	clear() {

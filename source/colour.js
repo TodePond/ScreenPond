@@ -1,6 +1,7 @@
 import {VIEW_CORNERS} from "./corners.js"
-import {drawChildren} from "./draw.js"
+import {drawChildren, drawBorder} from "./draw.js"
 import {LinkedList} from "./list.js"
+import {makeScreen} from "./screen.js"
 
 //========//
 // COLOUR //
@@ -40,22 +41,31 @@ export const resetColourCanvas = (colour) => {
 	const {context} = colour
 	const {canvas} = context
 	context.clearRect(0, 0, canvas.width, canvas.height)
-	/*context.globalAlpha = 0.05
-	context.fillStyle = Colour.Black
-	context.fillRect(0, 0, canvas.width, canvas.height)
-	context.globalAlpha = 1.0*/
+
+	const screen = makeScreen(colour, VIEW_CORNERS)
 	colour.queue.clear()
+	colour.queue.push(screen)
 }
 
 export const continueDrawingColour = (colour) => {
 	const {context, queue} = colour
+
+	// If the draw queue is empty, that means we've drawn everything already :)
 	if (queue.isEmpty) {
-		drawChildren(context, colour, VIEW_CORNERS)
+		print("done")
 		return
 	}
 
-	// TODO: this doesn't work properly when there's multiple of the same colour or something (check out all the presets to see what I mean)
 	let i = 0
+	while (!queue.isEmpty) {
+		if (i >= 1) break
+		const screen = queue.shift()
+		drawBorder(context, screen.colour, screen.corners)
+		drawChildren(context, screen.colour, screen.corners, queue)
+		i++
+	}
+
+	/*let i = 0
 	for (const link of queue) {
 		const {item} = link
 		if (i >= 1) {
@@ -64,7 +74,7 @@ export const continueDrawingColour = (colour) => {
 		}
 		drawChildren(context, item.colour, item.corners, colour)
 		i++
-	}
+	}*/
 }
 
 

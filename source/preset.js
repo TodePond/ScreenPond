@@ -93,9 +93,9 @@ PRESET.INFINITE = createPreset({
 		],
 	},
 	update: (colours) => {
-		const s1 = colours[GREEN].screens[0]
-		s1.corners = rotateCorners(s1.corners, 0.0001)
-		resetColourCanvas(colours[GREY])
+		//const s1 = colours[GREEN].screens[0]
+		//s1.corners = rotateCorners(s1.corners, 0.0001)
+		//resetColourCanvas(colours[GREY])
 	}
 })
 

@@ -1,6 +1,6 @@
 import {global} from "./global.js"
 import {fireHandEvent} from "./hand.js"
-import {stampColour, continueDrawingColour} from "./colour.js"
+import {stampColour, continueDrawingColour, resetColourCanvas} from "./colour.js"
 import {loadPresetName} from "./preset.js"
 import {rotateCorners} from "./corners.js"
 
@@ -9,8 +9,17 @@ import {rotateCorners} from "./corners.js"
 //======//
 const show = Show.start({paused: false})
 
+const COLOUR_CANVAS_SCALE = 2.0
 show.resize = (context) => {
 	show.tick(context)
+	const {canvas} = context
+	const {colours} = global
+	for (const colour of colours) {
+		const colourCanvas = colour.context.canvas
+		colourCanvas.width = canvas.width * COLOUR_CANVAS_SCALE
+		colourCanvas.height = canvas.height * COLOUR_CANVAS_SCALE
+		resetColourCanvas(colour)
+	}
 }
 
 show.tick = (context) => {
@@ -29,4 +38,4 @@ show.tick = (context) => {
 
 }
 
-loadPresetName(global, "GRID2")
+loadPresetName(global, "INFINITE")

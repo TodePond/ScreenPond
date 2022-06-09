@@ -8,12 +8,12 @@ import {makeScreen} from "./screen.js"
 // This file contains primitive + agnostic drawing functions
 // For higher-level drawing functions, go to 'colour.js'
 
-export const drawChildren = (context, colour, corners, parent = colour, depth = 0) => {
+export const drawChildren = (context, colour, corners, queue) => {
 
 	for (const child of colour.screens) {
 		const relativeCorners = getRelativePositions(child.corners, corners)
 
-		if (depth >= 1) {
+		/*if (depth >= 1) {
 			const perimeter = getCornersPerimeter(relativeCorners)
 			if (perimeter < Infinity) {
 				drawBackground(context, child.colour, relativeCorners)
@@ -21,14 +21,14 @@ export const drawChildren = (context, colour, corners, parent = colour, depth = 
 				parent.queue.push(screen)
 				return
 			}
-		}
+		}*/
 
-		drawBackground(context, child.colour, relativeCorners)
-		drawChildren(context, child.colour, relativeCorners, parent, depth + 1)
+		drawBorder(context, child.colour, relativeCorners)
+		//drawChildren(context, child.colour, relativeCorners, parent, depth + 1)
 	}
 }
 
-export const drawBackground = (context, colour, corners) => {
+export const drawBorder = (context, colour, corners) => {
 
 	//fillBackground(context, Colour.Black, corners)
 
@@ -42,6 +42,7 @@ export const drawBackground = (context, colour, corners) => {
 	context.lineTo(...c)
 	context.closePath()
 
+	context.lineWidth = 10
 	context.strokeStyle = colour.hex
 	context.stroke()
 }

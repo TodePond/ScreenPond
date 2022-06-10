@@ -1,4 +1,4 @@
-import { makeCamera } from "./camera.js"
+import { makeWorld } from "./world.js"
 import { makeRectangleCorners, rotateCorners, moveCorners } from "./corners.js"
 import { addScreen, removeAllScreens, rotateScreenNumber } from "./colour.js"
 import { makeScreen } from "./screen.js"
@@ -34,23 +34,23 @@ export const loadPreset = (global, preset) => {
 		}
 	}
 
-	if (preset.camera === undefined) {
-		preset.camera = makeCamera(colours)
+	if (preset.world === undefined) {
+		preset.world = makeWorld(colours)
 	} 
 	
-	global.camera = preset.camera
+	global.world = preset.world
 	global.update = preset.update
 
-	const {show, queue, camera} = global
+	const {show, queue, world} = global
 	const {context} = show
 	if (context !== undefined) {
-		clearQueue(context, queue, camera)
+		clearQueue(context, queue, world)
 	}
 
 }
 
-const createPreset = ({key, camera, colours = {}, update = () => {}} = {}) => {
-	const preset = {camera, colours, update}
+const createPreset = ({key, world, colours = {}, update = () => {}} = {}) => {
+	const preset = {world, colours, update}
 	if (key !== undefined) {
 		onkeydown(key, () => loadPreset(global, preset))
 	}
@@ -87,10 +87,10 @@ PRESET.DOUBLE = createPreset({
 			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
 		],
 	},
-	update: ({colours, queue, show, camera}) => {
+	update: ({colours, queue, show, world}) => {
 		rotateScreenNumber(colours[RED], 0, 0.002)
 		const {context} = show
-		clearQueue(context, queue, camera)
+		clearQueue(context, queue, world)
 	}
 })
 
@@ -104,11 +104,11 @@ PRESET.INFINITE = createPreset({
 			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.90, 0.90), 0.0)},
 		],
 	},
-	update: ({colours, queue, show, camera}) => {
+	update: ({colours, queue, show, world}) => {
 		const s1 = colours[GREEN].screens[0]
 		s1.corners = rotateCorners(s1.corners, 0.005)
 		const {context} = show
-		clearQueue(context, queue, camera)
+		clearQueue(context, queue, world)
 	}
 })
 
@@ -162,10 +162,10 @@ PRESET.GRID2 = createPreset({
 			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
 		],
 	},
-	update: ({colours, queue, camera, show}) => {
+	update: ({colours, queue, world, show}) => {
 		const s = colours[GREY].screens[0]
 		s.corners = rotateCorners(s.corners, 0.005)
 		const {context} = show
-		clearQueue(context, queue, camera)
+		clearQueue(context, queue, world)
 	}
 })

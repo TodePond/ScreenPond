@@ -1,6 +1,6 @@
 import { makeHand } from "./hand.js"
 import { makeColours } from "./colour.js"
-import { makeCamera } from "./camera.js"
+import { makeWorld } from "./world.js"
 import { LinkedList } from "./list.js"
 
 //========//
@@ -8,7 +8,7 @@ import { LinkedList } from "./list.js"
 //========//
 const colours = makeColours()
 const hand = makeHand(colours)
-const camera = makeCamera(colours)
+const world = makeWorld(colours)
 const queue = new LinkedList()
 const show = Show.start()
 const update = () => {}
@@ -16,14 +16,14 @@ const update = () => {}
 export const global = {
 	
 	// Updating
-	hand,
+	world,
 	colours,
+	hand,
 	update,
 
 	// Drawing
 	show,
 	queue,
-	camera,
 
 }
 

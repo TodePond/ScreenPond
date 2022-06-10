@@ -48,11 +48,11 @@ export const fillBackground = (context, screen) => {
 //=======//
 // QUEUE //
 //=======//
-export const clearQueue = (context, queue, camera) => {
+export const clearQueue = (context, queue, world) => {
 	const {canvas} = context
 	context.clearRect(0, 0, canvas.width, canvas.height)
 
-	const {colour} = camera
+	const {colour} = world
 	const screen = makeScreen(colour, VIEW_CORNERS)
 	queue.clear()
 	queue.push(screen)

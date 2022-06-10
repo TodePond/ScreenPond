@@ -8,8 +8,8 @@ import { clearQueue, continueDrawingQueue } from "./draw.js"
 //======//
 const {show} = global
 show.resize = (context) => {
-	const {queue, camera} = global
-	clearQueue(context, queue, camera)
+	const {queue, world} = global
+	clearQueue(context, queue, world)
 	show.tick(context)
 }
 

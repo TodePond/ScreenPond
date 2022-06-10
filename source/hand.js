@@ -48,7 +48,7 @@ HAND_STATE.START = {
 
 HAND_STATE.FREE = {
 	cursor: "default",
-	tick: ({context, hand, camera, queue}) => {
+	tick: ({context, hand, world, queue}) => {
 		
 
 
@@ -63,12 +63,12 @@ HAND_STATE.FREE = {
 
 			// TODO: it should dynamically get the colour of whatever screen you click on!
 			// (and adjust the corners to fit into it!)
-			const colour = camera.colour
+			const colour = world.colour
 			const screen = screenTemplate
 			hand.screen = screen
 
 			addScreen(colour, screen)
-			clearQueue(context, queue, camera)
+			clearQueue(context, queue, world)
 			return HAND_STATE.DRAWING
 		}
 
@@ -78,7 +78,7 @@ HAND_STATE.FREE = {
 
 HAND_STATE.DRAWING = {
 	cursor: "default",
-	tick: ({context, hand, camera, queue}) => {
+	tick: ({context, hand, world, queue}) => {
 
 		const position = getViewPosition(context, Mouse.position)
 		const [dx, dy] = subtractVector(position, hand.start)
@@ -87,8 +87,9 @@ HAND_STATE.DRAWING = {
 		hand.screenTemplate.corners = corners
 
 		// TODO: re-figure out if the screen should be placed in a different colour, based on the new screenTemplate
+		// NOTE: but maybe it shouldn't actually happen here! Maybe it should only check for this when you release the mouse button
 		hand.screen = hand.screenTemplate
-		clearQueue(context, queue, camera)
+		clearQueue(context, queue, world)
 
 		if (!Mouse.Left) {
 			return HAND_STATE.FREE

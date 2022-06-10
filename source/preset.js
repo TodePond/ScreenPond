@@ -1,8 +1,9 @@
 import { makeCamera } from "./camera.js"
 import { makeRectangleCorners, rotateCorners, moveCorners } from "./corners.js"
-import { addScreen, removeAllScreens, resetColourCanvas, rotateScreenNumber } from "./colour.js"
+import { addScreen, removeAllScreens, rotateScreenNumber } from "./colour.js"
 import { makeScreen } from "./screen.js"
 import { onkeydown } from "./keyboard.js"
+import { clearQueue } from "./draw.js"
 
 //========//
 // PRESET //
@@ -40,7 +41,11 @@ export const loadPreset = (global, preset) => {
 	global.camera = preset.camera
 	global.update = preset.update
 
-	resetColourCanvas(global.camera.colour)
+	const {show, queue, camera} = global
+	const {context} = show
+	if (context !== undefined) {
+		clearQueue(context, queue, camera)
+	}
 
 }
 
@@ -82,9 +87,10 @@ PRESET.DOUBLE = createPreset({
 			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)},
 		],
 	},
-	update: (colours) => {
+	update: ({colours, queue, show, camera}) => {
 		rotateScreenNumber(colours[RED], 0, 0.002)
-		resetColourCanvas(colours[GREY])
+		const {context} = show
+		clearQueue(context, queue, camera)
 	}
 })
 
@@ -92,16 +98,17 @@ PRESET.INFINITE = createPreset({
 	key: "f",
 	colours: {
 		[GREY]: [
-			//{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
+			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[GREEN]: [
 			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.90, 0.90), 0.0)},
 		],
 	},
-	update: (colours) => {
+	update: ({colours, queue, show, camera}) => {
 		const s1 = colours[GREEN].screens[0]
 		s1.corners = rotateCorners(s1.corners, 0.005)
-		resetColourCanvas(colours[GREY])
+		const {context} = show
+		clearQueue(context, queue, camera)
 	}
 })
 
@@ -146,18 +153,19 @@ PRESET.GRID2 = createPreset({
 	key: "g",
 	colours: {
 		[GREY]: [
+			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.25, 0.25, 0.5, 0.5), 0.0)},
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.6, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
-			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.25, 0.25, 0.5, 0.5), 0.1)},
 		],
 		[RED]: [
 			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
 		],
 	},
-	update: (colours) => {
+	update: ({colours, queue, camera, show}) => {
 		const s = colours[GREY].screens[0]
 		s.corners = rotateCorners(s.corners, 0.005)
-		resetColourCanvas(colours[GREY])
+		const {context} = show
+		clearQueue(context, queue, camera)
 	}
 })

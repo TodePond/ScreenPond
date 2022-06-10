@@ -1,8 +1,9 @@
 import { getViewPosition } from "./position.js"
 import { makeRectangleCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
-import { addScreen, resetColourCanvas } from "./colour.js"
+import { addScreen } from "./colour.js"
 import { subtractVector } from "./vector.js"
+import { clearQueue } from "./draw.js"
 
 //======//
 // HAND //
@@ -47,7 +48,7 @@ HAND_STATE.START = {
 
 HAND_STATE.FREE = {
 	cursor: "default",
-	tick: ({context, hand, camera}) => {
+	tick: ({context, hand, camera, queue}) => {
 		
 
 
@@ -67,7 +68,7 @@ HAND_STATE.FREE = {
 			hand.screen = screen
 
 			addScreen(colour, screen)
-			resetColourCanvas(colour)
+			clearQueue(context, queue, camera)
 			return HAND_STATE.DRAWING
 		}
 
@@ -77,7 +78,7 @@ HAND_STATE.FREE = {
 
 HAND_STATE.DRAWING = {
 	cursor: "default",
-	tick: ({context, hand, camera}) => {
+	tick: ({context, hand, camera, queue}) => {
 
 		const position = getViewPosition(context, Mouse.position)
 		const [dx, dy] = subtractVector(position, hand.start)
@@ -87,7 +88,7 @@ HAND_STATE.DRAWING = {
 
 		// TODO: re-figure out if the screen should be placed in a different colour, based on the new screenTemplate
 		hand.screen = hand.screenTemplate
-		resetColourCanvas(camera.colour)
+		clearQueue(context, queue, camera)
 
 		if (!Mouse.Left) {
 			return HAND_STATE.FREE

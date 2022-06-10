@@ -1,46 +1,27 @@
 import { global } from "./global.js"
 import { fireHandEvent } from "./hand.js"
-import { stampColour, continueDrawingColour, resetColourCanvas } from "./colour.js"
 import { loadPresetName } from "./preset.js"
-import { rotateCorners } from "./corners.js"
-import { COLOUR_CANVAS_SCALE } from "./colour.js"
+import { clearQueue, continueDrawingQueue } from "./draw.js"
 
 //======//
 // MAIN //
 //======//
-const show = Show.start({paused: false})
-
+const {show} = global
 show.resize = (context) => {
+	const {queue, camera} = global
+	clearQueue(context, queue, camera)
 	show.tick(context)
-	const {canvas} = context
-	const {colours} = global
-	for (const colour of colours) {
-		const colourCanvas = colour.context.canvas
-		colourCanvas.width = canvas.width * COLOUR_CANVAS_SCALE
-		colourCanvas.height = canvas.height * COLOUR_CANVAS_SCALE
-		resetColourCanvas(colour)
-	}
 }
 
-show.tick = (context) => {
-
-	const {hand, colours, update, camera} = global
-	fireHandEvent(context, hand, "tick", {camera})
-
-	update(colours)
-
+show.tick = () => {
+	const {update} = global
+	update(global)
 }
 
 show.supertick = (context) => {
-
-	const {camera} = global
-	const {colour} = camera
-	continueDrawingColour(colour)
-
-	const {canvas} = context
-	context.clearRect(0, 0, canvas.width, canvas.height)
-	stampColour(context, colour)
-
+	const {queue, hand} = global
+	fireHandEvent(context, hand, "tick", global)
+	continueDrawingQueue(context, queue)
 }
 
 loadPresetName(global, "GRID2")

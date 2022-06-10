@@ -11,7 +11,6 @@ import { clearQueue } from "./draw.js"
 export const makeHand = (colours) => ({
 	state: HAND_STATE.START,
 	colour: colours[GREEN],
-	screenTemplate: undefined, 
 	screen: undefined,
 	start: [0, 0],
 })
@@ -58,13 +57,12 @@ HAND_STATE.FREE = {
 			hand.start = [x, y]
 
 			const corners = makeRectangleCorners(x, y, 0, 0)
-			const screenTemplate = makeScreen(hand.colour, corners)
-			hand.screenTemplate = screenTemplate
+			const screen = makeScreen(hand.colour, corners)
+			hand.screen = screen
 
 			// TODO: it should dynamically get the colour of whatever screen you click on!
 			// (and adjust the corners to fit into it!)
 			const colour = world.colour
-			const screen = screenTemplate
 			hand.screen = screen
 
 			addScreen(colour, screen)
@@ -84,11 +82,11 @@ HAND_STATE.DRAWING = {
 		const [dx, dy] = subtractVector(position, hand.start)
 		const [sx, sy] = hand.start
 		const corners = makeRectangleCorners(sx, sy, dx, dy)
-		hand.screenTemplate.corners = corners
+		hand.screen.corners = corners
 
 		// TODO: re-figure out if the screen should be placed in a different colour, based on the new screenTemplate
 		// NOTE: but maybe it shouldn't actually happen here! Maybe it should only check for this when you release the mouse button
-		hand.screen = hand.screenTemplate
+		// yes, the second one is right
 		clearQueue(context, queue, world)
 
 		if (!Mouse.Left) {

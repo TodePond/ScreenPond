@@ -8,7 +8,3 @@ export const makeWorld = (colours) => {
 	const camera = {colour, scale, position}
 	return camera
 }
-
-export const pickColour = (screen, colours, position) => {
-
-}

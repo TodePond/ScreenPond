@@ -1,7 +1,7 @@
 import { getMappedPosition, getRelativePosition, getViewPosition } from "./position.js"
 import { makeRectangleCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
-import { pickInColour } from "./pick.js"
+import { pickInScreen } from "./pick.js"
 import { addScreen } from "./colour.js"
 import { subtractVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
@@ -13,7 +13,7 @@ export const makeHand = (colours) => ({
 	state: HAND_STATE.START,
 	colour: colours[GREEN],
 	screen: undefined,
-	start: [0, 0],
+	pick: undefined,
 })
 
 const HAND_STATE = {}
@@ -60,15 +60,15 @@ HAND_STATE.FREE = {
 
 			const position = getMousePosition(context, world)
 
-			const pick = pickInColour(world.colour, position)
-			hand.start = pick.position
+			const pick = pickInScreen(world, position)
+			hand.pick = pick
 
-			const [x, y] = hand.start
+			const [x, y] = pick.position
 			const corners = makeRectangleCorners(x, y, 0, 0)
 			const screen = makeScreen(hand.colour, corners)
 			hand.screen = screen
 
-			addScreen(pick.colour, screen)
+			addScreen(pick.screen.colour, screen)
 			clearQueue(context, queue, world)
 			return HAND_STATE.DRAWING
 		}
@@ -81,10 +81,10 @@ HAND_STATE.DRAWING = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 
-		const position = getMousePosition(context, world)
-		
-		const [dx, dy] = subtractVector(position, hand.start)
-		const [sx, sy] = hand.start
+		const position = getMousePosition(context, hand.pick.screen)
+
+		const [dx, dy] = subtractVector(position, hand.pick.position)
+		const [sx, sy] = hand.pick.position
 		const corners = makeRectangleCorners(sx, sy, dx, dy)
 		hand.screen.corners = corners
 

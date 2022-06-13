@@ -68,7 +68,7 @@ PRESET.SINGLE = createPreset({
 	key: "s",
 	colours: {
 		[GREY]: [
-			{hex: BLUE, corners: makeRectangleCorners(1/3, 1/3, 1/3, 1/3)},
+			{hex: BLUE, corners: rotateCorners(makeRectangleCorners(1/3, 1/3, 1/3, 1/3), 0.0001)},
 		]
 	}
 })

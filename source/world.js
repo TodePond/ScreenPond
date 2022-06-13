@@ -1,10 +1,12 @@
+import { makeRectangleCorners } from "./corners.js"
+import { makeScreen } from "./screen.js"
+
 //=======//
 // WORLD //
 //=======//
 export const makeWorld = (colours) => {
 	const [colour] = colours
-	const scale = 1.0
-	const position = [0.0, 0.0]
-	const camera = {colour, scale, position}
-	return camera
+	const corners = makeRectangleCorners(0.05, 0.05, 0.9, 0.9)
+	const world = makeScreen(colour, corners)
+	return world
 }

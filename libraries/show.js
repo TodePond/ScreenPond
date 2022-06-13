@@ -23,7 +23,7 @@ const Show = {}
 			document.body.style["overflow"] = "hidden"
 
 			show.canvas = document.createElement("canvas")
-			show.canvas.style["background-color"] = Colour.Black
+			show.canvas.style["background-color"] = Colour.Void
 			show.canvas.style["image-rendering"] = "pixelated"
 			document.body.appendChild(show.canvas)
 		}

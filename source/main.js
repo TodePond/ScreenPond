@@ -24,4 +24,4 @@ show.supertick = (context) => {
 	continueDrawingQueue(context, queue)
 }
 
-loadPresetName(global, "GRID2")
+loadPresetName(global, "SINGLE")

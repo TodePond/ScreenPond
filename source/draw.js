@@ -53,7 +53,7 @@ export const clearQueue = (context, queue, world) => {
 	context.clearRect(0, 0, canvas.width, canvas.height)
 
 	const {colour} = world
-	const screen = makeScreen(colour, VIEW_CORNERS)
+	const screen = makeScreen(colour, world.corners)
 	queue.clear()
 	queue.push(screen)
 }
@@ -71,6 +71,7 @@ export const addChildrenToQueue = (queue, screen) => {
 	return i
 }
 
+export const DRAW_COUNT = 3_000
 export const continueDrawingQueue = (context, queue) => {
 	
 	// If the draw queue is empty, that means we've drawn everything already :)
@@ -80,7 +81,7 @@ export const continueDrawingQueue = (context, queue) => {
 
 	let i = 0
 	while (!queue.isEmpty) {
-		if (i >= 5_000) break
+		if (i >= DRAW_COUNT) break
 		const screen = queue.shift()
 		drawBorder(context, screen)
 		i += addChildrenToQueue(queue, screen)

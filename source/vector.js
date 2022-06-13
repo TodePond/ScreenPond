@@ -22,9 +22,8 @@ export const subtractVector = (a, b) => {
 export const crossProductVector = (a, b) => {
 	const [ax, ay] = a
 	const [bx, by] = b
-	return ax*bx - ay*by
+	return ax*by - ay*bx
 }
-
 
 export const distanceBetweenVectors = (a, b) => {
 	const displacement = subtractVector(a, b)

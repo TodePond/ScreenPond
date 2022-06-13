@@ -1,8 +1,3 @@
-import { VIEW_CORNERS } from "./corners.js"
-import { drawBorder } from "./draw.js"
-import { LinkedList } from "./list.js"
-import { makeScreen } from "./screen.js"
-import { getRelativePositions } from "./position.js"
 import { rotateCorners } from "./corners.js"
 
 //========//

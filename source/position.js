@@ -1,4 +1,4 @@
-import { bilerp } from "./lerp.js"
+import { bilerp, ibilerp } from "./lerp.js"
 
 //======//
 // VIEW //
@@ -32,6 +32,11 @@ export const getRelativePositions = (positions, corners) => {
 	return relativePositions
 }
 
+export const getMappedPosition = (position, corners) => {
+	const mappedPosition = ibilerp(position, corners)
+	return mappedPosition
+}
+
 export const rotatePosition = (position, origin, angle) => {
 
 	const [px, py] = position
@@ -46,4 +51,9 @@ export const rotatePosition = (position, origin, angle) => {
 	const y = dy*cos - dx*sin + oy
 	return [x, y]
 
+}
+
+export const isPositionInCorners = (position, corners) => {
+	const relativePosition = getMappedPosition(position, corners)
+	return false
 }

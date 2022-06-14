@@ -1,8 +1,8 @@
-import { getMappedPosition, getMappedPositions, getRelativePosition, getViewPosition } from "./position.js"
+import { getMappedPosition, getMappedPositions, getViewPosition } from "./position.js"
 import { makeRectangleCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen } from "./pick.js"
-import { addScreen } from "./colour.js"
+import { addScreen, removeScreensSet } from "./colour.js"
 import { subtractVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 
@@ -95,7 +95,11 @@ HAND_STATE.DRAWING = {
 			const {pick, screen} = hand
 			const {colour} = pick.screen
 			
-			for (const child of colour.screens) {
+			const surroundedScreensSet = new Set()
+
+			const length = colour.screens.length
+			for (let i = 0; i < length; i++) {
+				const child = colour.screens[i]
 				if (child === screen) continue
 
 				const mappedChildCorners = getMappedPositions(child.corners, corners)
@@ -104,12 +108,13 @@ HAND_STATE.DRAWING = {
 				})
 
 				if (outsideScreen) continue
-
-				print("SURROUND")
-
+				surroundedScreensSet.add(child)
+				const newChild = makeScreen(child.colour, mappedChildCorners)
+				addScreen(screen.colour, newChild)
 			}
 
-
+			removeScreensSet(colour, surroundedScreensSet)
+			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 
 		}

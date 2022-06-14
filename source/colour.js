@@ -24,7 +24,8 @@ export const makeColours = () => {
 }
 
 export const makeColour = (hex) => {
-	const colour = {hex, screens: []}
+	const screens = []
+	const colour = {hex, screens}
 	return colour
 }
 
@@ -33,6 +34,10 @@ export const makeColour = (hex) => {
 //=========//
 export const removeAllScreens = (colour) => {
 	colour.screens.length = 0
+}
+
+export const removeScreensSet = (colour, screensSet) => {
+	colour.screens = colour.screens.filter(screen => !screensSet.has(screen))
 }
 
 export const addScreen = (colour, screen) => {

@@ -34,7 +34,7 @@ export const getRelativePositions = (positions, corners) => {
 
 export const getMappedPosition = (position, corners) => {
 	const mappedPosition = ibilerp(position, corners)
-	return mappedPosition
+	return mappedPosition.map(axis => isNaN(axis)? 0 : axis)
 }
 
 export const getMappedPositions = (positions, corners) => {
@@ -61,7 +61,7 @@ export const rotatePosition = (position, origin, angle) => {
 export const isPositionInCorners = (position, corners) => {
 	const relativePosition = getMappedPosition(position, corners)
 	for (const axis of relativePosition) {
-		if (axis > 1.0 || axis < 0.0) return false
+		if (axis >= 1.0 || axis <= 0.0) return false
 	}
 	return true
 }

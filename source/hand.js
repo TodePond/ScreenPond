@@ -88,10 +88,8 @@ HAND_STATE.DRAWING = {
 		const corners = makeRectangleCorners(sx, sy, dx, dy)
 		hand.screen.corners = corners
 
-		clearQueue(context, queue, world)
-
 		if (!Mouse.Left) {
-
+			
 			const {pick, screen} = hand
 			const {colour} = pick.screen
 			
@@ -104,7 +102,7 @@ HAND_STATE.DRAWING = {
 
 				const mappedChildCorners = getMappedPositions(child.corners, corners)
 				const outsideScreen = mappedChildCorners.some(corner => {
-					return corner.some(axis => axis > 1.0 || axis < 0.0)
+					return corner.some(axis => axis >= 1.0 || axis <= 0.0)
 				})
 
 				if (outsideScreen) continue
@@ -115,10 +113,11 @@ HAND_STATE.DRAWING = {
 
 			removeScreensSet(colour, surroundedScreensSet)
 			clearQueue(context, queue, world)
+			
 			return HAND_STATE.FREE
-
 		}
 
+		clearQueue(context, queue, world)
 		return HAND_STATE.DRAWING
 
 	},

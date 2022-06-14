@@ -15,7 +15,7 @@ export const pickInScreen = (screen, position) => {
 
 	for (const child of colour.screens) {
 		const mappedPosition = getMappedPosition(position, child.corners)
-		const outsideScreen = mappedPosition.some(axis => axis > 1.0 || axis < 0.0)
+		const outsideScreen = mappedPosition.some(axis => axis >= 1.0 || axis <= 0.0)
 		if (outsideScreen) continue 
 		const relativeCorners = getRelativePositions(child.corners, corners)
 		const relativeChild = makeScreen(child.colour, relativeCorners)

@@ -4,15 +4,15 @@ import { rotateCorners } from "./corners.js"
 // COLOUR //
 //========//
 export const COLOUR_HEXES = [
-	GREY,
 	GREEN,
-	RED,
 	BLUE,
+	RED,
 	YELLOW,
 	ORANGE,
 	ROSE,
 	CYAN,
 	PURPLE,
+	GREY,
 ]
 
 export const makeColours = () => {

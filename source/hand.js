@@ -5,6 +5,7 @@ import { pickInScreen } from "./pick.js"
 import { addScreen, removeScreensSet } from "./colour.js"
 import { subtractVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
+import { onkeydown } from "./keyboard.js"
 
 //======//
 // HAND //
@@ -44,6 +45,25 @@ export const getMousePosition = (context, screen) => {
 	return position
 }
 
+export const updateHandPick = (context, hand, world) => {
+	if (hand.pick === undefined) return
+	const mousePosition = getMousePosition(context, world)
+	const pick = pickInScreen(world, mousePosition, hand.screen)
+	if (hand.pick.screen.colour === pick.screen.colour) {
+		hand.pick.screen = pick.screen
+	}
+}
+
+//==========//
+// KEYBOARD //
+//==========//
+export const registerColourPickers = (hand, hexes, colours) => {
+	for (let i = 0; i < hexes.length; i++) {
+		const hex = hexes[i]
+		onkeydown(`${i+1}`, () => hand.colour = colours[hex])
+	}
+}
+
 //========//
 // STATES //
 //========//
@@ -59,7 +79,6 @@ HAND_STATE.FREE = {
 		if (Mouse.Left) {
 
 			const position = getMousePosition(context, world)
-
 			const pick = pickInScreen(world, position)
 			hand.pick = pick
 
@@ -113,6 +132,9 @@ HAND_STATE.DRAWING = {
 
 			removeScreensSet(colour, surroundedScreensSet)
 			clearQueue(context, queue, world)
+
+			hand.pick = undefined
+			hand.screen = undefined
 			
 			return HAND_STATE.FREE
 		}

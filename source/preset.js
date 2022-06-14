@@ -4,6 +4,7 @@ import { addScreen, removeAllScreens, rotateScreenNumber } from "./colour.js"
 import { makeScreen } from "./screen.js"
 import { onkeydown } from "./keyboard.js"
 import { clearQueue } from "./draw.js"
+import { updateHandPick } from "./hand.js"
 
 //========//
 // PRESET //
@@ -68,7 +69,7 @@ PRESET.SINGLE = createPreset({
 	key: "s",
 	colours: {
 		[GREY]: [
-			{hex: BLUE, corners: rotateCorners(makeRectangleCorners(1/3, 1/3, 1/3, 1/3), 0.0001)},
+			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.5, 0.5, 0.45, 0.45), 0.1)},
 		]
 	}
 })
@@ -101,12 +102,12 @@ PRESET.INFINITE = createPreset({
 			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[GREEN]: [
-			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.90, 0.90), 0.0)},
+			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)},
 		],
 	},
-	update: ({colours, queue, show, world}) => {
+	update: ({colours, queue, show, hand, world}) => {
 		const s1 = colours[GREEN].screens[0]
-		s1.corners = rotateCorners(s1.corners, 0.005)
+		s1.corners = rotateCorners(s1.corners, 0.001)
 		const {context} = show
 		clearQueue(context, queue, world)
 	}
@@ -136,9 +137,9 @@ PRESET.MINI_GRID = createPreset({
 			{hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8)}
 		],
 		[RED]: [
-			{hex: RED, corners: rotateCorners(makeRectangleCorners(0, 0, 1/2, 1/2), 0.2)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(0, 0, 1/2, 1/2), 0.0)},
 			{hex: RED, corners: rotateCorners(makeRectangleCorners(0, 1/2, 1/2, 1/2), 0.0)},
-			{hex: RED, corners: rotateCorners(makeRectangleCorners(1/2, 1/2, 1/2, 1/2), -0.2)},
+			{hex: RED, corners: rotateCorners(makeRectangleCorners(1/2, 1/2, 1/2, 1/2), -0.0)},
 			{hex: BLUE, corners: makeRectangleCorners(1/2, 0.0, 1/2, 1/2)},
 		],
 	},
@@ -159,12 +160,11 @@ PRESET.GRID2 = createPreset({
 			//{hex: RED, corners: rotateCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
 		],
 		[RED]: [
-			{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
+			//{hex: GREY, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
 		],
 	},
-	update: ({colours, queue, world, show}) => {
-		const s = colours[GREY].screens[0]
-		s.corners = rotateCorners(s.corners, 0.005)
+	update: ({colours, queue, world, show, hand}) => {
+		rotateScreenNumber(colours[GREY], 0, 0.005)
 		const {context} = show
 		clearQueue(context, queue, world)
 	}

@@ -65,3 +65,8 @@ export const isPositionInCorners = (position, corners) => {
 	}
 	return true
 }
+
+export const arePositionsInCorners = (positions, corners) => {
+	const positionsAreInCorners = positions.every(position => isPositionInCorners)
+	return positionsAreInCorners
+}

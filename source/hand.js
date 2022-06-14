@@ -1,4 +1,4 @@
-import { getMappedPosition, getRelativePosition, getViewPosition } from "./position.js"
+import { getMappedPosition, getMappedPositions, getRelativePosition, getViewPosition } from "./position.js"
 import { makeRectangleCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen } from "./pick.js"
@@ -92,9 +92,24 @@ HAND_STATE.DRAWING = {
 
 		if (!Mouse.Left) {
 
-			// When the mouse button is released...
-			// ... work out if we should place the screen AROUND anything else?
-			// FUN BONUS EXPERIMENT: what if we do this every time the mouse moves? it'll make it get stuck right?
+			const {pick, screen} = hand
+			const {colour} = pick.screen
+			
+			for (const child of colour.screens) {
+				if (child === screen) continue
+
+				const mappedChildCorners = getMappedPositions(child.corners, corners)
+				const outsideScreen = mappedChildCorners.some(corner => {
+					return corner.some(axis => axis > 1.0 || axis < 0.0)
+				})
+
+				if (outsideScreen) continue
+
+				print("SURROUND")
+
+			}
+
+
 			return HAND_STATE.FREE
 
 		}

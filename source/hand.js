@@ -76,17 +76,16 @@ HAND_STATE.FREE = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 		
+		const position = getMousePosition(context, world)
+		const pick = pickInScreen(world, position)
+		hand.pick = pick
+
+		const [x, y] = pick.position
+		const corners = makeRectangleCorners(x, y, 0, 0)
+		const screen = makeScreen(hand.colour, corners)
+		hand.screen = screen
+
 		if (Mouse.Left) {
-
-			const position = getMousePosition(context, world)
-			const pick = pickInScreen(world, position)
-			hand.pick = pick
-
-			const [x, y] = pick.position
-			const corners = makeRectangleCorners(x, y, 0, 0)
-			const screen = makeScreen(hand.colour, corners)
-			hand.screen = screen
-
 			addScreen(pick.screen.colour, screen)
 			clearQueue(context, queue, world)
 			return HAND_STATE.DRAWING

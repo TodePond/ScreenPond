@@ -6,6 +6,7 @@ import { addScreen, removeScreensSet } from "./colour.js"
 import { subtractVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
+import { PART_TYPE } from "./part.js"
 
 //======//
 // HAND //
@@ -15,6 +16,7 @@ export const makeHand = (colours) => ({
 	colour: colours[GREEN],
 	screen: undefined,
 	pick: undefined,
+	cursor: HAND_STATE.START.cursor,
 })
 
 const HAND_STATE = {}
@@ -32,8 +34,9 @@ export const fireHandEvent = (context, hand, eventName, args = {}) => {
 	} while (oldState !== newState)
 
 	// Update cursor if we need to
-	if (newState.cursor !== hand.state.cursor) {
+	if (newState.cursor !== hand.cursor) {
 		context.canvas.style["cursor"] = newState.cursor
+		hand.cursor = newState.cursor
 	}
 
 	hand.state = newState
@@ -80,12 +83,26 @@ HAND_STATE.FREE = {
 		const pick = pickInScreenWithMouse(context, world, {pity: HAND_PICK_PITY})
 		hand.pick = pick
 
+		if (pick.part.type === PART_TYPE.EDGE) {
+			HAND_STATE.FREE.cursor = "move"
+		} else if (pick.part.type === PART_TYPE.CORNER) {
+			if (pick.part.number === 0) HAND_STATE.FREE.cursor = "nwse-resize"
+			else if (pick.part.number === 1) HAND_STATE.FREE.cursor = "nesw-resize"
+			else if (pick.part.number === 2) HAND_STATE.FREE.cursor = "nesw-resize"
+			else if (pick.part.number === 3) HAND_STATE.FREE.cursor = "nwse-resize"
+		} else {
+			HAND_STATE.FREE.cursor = "default"
+		}
+
 		const [x, y] = pick.position
 		const corners = makeRectangleCorners(x, y, 0, 0)
 		const screen = makeScreen(hand.colour, corners)
 		hand.screen = screen
 
 		if (Mouse.Left) {
+			if (pick.part.type === PART_TYPE.EDGE) {
+				// TODO
+			}
 			addScreen(pick.screen.colour, screen)
 			clearQueue(context, queue, world)
 			return HAND_STATE.DRAWING

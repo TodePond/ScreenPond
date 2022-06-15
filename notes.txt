@@ -23,3 +23,19 @@ Screen = object representing a positioned colour
 World = a single screen that fills up the view
 
 Pick = an object representing a position in a specific colour
+Part = an object representing a part of a screen (Inside, Outside, Edge, Corner)
+
+=============================================================
+
+Edge
+ 0
+1 2
+ 3
+
+Corner
+0 1
+2 3
+
+Corners
+a b
+c d

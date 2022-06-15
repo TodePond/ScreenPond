@@ -6,28 +6,27 @@ import { makePart, PART_TYPE } from "./part.js"
 //======//
 // PICK //
 //======//
-const makePick = (screen, position) => {
-	const pick = {screen, position}
+const makePick = (screen, position, part) => {
+	const pick = {screen, position, part}
 	return pick
 }
 
 export const pickInScreen = (screen, position, options = {}) => {
 
-	const {ignore = undefined, pity = [0, 0]} = options
+	let {ignore = undefined, pity = [0, 0], part = undefined} = options
 	const {colour, corners} = screen
 
 	for (const child of colour.screens) {
 		if (child === ignore) continue
 		const mappedPosition = getMappedPosition(position, child.corners)
-		const part = getMappedPositionPart(mappedPosition, pity)
-		if (part.type === PART_TYPE.OUTSIDE) continue
-		//print(part)
+		const childPart = getMappedPositionPart(mappedPosition, pity)
+		if (childPart.type === PART_TYPE.OUTSIDE) continue
 		const relativeCorners = getRelativePositions(child.corners, corners)
 		const relativeChild = makeScreen(child.colour, relativeCorners)
-		return pickInScreen(relativeChild, mappedPosition, {ignore, pity})
+		return pickInScreen(relativeChild, mappedPosition, {ignore, pity, part: childPart})
 	}
 
-	const part = makePart(PART_TYPE.BODY, 0)
+	if (part === undefined) part = getMappedPositionPart(position, pity)
 	const pick = makePick(screen, position, part)
 	return pick
 }

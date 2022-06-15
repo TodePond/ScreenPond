@@ -1,12 +1,15 @@
 # ScreenPond
 screens in screens in screens
 
-I'm making this engine for my next video about SCREENS inside screens inside screens inside screens<br>
+I'm making this engine for my next video about SCREENS inside screens inside screens inside screens.<br>
 for my channel: [youtube.com/c/TodePond](https://youtube.com/c/TodePond)
 
 ## Try it out!
 You can try it at [screenpond.cool](https://screenpond.cool)<br>
-But it's not really ready yet :) I'm still building it
+
+Draw screens by clicking and dragging!<br>
+Press the number keys to change colour.<br>
+Press "C" to clear the screen.
 
 ## Running
 To run locally...<br>

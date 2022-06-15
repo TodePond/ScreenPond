@@ -1,7 +1,7 @@
-import { getMappedPosition, getMappedPositions, getViewPosition } from "./position.js"
+import { getMappedPosition, getMappedPositions, getViewPosition, isMappedPositionInCorners } from "./position.js"
 import { makeRectangleCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
-import { pickInScreen } from "./pick.js"
+import { pickInScreen, pickInScreenWithMouse } from "./pick.js"
 import { addScreen, removeScreensSet } from "./colour.js"
 import { subtractVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
@@ -46,9 +46,9 @@ export const getMousePosition = (context, screen) => {
 }
 
 export const updateHandPick = (context, hand, world) => {
-	if (hand.pick === undefined) return
+	if (!hand.state.isEditing) return
 	const mousePosition = getMousePosition(context, world)
-	const pick = pickInScreen(world, mousePosition, hand.screen)
+	const pick = pickInScreen(world, mousePosition, {ignore: hand.screen})
 	if (hand.pick.screen.colour === pick.screen.colour) {
 		hand.pick.screen = pick.screen
 	}
@@ -72,13 +72,15 @@ HAND_STATE.START = {
 	tick: () => HAND_STATE.FREE,
 }
 
+const HAND_PICK_PITY = [0.0].repeat(2)
 HAND_STATE.FREE = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 		
-		const position = getMousePosition(context, world)
-		const pick = pickInScreen(world, position)
+		const pick = pickInScreenWithMouse(context, world, {pity: HAND_PICK_PITY})
 		hand.pick = pick
+
+		//print(pick.part)
 
 		const [x, y] = pick.position
 		const corners = makeRectangleCorners(x, y, 0, 0)
@@ -97,6 +99,7 @@ HAND_STATE.FREE = {
 
 HAND_STATE.DRAWING = {
 	cursor: "default",
+	isEditing: true,
 	tick: ({context, hand, world, queue}) => {
 
 		const position = getMousePosition(context, hand.pick.screen)
@@ -119,11 +122,9 @@ HAND_STATE.DRAWING = {
 				if (child === screen) continue
 
 				const mappedChildCorners = getMappedPositions(child.corners, corners)
-				const outsideScreen = mappedChildCorners.some(corner => {
-					return corner.some(axis => axis >= 1.0 || axis <= 0.0)
-				})
+				const insideScreen = mappedChildCorners.some(corner => isMappedPositionInCorners(corner))
 
-				if (outsideScreen) continue
+				if (!insideScreen) continue
 				surroundedScreensSet.add(child)
 				const newChild = makeScreen(child.colour, mappedChildCorners)
 				addScreen(screen.colour, newChild)

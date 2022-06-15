@@ -58,15 +58,17 @@ export const rotatePosition = (position, origin, angle) => {
 
 }
 
-export const isPositionInCorners = (position, corners) => {
-	const relativePosition = getMappedPosition(position, corners)
-	for (const axis of relativePosition) {
-		if (axis >= 1.0 || axis <= 0.0) return false
-	}
-	return true
+export const isPositionInCorners = (position, corners, pity = [0, 0]) => {
+	const mappedPosition = getMappedPosition(position, corners)
+	return isMappedPositionInCorners(mappedPosition, pity)
 }
 
-export const arePositionsInCorners = (positions, corners) => {
-	const positionsAreInCorners = positions.every(position => isPositionInCorners)
-	return positionsAreInCorners
+export const isMappedPositionInCorners = (position, pity = [0, 0]) => {
+	const [x, y] = position
+	const [px, py] = pity
+	if (x <= 0.0-px) return false
+	if (x >= 1.0+px) return false
+	if (y <= 0.0-py) return false
+	if (y >= 1.0+py) return false
+	return true
 }

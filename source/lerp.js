@@ -30,7 +30,8 @@ export const bilerp = (displacement, corners) => {
 	return point
 }
 
-// https://iquilezles.org/articles/ibilinear/
+// based on https://iquilezles.org/articles/ibilinear/
+// adapted by Magnogen https://magnogen.net/
 export const ibilerp = (point, corners) => {
 
 	const p = point

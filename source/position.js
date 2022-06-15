@@ -1,4 +1,5 @@
 import { bilerp, ibilerp } from "./lerp.js"
+import { PART_TYPE, makePart } from "./part.js"
 
 //======//
 // VIEW //
@@ -71,4 +72,42 @@ export const isMappedPositionInCorners = (position, pity = [0, 0]) => {
 	if (y <= 0.0-py) return false
 	if (y >= 1.0+py) return false
 	return true
+}
+
+// Corners
+// 0 1
+// 2 3
+//
+// Edges
+//  0
+// 1 2
+//  3
+export const getMappedPositionPart = (position, pity = [0, 0]) => {
+	const [x, y] = position
+	const [px, py] = pity
+
+	if (x <= 0.0-px) return makePart(PART_TYPE.OUTSIDE)
+	if (x >= 1.0+px) return makePart(PART_TYPE.OUTSIDE)
+	if (y <= 0.0-py) return makePart(PART_TYPE.OUTSIDE)
+	if (y >= 1.0+py) return makePart(PART_TYPE.OUTSIDE)
+
+	// Left Edge
+	if (x <= 0.0+px) {
+		if (y <= 0.0+py) return makePart(PART_TYPE.CORNER, 0)
+		if (y >= 1.0-py) return makePart(PART_TYPE.CORNER, 2)
+		return makePart(PART_TYPE.EDGE, 1)
+	}
+	
+	// Right Edge
+	if (x >= 1.0-px) {
+		if (y <= 0.0+py) return makePart(PART_TYPE.CORNER, 1)
+		if (y >= 1.0-py) return makePart(PART_TYPE.CORNER, 3)
+		return makePart(PART_TYPE.EDGE, 2)
+	}
+	
+	// Top + Bottom Edges
+	if (y <= 0.0+py) return makePart(PART_TYPE.EDGE, 0)
+	if (y >= 1.0-py) return makePart(PART_TYPE.EDGE, 3)
+
+	return makePart(PART_TYPE.INSIDE)
 }

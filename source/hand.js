@@ -72,15 +72,13 @@ HAND_STATE.START = {
 	tick: () => HAND_STATE.FREE,
 }
 
-const HAND_PICK_PITY = [0.0].repeat(2)
+const HAND_PICK_PITY = [0.01].repeat(2)
 HAND_STATE.FREE = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 		
 		const pick = pickInScreenWithMouse(context, world, {pity: HAND_PICK_PITY})
 		hand.pick = pick
-
-		//print(pick.part)
 
 		const [x, y] = pick.position
 		const corners = makeRectangleCorners(x, y, 0, 0)
@@ -122,7 +120,7 @@ HAND_STATE.DRAWING = {
 				if (child === screen) continue
 
 				const mappedChildCorners = getMappedPositions(child.corners, corners)
-				const insideScreen = mappedChildCorners.some(corner => isMappedPositionInCorners(corner))
+				const insideScreen = mappedChildCorners.every(corner => isMappedPositionInCorners(corner))
 
 				if (!insideScreen) continue
 				surroundedScreensSet.add(child)

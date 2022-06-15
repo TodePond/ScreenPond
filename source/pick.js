@@ -1,6 +1,7 @@
-import { getMappedPosition, getMappedPositions, getRelativePositions, isMappedPositionInCorners } from "./position.js"
+import { getMappedPosition, getRelativePositions, getMappedPositionPart } from "./position.js"
 import { makeScreen } from "./screen.js"
 import { getMousePosition } from "./hand.js"
+import { makePart, PART_TYPE } from "./part.js"
 
 //======//
 // PICK //
@@ -18,34 +19,21 @@ export const pickInScreen = (screen, position, options = {}) => {
 	for (const child of colour.screens) {
 		if (child === ignore) continue
 		const mappedPosition = getMappedPosition(position, child.corners)
-		const insideScreen = isMappedPositionInCorners(mappedPosition, pity)
-		if (!insideScreen) continue
+		const part = getMappedPositionPart(mappedPosition, pity)
+		if (part.type === PART_TYPE.OUTSIDE) continue
+		//print(part)
 		const relativeCorners = getRelativePositions(child.corners, corners)
 		const relativeChild = makeScreen(child.colour, relativeCorners)
 		return pickInScreen(relativeChild, mappedPosition, {ignore, pity})
 	}
 
-	//position.d
-	const part = makePart()
+	const part = makePart(PART_TYPE.BODY, 0)
 	const pick = makePick(screen, position, part)
 	return pick
 }
 
-export const pickInScreenWithMouse = (context, world, options) => {	
+export const pickInScreenWithMouse = (context, world, options) => {
 	const position = getMousePosition(context, world)
 	const pick = pickInScreen(world, position, options)
 	return pick
-}
-
-//======//
-// PART //
-//======//
-const PART_TYPE = {
-	BODY: Symbol("PART_TYPE.BODY"),
-	EDGE: Symbol("PART_TYPE.EDGE"),
-	CORNER: Symbol("PART_TYPE.CORNER"),
-}
-
-const makePart = (type, number = 0) => {
-	return {type, number}
 }

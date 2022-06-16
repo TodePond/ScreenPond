@@ -1,7 +1,7 @@
-import { getMappedPosition, getRelativePositions, getMappedPositionPart, getRelativePosition } from "./position.js"
+import { getMappedPosition, getRelativePositions, getRelativePosition } from "./position.js"
 import { makeScreen } from "./screen.js"
 import { getMousePosition } from "./hand.js"
-import { PART_TYPE } from "./part.js"
+import { PART_TYPE, getMappedPositionPart } from "./part.js"
 import { getZeroedCorners } from "./corners.js"
 
 //======//

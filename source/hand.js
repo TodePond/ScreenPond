@@ -75,7 +75,7 @@ HAND_STATE.START = {
 	tick: () => HAND_STATE.FREE,
 }
 
-const HAND_PICK_PITY = [0.0075].repeat(2)
+const HAND_PICK_PITY = [0.006].repeat(2)
 HAND_STATE.FREE = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {

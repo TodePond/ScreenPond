@@ -1,7 +1,8 @@
-import { getMappedPosition, getRelativePositions, getMappedPositionPart } from "./position.js"
+import { getMappedPosition, getRelativePositions, getMappedPositionPart, getRelativePosition } from "./position.js"
 import { makeScreen } from "./screen.js"
 import { getMousePosition } from "./hand.js"
-import { makePart, PART_TYPE } from "./part.js"
+import { PART_TYPE } from "./part.js"
+import { getZeroedCorners } from "./corners.js"
 
 //======//
 // PICK //
@@ -18,12 +19,17 @@ export const pickInScreen = (screen, position, options = {}) => {
 
 	for (const child of colour.screens) {
 		if (child === ignore) continue
+
+		const zeroedChildCorners = getZeroedCorners(child.corners)
+		const mappedPity = getMappedPosition(pity, zeroedChildCorners).map(axis => Math.abs(axis))
 		const mappedPosition = getMappedPosition(position, child.corners)
-		const childPart = getMappedPositionPart(mappedPosition, pity)
+		const childPart = getMappedPositionPart(mappedPosition, mappedPity)
+
 		if (childPart.type === PART_TYPE.OUTSIDE) continue
+
 		const relativeCorners = getRelativePositions(child.corners, corners)
 		const relativeChild = makeScreen(child.colour, relativeCorners)
-		return pickInScreen(relativeChild, mappedPosition, {ignore, pity, part: childPart})
+		return pickInScreen(relativeChild, mappedPosition, {ignore, pity: mappedPity, part: childPart})
 	}
 
 	if (part === undefined) part = getMappedPositionPart(position, pity)

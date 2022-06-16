@@ -23,6 +23,11 @@ export const getCanvasPositions = (context, viewPositions) => {
 	return canvasPositions
 }
 
+// HIGHER screen position -> DEEPER screen position
+//
+// Position... within a higher screen
+// Corners... of a deeper screen
+// Return: Where the position would be, if it was inside the deeper screen (instead of the higher screen)
 export const getRelativePosition = (position, corners) => {
 	const relativePosition = bilerp(position, corners)
 	return relativePosition
@@ -33,6 +38,11 @@ export const getRelativePositions = (positions, corners) => {
 	return relativePositions
 }
 
+// DEEPER screen position -> HIGHER screen position
+//
+// Position... within a higher screen
+// Corners... of a deeper screen
+// Return: If we treat the deeper screen as the co-ordinates, where should we place the position?
 export const getMappedPosition = (position, corners) => {
 	const mappedPosition = ibilerp(position, corners)
 	return mappedPosition.map(axis => isNaN(axis)? 0 : axis)

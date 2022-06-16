@@ -1,4 +1,4 @@
-import { getMappedPosition, getMappedPositions, getViewPosition, isMappedPositionInCorners } from "./position.js"
+import { getMappedPosition, getMappedPositions, getRelativePosition, getViewPosition, isMappedPositionInCorners } from "./position.js"
 import { makeRectangleCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, pickInScreenWithMouse } from "./pick.js"
@@ -75,21 +75,20 @@ HAND_STATE.START = {
 	tick: () => HAND_STATE.FREE,
 }
 
-const HAND_PICK_PITY = [0.01].repeat(2)
+const HAND_PICK_PITY = [0.0075].repeat(2)
 HAND_STATE.FREE = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 		
-		const pick = pickInScreenWithMouse(context, world, {pity: HAND_PICK_PITY})
+		//const pity = getRelativePosition(HAND_PICK_PITY, world.corners)
+		const pity = HAND_PICK_PITY
+		const pick = pickInScreenWithMouse(context, world, {pity})
 		hand.pick = pick
 
 		if (pick.part.type === PART_TYPE.EDGE) {
 			HAND_STATE.FREE.cursor = "move"
 		} else if (pick.part.type === PART_TYPE.CORNER) {
-			if (pick.part.number === 0) HAND_STATE.FREE.cursor = "nwse-resize"
-			else if (pick.part.number === 1) HAND_STATE.FREE.cursor = "nesw-resize"
-			else if (pick.part.number === 2) HAND_STATE.FREE.cursor = "nesw-resize"
-			else if (pick.part.number === 3) HAND_STATE.FREE.cursor = "nwse-resize"
+			HAND_STATE.FREE.cursor = "pointer"
 		} else {
 			HAND_STATE.FREE.cursor = "default"
 		}
@@ -129,8 +128,8 @@ HAND_STATE.DRAWING = {
 			const {pick, screen} = hand
 			const {colour} = pick.screen
 			
+			// Check for surrounded screens
 			const surroundedScreensSet = new Set()
-
 			const length = colour.screens.length
 			for (let i = 0; i < length; i++) {
 				const child = colour.screens[i]
@@ -144,8 +143,8 @@ HAND_STATE.DRAWING = {
 				const newChild = makeScreen(child.colour, mappedChildCorners)
 				addScreen(screen.colour, newChild)
 			}
-
 			removeScreensSet(colour, surroundedScreensSet)
+			
 			clearQueue(context, queue, world)
 
 			hand.pick = undefined

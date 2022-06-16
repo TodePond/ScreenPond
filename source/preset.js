@@ -102,12 +102,12 @@ PRESET.INFINITE = createPreset({
 			{hex: GREEN, corners: makeRectangleCorners(0.05, 0.05, 0.9, 0.9)},
 		],
 		[GREEN]: [
-			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)},
+			{hex: GREEN, corners: rotateCorners(makeRectangleCorners(0.05, 0.05, 0.9, 0.9), 0.0)},
 		],
 	},
 	update: ({colours, queue, show, hand, world}) => {
 		const s1 = colours[GREEN].screens[0]
-		s1.corners = rotateCorners(s1.corners, 0.001)
+		s1.corners = rotateCorners(s1.corners, 0.005)
 		const {context} = show
 		clearQueue(context, queue, world)
 	}

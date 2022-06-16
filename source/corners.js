@@ -15,6 +15,8 @@ export const makeRectangleCorners = (x, y, width, height) => {
 	return corners
 }
 
+export const VIEW_CORNERS = makeRectangleCorners(0, 0, 1, 1)
+
 export const rotateCorners = (corners, angle) => {
 	const center = getCornersCenter(corners)
 	const rotatedCorners = corners.map(corner => rotatePosition(corner, center, angle))
@@ -42,4 +44,9 @@ export const getCornersPerimeter = (corners) => {
 	return perimeter
 }
 
-export const VIEW_CORNERS = makeRectangleCorners(0, 0, 1, 1)
+export const getZeroedCorners = (corners) => {
+	const [a] = corners
+	const [ax, ay] = a
+	const zeroedCorners = corners.map(([x, y]) => [x-ax, y-ay])
+	return zeroedCorners
+}

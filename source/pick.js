@@ -80,12 +80,14 @@ export const placeScreen = (screen, target, options = {}) => {
 	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore}))
 	const [a] = picks
 
-	let depth = Infinity
+	let depth = a.depth
 	let parent = a.screen
 	let hasSingleParent = true
+	let hasSingleDepth = true
 	for (const pick of picks) {
 		if (pick.depth < depth) {
 			depth = pick.depth
+			hasSingleDepth = false
 		}
 		if (parent !== pick.screen) {
 			hasSingleParent = false
@@ -93,6 +95,7 @@ export const placeScreen = (screen, target, options = {}) => {
 	}
 
 	if (!hasSingleParent) {
+		if (hasSingleDepth) depth--
 		return placeScreen(screen, target, {...options, maxDepth: depth})
 	}
 

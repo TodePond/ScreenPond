@@ -23,7 +23,8 @@ export const makeHand = (colours) => ({
 
 	// Where is the hand coming from?
 	handStart: [undefined, undefined],
-	screenStart: [undefined, undefined]
+	screenStart: [undefined, undefined],
+	parentStart: [undefined, undefined],
 
 })
 
@@ -105,7 +106,9 @@ HAND_STATE.FREE = {
 
 		if (Mouse.Left) {
 
+			// MOVE
 			if (pick.part.type === PART_TYPE.EDGE) {
+
 				if (pick.parent === undefined) {
 					const message = "Unimplemented: You can't drag the world yet."
 					alert(message)
@@ -114,11 +117,13 @@ HAND_STATE.FREE = {
 				hand.screen = pick.parent.colour.screens[pick.number]
 				hand.screenStart = getCornersPosition(hand.screen.corners)
 				return HAND_STATE.MOVING
+
+			// ROTATE + SCALE
 			} else if (pick.part.type === PART_TYPE.CORNER) {
 				// TODO: rotate/scale
 			}
 
-			// Create a new screen
+			// DRAW
 			const [x, y] = pick.position
 			const corners = makeRectangleCorners(x, y, 0, 0)
 			const screen = makeScreen(hand.colour, corners)
@@ -139,14 +144,14 @@ HAND_STATE.MOVING = {
 
 		const {pick} = hand
 		
-		// Get hand movement
+		// Hand movement
 		const position = getMousePosition(context, world)
-		const movement = subtractVector(position, hand.handStart)
-		const scaledMovement = getScaledPosition(movement, pick.parent.corners)
+		const handMovement = subtractVector(position, hand.handStart)
+		const scaledHandMovement = getScaledPosition(handMovement, pick.parent.corners)
 
 		// Move screen
-		const displacement = addVector(hand.screenStart, scaledMovement)
-		hand.screen.corners = getPositionedCorners(hand.screen.corners, displacement)
+		const screenMovement = addVector(hand.screenStart, scaledHandMovement)
+		hand.screen.corners = getPositionedCorners(hand.screen.corners, screenMovement)
 		clearQueue(context, queue, world)
 
 		if (!Mouse.Left) {

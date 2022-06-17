@@ -60,7 +60,6 @@ export const getZeroedCorners = (corners) => {
 
 export const getCornersPosition = (corners) => {
 	const [a] = corners
-	const [x, y] = a
-	const position = [x, y]
+	const position = [...a]
 	return position
 }

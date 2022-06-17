@@ -70,33 +70,33 @@ export const pickInScreen = (screen, position, options = {}) => {
 // Returns a pick object for the placed screen
 export const placeScreen = (screen, target, options = {}) => {
 	
-	
 	let {replacement, ignore} = options
 	if (replacement !== undefined) {
 		const [colour, number] = replacement
 		ignore = colour.screens[number]
 	}
 
-	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore}))
+	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options}))
 	const [a] = picks
 
+	// Assess this placement!
+	// Required: All picks have the same depth
+	// Required: All picks have the same screen
 	let depth = a.depth
+	let deepestDepth = -Infinity
 	let parent = a.screen
 	let hasSingleParent = true
 	let hasSingleDepth = true
 	for (const pick of picks) {
-		if (pick.depth < depth) {
-			depth = pick.depth
-			hasSingleDepth = false
-		}
-		if (parent !== pick.screen) {
-			hasSingleParent = false
-		}
+		if (pick.depth !== depth) hasSingleDepth = false
+		if (parent !== pick.screen) hasSingleParent = false
+		if (pick.depth > deepestDepth) deepestDepth = pick.depth
 	}
 
-	if (!hasSingleParent) {
-		if (hasSingleDepth) depth--
-		return placeScreen(screen, target, {...options, maxDepth: depth})
+	if (!hasSingleParent || !hasSingleDepth) {
+		let {maxDepth = deepestDepth} = options
+		maxDepth--
+		return placeScreen(screen, target, {...options, maxDepth})
 	}
 
 	const relativeCorners = getMappedPositions(screen.corners, a.corners)

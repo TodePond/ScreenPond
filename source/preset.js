@@ -156,13 +156,13 @@ PRESET.GRID2 = createPreset({
 	key: "g",
 	colours: {
 		[GREY]: [
-			{hex: GREY, corners: getRotatedCorners(makeRectangleCorners(0.25, 0.25, 0.5, 0.5), 0.0)},
+			{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.25, 0.25, 0.5, 0.5), 0.0)},
 			//{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.1, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.6, 0.1, 0.3, 0.3), 0.0)},
 			//{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
 		],
 		[RED]: [
-			//{hex: GREY, corners: getRotatedCorners(makeRectangleCorners(0.1, 0.1, 0.8, 0.8), 0.0)}
+			{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.25, 0.25, 0.5, 0.5), 0.0)},
 		],
 	},
 	update: ({colours, queue, world, show, hand}) => {

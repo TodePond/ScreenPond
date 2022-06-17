@@ -3,7 +3,7 @@ import { makeScreen } from "./screen.js"
 import { getMousePosition } from "./hand.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
 import { getZeroedCorners, VIEW_CORNERS } from "./corners.js"
-import { addScreen, removeScreensSet } from "./colour.js"
+import { addScreen, removeScreen, removeScreenNumber, removeScreensSet } from "./colour.js"
 
 //======//
 // PICK //
@@ -17,35 +17,38 @@ const makePick = ({screen, corners, position, part, parent, number, depth} = {})
 export const pickInScreen = (screen, position, options = {}) => {
 
 	let {
+		parent = undefined,
 		pity = [0, 0],
 		depth = 0,
+		maxDepth = Infinity,
 		ignore = undefined,
 		part = undefined,
 		number = undefined,
-		parent = undefined,
 	} = options
 
-	let i = -1
-	for (const child of screen.colour.screens) {
-		i++
-		if (child === ignore) continue
+	if (depth < maxDepth) {
+		let i = -1
+		for (const child of screen.colour.screens) {
+			i++
+			if (child === ignore) continue
 
-		const scaledPity = getScaledPosition(pity, child.corners).map(axis => Math.abs(axis))
-		const mappedPosition = getMappedPosition(position, child.corners)
-		const childPart = getMappedPositionPart(mappedPosition, scaledPity)
+			const scaledPity = getScaledPosition(pity, child.corners).map(axis => Math.abs(axis))
+			const mappedPosition = getMappedPosition(position, child.corners)
+			const childPart = getMappedPositionPart(mappedPosition, scaledPity)
 
-		if (childPart.type === PART_TYPE.OUTSIDE) continue
+			if (childPart.type === PART_TYPE.OUTSIDE) continue
 
-		const relativeCorners = getRelativePositions(child.corners, screen.corners)
-		const relativeChild = makeScreen(child.colour, relativeCorners)
-		return pickInScreen(relativeChild, mappedPosition, {
-			ignore,
-			pity: scaledPity,
-			parent: screen,
-			part: childPart,
-			number: i,
-			depth: depth + 1,
-		})
+			const relativeCorners = getRelativePositions(child.corners, screen.corners)
+			const relativeChild = makeScreen(child.colour, relativeCorners)
+			return pickInScreen(relativeChild, mappedPosition, {
+				...options,
+				pity: scaledPity,
+				parent: screen,
+				part: childPart,
+				number: i,
+				depth: depth + 1,
+			})
+		}
 	}
 
 	if (part === undefined) part = getMappedPositionPart(position, pity)
@@ -65,35 +68,51 @@ export const pickInScreen = (screen, position, options = {}) => {
 
 // Finds where to put a screen in a colour
 // Returns a pick object for the placed screen
-export const placeScreen = (screen, colour, options = {}) => {
+export const placeScreen = (screen, target, options = {}) => {
 	
-	const parent = makeScreen(colour, VIEW_CORNERS)
-	const picks = screen.corners.map(corner => pickInScreen(parent, corner, {...options, ignore: screen}))
+	
+	let {replacement, ignore} = options
+	if (replacement !== undefined) {
+		const [colour, number] = replacement
+		ignore = colour.screens[number]
+	}
 
-	let highestDepth = Infinity
-	let highestPick = undefined
+	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore}))
+	const [a] = picks
+
+	let depth = Infinity
+	let parent = a.screen
+	let hasSingleParent = true
 	for (const pick of picks) {
-		if (pick.depth < highestDepth) {
-			highestDepth = pick.depth
-			highestPick = pick
+		if (pick.depth < depth) {
+			depth = pick.depth
+		}
+		if (parent !== pick.screen) {
+			hasSingleParent = false
 		}
 	}
 
-	const relativeCorners = getMappedPositions(screen.corners, highestPick.screen.corners)
+	if (!hasSingleParent) {
+		return placeScreen(screen, target, {...options, maxDepth: depth})
+	}
+
+	const relativeCorners = getMappedPositions(screen.corners, a.corners)
 	const relativeScreen = makeScreen(screen.colour, relativeCorners)
 
-	const number = addScreen(highestPick.screen.colour, relativeScreen)
-	const [a] = picks
+	if (replacement !== undefined) {
+		removeScreenNumber(...replacement)
+	}
+	const number = addScreen(parent.colour, relativeScreen)
 	const {part = PART_TYPE.UNKNOWN} = options
 
 	const pick = makePick({
 		screen,
 		corners: screen.corners,
 		position: a.position,
-		parent: highestPick.screen,
+		parent,
 		number,
 		part,
-		depth: highestDepth,
+		depth,
 	})
 
 	return pick

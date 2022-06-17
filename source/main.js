@@ -20,10 +20,10 @@ show.tick = () => {
 }
 
 show.supertick = (context) => {
-	const {queue, hand, world} = global
+	const {queue, hand} = global
 	fireHandEvent(context, hand, "tick", global)
 	continueDrawingQueue(context, queue)
 }
 
 registerColourPickers(global.hand, COLOUR_HEXES, global.colours)
-loadPresetName(global, "EMPTY")
+loadPresetName(global, "SINGLE")

@@ -19,11 +19,9 @@ export const makeHand = (colours) => ({
 	
 	// What is the hand holding?
 	pick: undefined,
-	screen: undefined,
 
 	// Where is the hand coming from?
 	handStart: [undefined, undefined],
-	screenStart: [undefined, undefined],
 	pickStart: [undefined, undefined],
 
 })
@@ -57,10 +55,6 @@ export const getMousePosition = (context, corners) => {
 	return position
 }
 
-export const updateHandPick = (context, hand, world) => {
-
-}
-
 //==========//
 // KEYBOARD //
 //==========//
@@ -84,14 +78,14 @@ HAND_STATE.FREE = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 		
-		const position = getMousePosition(context, world.corners)
-		hand.handStart = position
+		//======== HOVER ========//
+		const mousePosition = getMousePosition(context, world.corners)
+		hand.handStart = mousePosition
 
 		const pity = HAND_PICK_PITY
-		const pick = pickInScreen(world, position, {pity})
+		const pick = pickInScreen(world, mousePosition, {pity})
 		hand.pick = pick
-		hand.pickStart = getCornersPosition(pick.corners)
-
+			
 		if (pick.part.type === PART_TYPE.EDGE) {
 			HAND_STATE.FREE.cursor = "move"
 		} else if (pick.part.type === PART_TYPE.CORNER) {
@@ -102,29 +96,24 @@ HAND_STATE.FREE = {
 
 		if (Mouse.Left) {
 
-			// MOVE
+			//======== MOVE ========//
 			if (pick.part.type === PART_TYPE.EDGE) {
 
-				if (pick.parent === undefined) {
-					const message = "Unimplemented: You can't drag the world yet."
-					alert(message)
-					throw new Error(message)
-				}
-
+				hand.pickStart = getCornersPosition(pick.corners)
 				return HAND_STATE.MOVING
 
-			// ROTATE + SCALE
+			//======== ROTATE + SCALE ========//
 			} else if (pick.part.type === PART_TYPE.CORNER) {
-				// TODO: rotate/scale
+				
 			}
 
-			// DRAW
-			const [x, y] = pick.position
+			//======== DRAW ========//
+			const [x, y] = mousePosition
 			const corners = makeRectangleCorners(x, y, 0, 0)
 			const screen = makeScreen(hand.colour, corners)
 
-			hand.screen = screen
-			addScreen(pick.screen.colour, screen)
+			hand.pick = placeScreen(screen, world)
+			hand.pickStart = getCornersPosition(hand.pick.screen.corners)
 			return HAND_STATE.DRAWING
 		}
 
@@ -139,7 +128,7 @@ HAND_STATE.MOVING = {
 		const {pick} = hand
 
 		// Pick up the screen! (we'll place it down again later)
-		removeScreenNumber(pick.parent.colour, pick.number)
+		//removeScreenNumber(pick.parent.colour, pick.number)
 
 		// Move
 		const mousePosition = getMousePosition(context, world.corners)
@@ -149,11 +138,11 @@ HAND_STATE.MOVING = {
 		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
 
 		// Place down the screen again
-		hand.pick = placeScreen(movedScreen, world.colour)
+		const replacement = [pick.parent.colour, pick.number]
+		hand.pick = placeScreen(movedScreen, world, {replacement})
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.screen, world.colour)
-			hand.pick = undefined
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}
@@ -167,40 +156,26 @@ HAND_STATE.DRAWING = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 
-		// TODO: change all this to use the 'placeScreen' function
-		// so just IGNORE this code for now
+		const {pick} = hand
 
-		// Update which screen we're drawing into!
-		// (because it might have moved or something)
-		// (or we might have moved the mouse to a different screen of the same colour)
-		const worldPosition = getMousePosition(context, world.corners)
-		const worldPick = pickInScreen(world, worldPosition, {ignore: hand.screen})
-		if (hand.pick.screen.colour === worldPick.screen.colour) {
-			hand.pick.screen = worldPick.screen
-		} else {
-			//removeScreen(hand.pick.screen.colour, hand.screen)
-			//addScreen(world.colour, hand.screen)
-		}
+		// Pick up the screen! (we'll place it down again later)
+		removeScreenNumber(pick.parent.colour, pick.number)
 
-		const position = getMousePosition(context, hand.pick.screen.corners)
-		
-		const [dx, dy] = subtractVector(position, hand.pick.position)
-		const [sx, sy] = hand.pick.position
-		const corners = makeRectangleCorners(sx, sy, dx, dy)
-		hand.screen.corners = corners
+		// Draw
+		const mousePosition = getMousePosition(context, world.corners)
+		const handMovement = subtractVector(mousePosition, hand.handStart)
+		const [width, height] = handMovement
+		const [x, y] = hand.pickStart
+		const drawnCorners = makeRectangleCorners(x, y, width, height)
+		const drawnScreen = makeScreen(pick.screen.colour, drawnCorners)
+		hand.pick = placeScreen(drawnScreen, world)
 
 		if (!Mouse.Left) {
-			
-			const {pick, screen} = hand
-			const {colour} = pick.screen
-			
+
 			// Check for surrounded screens
-			tryToSurroundScreens(screen, colour)
+			tryToSurroundScreens(hand.pick.screen, world.colour)
 			
 			clearQueue(context, queue, world)
-
-			hand.pick = undefined
-			hand.screen = undefined
 			
 			return HAND_STATE.FREE
 		}

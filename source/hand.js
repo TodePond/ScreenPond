@@ -128,7 +128,7 @@ HAND_STATE.MOVING = {
 		const {pick} = hand
 
 		// Pick up the screen! (we'll place it down again later)
-		//removeScreenNumber(pick.parent.colour, pick.number)
+		removeScreenNumber(pick.parent.colour, pick.number)
 
 		// Move
 		const mousePosition = getMousePosition(context, world.corners)
@@ -138,11 +138,10 @@ HAND_STATE.MOVING = {
 		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
 
 		// Place down the screen again
-		const replacement = [pick.parent.colour, pick.number]
 		hand.pick = placeScreen(movedScreen, world, {replacement})
 
 		if (!Mouse.Left) {
-			tryToSurroundScreens(hand.pick.screen, world.colour)
+			tryToSurroundScreens(hand.pick.cscreen, world.colour)
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}

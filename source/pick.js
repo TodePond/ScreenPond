@@ -1,9 +1,9 @@
-import { getMappedPosition, getRelativePositions, getRelativePosition, getScaledPosition, getMappedPositions } from "./position.js"
+import { getMappedPosition, getRelativePositions, getRelativePosition, getScaledPosition, getMappedPositions, isMappedPositionInCorners } from "./position.js"
 import { makeScreen } from "./screen.js"
 import { getMousePosition } from "./hand.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
 import { getZeroedCorners, VIEW_CORNERS } from "./corners.js"
-import { addScreen } from "./colour.js"
+import { addScreen, removeScreensSet } from "./colour.js"
 
 //======//
 // PICK //
@@ -97,4 +97,26 @@ export const placeScreen = (screen, colour, options = {}) => {
 	})
 
 	return pick
+}
+
+export const tryToSurroundScreens = (screen, colour) => {
+
+	const surroundedScreensSet = new Set()
+	const length = colour.screens.length
+
+	for (let i = 0; i < length; i++) {
+		const child = colour.screens[i]
+		if (child === screen) continue
+
+		const mappedChildCorners = getMappedPositions(child.corners, screen.corners)
+		const insideScreen = mappedChildCorners.every(corner => isMappedPositionInCorners(corner))
+
+		if (!insideScreen) continue
+		surroundedScreensSet.add(child)
+		const newChild = makeScreen(child.colour, mappedChildCorners)
+		addScreen(screen.colour, newChild)
+	}
+
+	removeScreensSet(colour, surroundedScreensSet)
+
 }

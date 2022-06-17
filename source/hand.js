@@ -1,7 +1,7 @@
 import { getMappedPosition, getMappedPositions, getRelativePosition, getRelativePositions, getScaledPosition, getViewPosition, isMappedPositionInCorners } from "./position.js"
 import { makeRectangleCorners, getPositionedCorners, getCornersPosition } from "./corners.js"
 import { makeScreen } from "./screen.js"
-import { pickInScreen, placeScreen } from "./pick.js"
+import { pickInScreen, placeScreen, tryToSurroundScreens } from "./pick.js"
 import { addScreen, removeScreen, removeScreenNumber, removeScreensSet } from "./colour.js"
 import { subtractVector, addVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
@@ -152,6 +152,7 @@ HAND_STATE.MOVING = {
 		hand.pick = placeScreen(movedScreen, world.colour)
 
 		if (!Mouse.Left) {
+			tryToSurroundScreens(hand.pick.screen, world.colour)
 			hand.pick = undefined
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
@@ -194,21 +195,7 @@ HAND_STATE.DRAWING = {
 			const {colour} = pick.screen
 			
 			// Check for surrounded screens
-			const surroundedScreensSet = new Set()
-			const length = colour.screens.length
-			for (let i = 0; i < length; i++) {
-				const child = colour.screens[i]
-				if (child === screen) continue
-
-				const mappedChildCorners = getMappedPositions(child.corners, corners)
-				const insideScreen = mappedChildCorners.every(corner => isMappedPositionInCorners(corner))
-
-				if (!insideScreen) continue
-				surroundedScreensSet.add(child)
-				const newChild = makeScreen(child.colour, mappedChildCorners)
-				addScreen(screen.colour, newChild)
-			}
-			removeScreensSet(colour, surroundedScreensSet)
+			tryToSurroundScreens(screen, colour)
 			
 			clearQueue(context, queue, world)
 

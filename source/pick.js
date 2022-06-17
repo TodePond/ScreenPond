@@ -70,12 +70,6 @@ export const pickInScreen = (screen, position, options = {}) => {
 // Returns a pick object for the placed screen
 export const placeScreen = (screen, target, options = {}) => {
 	
-	let {replacement, ignore} = options
-	if (replacement !== undefined) {
-		const [colour, number] = replacement
-		ignore = colour.screens[number]
-	}
-
 	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options}))
 	const [a] = picks
 
@@ -102,9 +96,6 @@ export const placeScreen = (screen, target, options = {}) => {
 	const relativeCorners = getMappedPositions(screen.corners, a.corners)
 	const relativeScreen = makeScreen(screen.colour, relativeCorners)
 
-	if (replacement !== undefined) {
-		removeScreenNumber(...replacement)
-	}
 	const number = addScreen(parent.colour, relativeScreen)
 	const {part = PART_TYPE.UNKNOWN} = options
 

@@ -17,11 +17,12 @@ const makePick = ({screen, colour, corners, position, part, parent, number, dept
 export const pickInScreen = (screen, position, options = {}) => {
 
 	let {
-		ignore = undefined,
 		pity = [0, 0],
+		depth = 0,
+		ignore = undefined,
 		part = undefined,
-		number, parent,
-		depth = 0
+		number = undefined,
+		parent = undefined,
 	} = options
 
 	let i = -1
@@ -48,8 +49,10 @@ export const pickInScreen = (screen, position, options = {}) => {
 	}
 
 	if (part === undefined) part = getMappedPositionPart(position, pity)
+
+	const pickedScreen = parent === undefined? screen : parent.colour.screens[number]
 	const pick = makePick({
-		screen,
+		screen: pickedScreen,
 		corners: screen.corners,
 		colour: screen.colour,
 		position,

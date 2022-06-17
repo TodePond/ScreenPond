@@ -90,7 +90,7 @@ HAND_STATE.FREE = {
 		const pity = HAND_PICK_PITY
 		const pick = pickInScreen(world, position, {pity})
 		hand.pick = pick
-		hand.pickStart = getCornersPosition(pick.screen.corners)
+		hand.pickStart = getCornersPosition(pick.corners)
 
 		if (pick.part.type === PART_TYPE.EDGE) {
 			HAND_STATE.FREE.cursor = "move"

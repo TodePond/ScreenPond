@@ -1,5 +1,5 @@
 import { bilerp, ibilerp } from "./lerp.js"
-import { PART_TYPE, makePart } from "./part.js"
+import { getZeroedCorners } from "./corners.js"
 
 //======//
 // VIEW //
@@ -53,7 +53,7 @@ export const getMappedPositions = (positions, corners) => {
 	return mappedPositions
 }
 
-export const rotatePosition = (position, origin, angle) => {
+export const getRotatedPosition = (position, origin, angle) => {
 
 	const [px, py] = position
 	const [ox, oy] = origin
@@ -82,4 +82,10 @@ export const isMappedPositionInCorners = (position, pity = [0, 0]) => {
 	if (y <= 0.0-py) return false
 	if (y >= 1.0+py) return false
 	return true
+}
+
+export const getScaledPosition = (position, corners) => {
+	const zeroedCorners = getZeroedCorners(corners)
+	const scaledPosition = getMappedPosition(position, zeroedCorners)
+	return scaledPosition
 }

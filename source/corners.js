@@ -1,5 +1,5 @@
-import { addVector, scaleVector, distanceBetweenVectors } from "./vector.js"
-import { rotatePosition } from "./position.js"
+import { addVector, scaleVector, distanceBetweenVectors, subtractVector } from "./vector.js"
+import { getRotatedPosition } from "./position.js"
 
 //=========//
 // CORNERS //
@@ -17,9 +17,9 @@ export const makeRectangleCorners = (x, y, width, height) => {
 
 export const VIEW_CORNERS = makeRectangleCorners(0, 0, 1, 1)
 
-export const rotateCorners = (corners, angle) => {
+export const getRotatedCorners = (corners, angle) => {
 	const center = getCornersCenter(corners)
-	const rotatedCorners = corners.map(corner => rotatePosition(corner, center, angle))
+	const rotatedCorners = corners.map(corner => getRotatedPosition(corner, center, angle))
 	return rotatedCorners
 }
 
@@ -29,8 +29,15 @@ export const getCornersCenter = (corners) => {
 	return center
 }
 
-export const moveCorners = (corners, displacement) => {
+export const getMovedCorners = (corners, displacement) => {
 	const movedCorners = corners.map(corner => addVector(corner, displacement))
+	return movedCorners
+}
+
+export const getPositionedCorners = (corners, position) => {
+	const [a] = corners
+	const displacement = subtractVector(position, a)
+	const movedCorners = getMovedCorners(corners, displacement)
 	return movedCorners
 }
 
@@ -49,4 +56,11 @@ export const getZeroedCorners = (corners) => {
 	const [ax, ay] = a
 	const zeroedCorners = corners.map(([x, y]) => [x-ax, y-ay])
 	return zeroedCorners
+}
+
+export const getCornersPosition = (corners) => {
+	const [a] = corners
+	const [x, y] = a
+	const position = [x, y]
+	return position
 }

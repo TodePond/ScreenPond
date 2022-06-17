@@ -1,4 +1,4 @@
-import { rotateCorners } from "./corners.js"
+import { getRotatedCorners } from "./corners.js"
 
 //========//
 // COLOUR //
@@ -46,5 +46,5 @@ export const addScreen = (colour, screen) => {
 
 export const rotateScreenNumber = (colour, number, angle) => {
 	const screen = colour.screens[number]
-	screen.corners = rotateCorners(screen.corners, angle)
+	screen.corners = getRotatedCorners(screen.corners, angle)
 }

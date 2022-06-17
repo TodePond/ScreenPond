@@ -1,4 +1,4 @@
-import { getMappedPosition, getRelativePositions, getRelativePosition, getScaledPosition } from "./position.js"
+import { getMappedPosition, getRelativePositions, getRelativePosition, getScaledPosition, getMappedPositions } from "./position.js"
 import { makeScreen } from "./screen.js"
 import { getMousePosition } from "./hand.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
@@ -9,8 +9,8 @@ import { addScreen } from "./colour.js"
 // PICK //
 //======//
 // A pick 
-const makePick = ({screen, colour, corners, position, part, parent, number, depth} = {}) => {
-	const pick = {screen, colour, corners, position, part, parent, number, depth}
+const makePick = ({screen, corners, position, part, parent, number, depth} = {}) => {
+	const pick = {screen, corners, position, part, parent, number, depth}
 	return pick
 }
 
@@ -54,7 +54,6 @@ export const pickInScreen = (screen, position, options = {}) => {
 	const pick = makePick({
 		screen: pickedScreen,
 		corners: screen.corners,
-		colour: screen.colour,
 		position,
 		part,
 		parent,
@@ -67,19 +66,35 @@ export const pickInScreen = (screen, position, options = {}) => {
 // Finds where to put a screen in a colour
 // Returns a pick object for the placed screen
 export const placeScreen = (screen, colour, options = {}) => {
+	
 	const parent = makeScreen(colour, VIEW_CORNERS)
-	const picks = screen.corners.map(corner => pickInScreen(parent, corner, {...options, ignore: screen})).d
+	const picks = screen.corners.map(corner => pickInScreen(parent, corner, {...options, ignore: screen}))
 
-	let deepestDepth = -Infinity
-	let deepestPick = undefined
+	let highestDepth = Infinity
+	let highestPick = undefined
 	for (const pick of picks) {
-		if (pick.depth > deepestDepth) {
-			deepestDepth = pick.depth
-			deepestPick = pick
+		if (pick.depth < highestDepth) {
+			highestDepth = pick.depth
+			highestPick = pick
 		}
 	}
 
-	addScreen(deepestPick.screen.colour, screen)
-	
-	return screen
+	const relativeCorners = getMappedPositions(screen.corners, highestPick.screen.corners)
+	const relativeScreen = makeScreen(screen.colour, relativeCorners)
+
+	const number = addScreen(highestPick.screen.colour, relativeScreen)
+	const [a] = picks
+	const {part = PART_TYPE.UNKNOWN} = options
+
+	const pick = makePick({
+		screen,
+		corners: screen.corners,
+		position: a.position,
+		parent: highestPick.screen,
+		number,
+		part,
+		depth: highestDepth,
+	})
+
+	return pick
 }

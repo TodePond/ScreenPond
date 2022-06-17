@@ -111,7 +111,6 @@ HAND_STATE.FREE = {
 					throw new Error(message)
 				}
 
-				hand.screen = pick.screen
 				return HAND_STATE.MOVING
 
 			// ROTATE + SCALE
@@ -125,7 +124,7 @@ HAND_STATE.FREE = {
 			const screen = makeScreen(hand.colour, corners)
 
 			hand.screen = screen
-			addScreen(pick.colour, screen)
+			addScreen(pick.screen.colour, screen)
 			return HAND_STATE.DRAWING
 		}
 
@@ -143,17 +142,17 @@ HAND_STATE.MOVING = {
 		removeScreenNumber(pick.parent.colour, pick.number)
 
 		// Move
-		const position = getMousePosition(context, world.corners)
-		const handMovement = subtractVector(position, hand.handStart)
+		const mousePosition = getMousePosition(context, world.corners)
+		const handMovement = subtractVector(mousePosition, hand.handStart)
 		const pickMovement = addVector(hand.pickStart, handMovement)
-		pick.screen.corners = getPositionedCorners(pick.screen.corners, pickMovement)
-		
+		const movedCorners = getPositionedCorners(pick.corners, pickMovement)
+		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
+
 		// Place down the screen again
-		hand.pick = placeScreen(pick.screen, world.colour)
+		hand.pick = placeScreen(movedScreen, world.colour)
 
 		if (!Mouse.Left) {
 			hand.pick = undefined
-			hand.screen = undefined
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}

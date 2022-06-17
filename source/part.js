@@ -14,6 +14,7 @@ export const PART_TYPE = {
 	INSIDE: Symbol("PART_TYPE.INSIDE"),
 	EDGE: Symbol("PART_TYPE.EDGE"),
 	CORNER: Symbol("PART_TYPE.CORNER"),
+	UNKNOWN: Symbol("PART_TYPE.UNKNOWN"),
 }
 
 export const makePart = (type, number = 0) => {

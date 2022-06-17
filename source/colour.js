@@ -49,7 +49,8 @@ export const removeScreenNumber = (colour, number) => {
 }
 
 export const addScreen = (colour, screen) => {
-	colour.screens.push(screen)
+	const number = colour.screens.push(screen) - 1
+	return number
 }
 
 export const rotateScreenNumber = (colour, number, angle) => {

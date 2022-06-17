@@ -141,7 +141,7 @@ HAND_STATE.MOVING = {
 		hand.pick = placeScreen(movedScreen, world)
 
 		if (!Mouse.Left) {
-			tryToSurroundScreens(hand.pick.cscreen, world.colour)
+			tryToSurroundScreens(hand.pick.screen, world.colour)
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}

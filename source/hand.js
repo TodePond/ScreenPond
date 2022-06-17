@@ -138,7 +138,7 @@ HAND_STATE.MOVING = {
 		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
 
 		// Place down the screen again
-		hand.pick = placeScreen(movedScreen, world, {replacement})
+		hand.pick = placeScreen(movedScreen, world)
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.cscreen, world.colour)

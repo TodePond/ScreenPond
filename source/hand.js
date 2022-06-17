@@ -1,8 +1,8 @@
-import { getMappedPosition, getMappedPositions, getRelativePosition, getScaledPosition, getViewPosition, isMappedPositionInCorners } from "./position.js"
+import { getMappedPosition, getMappedPositions, getRelativePosition, getRelativePositions, getScaledPosition, getViewPosition, isMappedPositionInCorners } from "./position.js"
 import { makeRectangleCorners, getPositionedCorners, getCornersPosition } from "./corners.js"
 import { makeScreen } from "./screen.js"
-import { pickInScreen } from "./pick.js"
-import { addScreen, removeScreensSet } from "./colour.js"
+import { pickInScreen, placeScreen } from "./pick.js"
+import { addScreen, removeScreen, removeScreenNumber, removeScreensSet } from "./colour.js"
 import { subtractVector, addVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
@@ -24,7 +24,7 @@ export const makeHand = (colours) => ({
 	// Where is the hand coming from?
 	handStart: [undefined, undefined],
 	screenStart: [undefined, undefined],
-	parentStart: [undefined, undefined],
+	pickStart: [undefined, undefined],
 
 })
 
@@ -51,19 +51,14 @@ export const fireHandEvent = (context, hand, eventName, args = {}) => {
 	hand.state = newState
 }
 
-export const getMousePosition = (context, screen) => {
+export const getMousePosition = (context, corners) => {
 	const viewPosition = getViewPosition(context, Mouse.position)
-	const position = getMappedPosition(viewPosition, screen.corners)
+	const position = getMappedPosition(viewPosition, corners)
 	return position
 }
 
 export const updateHandPick = (context, hand, world) => {
-	if (!hand.state.isEditing) return
-	const mousePosition = getMousePosition(context, world)
-	const pick = pickInScreen(world, mousePosition, {ignore: hand.screen})
-	if (hand.pick.screen.colour === pick.screen.colour) {
-		hand.pick.screen = pick.screen
-	}
+
 }
 
 //==========//
@@ -89,12 +84,13 @@ HAND_STATE.FREE = {
 	cursor: "default",
 	tick: ({context, hand, world, queue}) => {
 		
-		const position = getMousePosition(context, world)
+		const position = getMousePosition(context, world.corners)
 		hand.handStart = position
 
 		const pity = HAND_PICK_PITY
 		const pick = pickInScreen(world, position, {pity})
 		hand.pick = pick
+		hand.pickStart = getCornersPosition(pick.screen.corners)
 
 		if (pick.part.type === PART_TYPE.EDGE) {
 			HAND_STATE.FREE.cursor = "move"
@@ -114,8 +110,8 @@ HAND_STATE.FREE = {
 					alert(message)
 					throw new Error(message)
 				}
-				hand.screen = pick.parent.colour.screens[pick.number]
-				hand.screenStart = getCornersPosition(hand.screen.corners)
+
+				hand.screen = pick.screen
 				return HAND_STATE.MOVING
 
 			// ROTATE + SCALE
@@ -129,7 +125,7 @@ HAND_STATE.FREE = {
 			const screen = makeScreen(hand.colour, corners)
 
 			hand.screen = screen
-			addScreen(pick.screen.colour, screen)
+			addScreen(pick.colour, screen)
 			return HAND_STATE.DRAWING
 		}
 
@@ -139,38 +135,55 @@ HAND_STATE.FREE = {
 
 HAND_STATE.MOVING = {
 	cursor: "move",
-	isEditing: true,
 	tick: ({context, hand, world, queue}) => {
 
 		const {pick} = hand
-		
-		// Hand movement
-		const position = getMousePosition(context, world)
-		const handMovement = subtractVector(position, hand.handStart)
-		const scaledHandMovement = getScaledPosition(handMovement, pick.parent.corners)
 
-		// Move screen
-		const screenMovement = addVector(hand.screenStart, scaledHandMovement)
-		hand.screen.corners = getPositionedCorners(hand.screen.corners, screenMovement)
-		clearQueue(context, queue, world)
+		// Pick up the screen! (we'll place it down again later)
+		removeScreenNumber(pick.parent.colour, pick.number)
+
+		// Move
+		const position = getMousePosition(context, world.corners)
+		const handMovement = subtractVector(position, hand.handStart)
+		const pickMovement = addVector(hand.pickStart, handMovement)
+		pick.screen.corners = getPositionedCorners(pick.screen.corners, pickMovement)
+		
+		// Place down the screen again
+		hand.pick = placeScreen(pick.screen, world.colour)
 
 		if (!Mouse.Left) {
 			hand.pick = undefined
 			hand.screen = undefined
+			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}
 
+		clearQueue(context, queue, world)
 		return HAND_STATE.MOVING
 	},
 }
 
 HAND_STATE.DRAWING = {
 	cursor: "default",
-	isEditing: true,
 	tick: ({context, hand, world, queue}) => {
 
-		const position = getMousePosition(context, hand.pick.screen)
+		// TODO: change all this to use the 'placeScreen' function
+		// so just IGNORE this code for now
 
+		// Update which screen we're drawing into!
+		// (because it might have moved or something)
+		// (or we might have moved the mouse to a different screen of the same colour)
+		const worldPosition = getMousePosition(context, world.corners)
+		const worldPick = pickInScreen(world, worldPosition, {ignore: hand.screen})
+		if (hand.pick.screen.colour === worldPick.screen.colour) {
+			hand.pick.screen = worldPick.screen
+		} else {
+			//removeScreen(hand.pick.screen.colour, hand.screen)
+			//addScreen(world.colour, hand.screen)
+		}
+
+		const position = getMousePosition(context, hand.pick.screen.corners)
+		
 		const [dx, dy] = subtractVector(position, hand.pick.position)
 		const [sx, sy] = hand.pick.position
 		const corners = makeRectangleCorners(sx, sy, dx, dy)

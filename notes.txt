@@ -1,41 +1,37 @@
+=============================================================
 
->> ALL global state is kept in the 'global' object
->> ALL other exports are pure functions or immutable constants
+Hand = Object that stores information about the cursor/touch
 
-exceptions: 'onkeydown'
+Canvas = Client's whole screen (0 to max pixel)
+View = Client's whole screen (0.0 to 1.0)
+
+CanvasPosition = Vector representing a location in the canvas (0 to max pixel)
+ViewPosition = Vector representing a location in the view (0.0 to 1.0)
+
+Corners = Four view positions (from 0.0 to 1.0) representing the corners of a quadrilateral
+
+Hex = Hex string representing a colour value
+Colour = Object containing a hex and list of screens
+Screen = Object representing a positioned colour
+
+World = Single screen that fills up the view
+
+Pick = Object representing a position in a specific colour. When a pick is used to represent a screen, its 'position' is the corner A
+Part = Object representing a part of a screen (Inside, Outside, Edge, Corner)
 
 =============================================================
 
-Hand = object that stores information about the cursor/touch
+Corners
+A B
+C D
 
-Canvas = client's whole screen (0 to max pixel)
-View = client's whole screen (0.0 to 1.0)
+Corner Parts
+0 1
+2 3
 
-CanvasPosition = vector representing a location in the canvas (0 to max pixel)
-ViewPosition = vector representing a location in the view (0.0 to 1.0)
-
-Corners = four view positions (from 0.0 to 1.0) representing the corners of a quadrilateral
-
-Hex = hex string representing a colour value
-Colour = object containing a hex and list of screens
-Screen = object representing a positioned colour
-
-World = a single screen that fills up the view
-
-Pick = an object representing a position in a specific colour
-Part = an object representing a part of a screen (Inside, Outside, Edge, Corner)
-
-=============================================================
-
-Edge
+Edge Parts
  0
 1 2
  3
 
-Corner
-0 1
-2 3
-
-Corners
-a b
-c d
+=============================================================

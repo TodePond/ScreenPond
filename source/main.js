@@ -1,5 +1,5 @@
 import { global } from "./global.js"
-import { fireHandEvent, registerColourPickers, updateHandPick } from "./hand.js"
+import { fireHandEvent, registerColourPickers } from "./hand.js"
 import { loadPresetName } from "./preset.js"
 import { clearQueue, continueDrawingQueue } from "./draw.js"
 import { COLOUR_HEXES } from "./colour.js"
@@ -21,8 +21,6 @@ show.tick = () => {
 
 show.supertick = (context) => {
 	const {queue, hand, world} = global
-	
-	updateHandPick(context, hand, world)
 	fireHandEvent(context, hand, "tick", global)
 	continueDrawingQueue(context, queue)
 }

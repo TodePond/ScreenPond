@@ -40,6 +40,14 @@ export const removeScreensSet = (colour, screensSet) => {
 	colour.screens = colour.screens.filter(screen => !screensSet.has(screen))
 }
 
+export const removeScreen = (colour, screen) => {
+	colour.screens = colour.screens.filter(s => s !== screen)
+}
+
+export const removeScreenNumber = (colour, number) => {
+	colour.screens.splice(number, 1)
+}
+
 export const addScreen = (colour, screen) => {
 	colour.screens.push(screen)
 }

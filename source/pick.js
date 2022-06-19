@@ -22,13 +22,23 @@ export const pickInScreen = (screen, position, options = {}) => {
 		parent = undefined,
 		pity = [0, 0],
 		depth = 0,
-		maxDepth = Infinity,
+		maxDepth = 1000,
 		ignore = undefined,
 		part = undefined,
 		number = undefined,
+		snap = undefined,
+		address = undefined,
 	} = options
 
-	if (depth < maxDepth) {
+	let snapped = false
+	if (snap !== undefined && address !== undefined) {
+		const addressedScreen = getScreenFromAddress(address)
+		if (snap === addressedScreen) {
+			snapped = true
+		}
+	}
+
+	if (!snapped && depth < maxDepth) {
 		let i = -1
 		for (const child of screen.colour.screens) {
 			i++
@@ -49,13 +59,15 @@ export const pickInScreen = (screen, position, options = {}) => {
 				part: childPart,
 				number: i,
 				depth: depth + 1,
+				address: makeAddress(screen.colour, i),
 			})
 		}
 	}
 
 	if (part === undefined) part = getMappedPositionPart(position, pity)
 
-	const pickedScreen = parent === undefined? screen : parent.colour.screens[number]
+	let pickedScreen = parent === undefined? screen : parent.colour.screens[number]
+	//if (snap === screen) pickedScreen = snap
 	const pick = makePick({
 		screen: pickedScreen,
 		corners: screen.corners,
@@ -122,20 +134,31 @@ export const placeScreen = (screen, target, options = {}) => {
 export const replaceAddress = ({address, screen, target, parent, ...options} = {}) => {
 
 	const oldScreen = getScreenFromAddress(address)
-	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore: oldScreen, maxDepth: 1000}))
+	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, snap: parent, ignore: oldScreen}))
 	const isStillWithParent = picks.some(pick => pick.screen === parent)
 
-	const [head] = picks
+	// Decide which pick (out of the 4) to use as the basis for the placement
+	const [head, ...tail] = picks
 	let pickLeader = head
 	if (isStillWithParent) {
 		pickLeader = picks.find(pick => pick.screen === parent)
+	} else for (const pick of tail) {
+		if (pick.depth > pickLeader.depth) {
+			pickLeader = pick
+		}
 	}
 
 	const relativeCorners = getMappedPositions(screen.corners, pickLeader.corners)
 	const relativeScreen = makeScreen(screen.colour, relativeCorners)
 	
-	removeScreenAddress(address)
-	const number = addScreen(pickLeader.screen.colour, relativeScreen)
+	let number = address.number
+	if (isStillWithParent) {
+		oldScreen.corners = relativeCorners
+	} else {
+		removeScreenAddress(address)
+		number = addScreen(pickLeader.screen.colour, relativeScreen)
+		//print("switch")
+	}
 
 	const {part = PART_TYPE.UNKNOWN} = options
 	const pick = makePick({

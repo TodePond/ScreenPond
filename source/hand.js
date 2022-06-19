@@ -142,8 +142,6 @@ HAND_STATE.MOVING = {
 			target: world,
 			parent: pick.parent,
 		})
-		//removeScreenAddress(pick.address)
-		//hand.pick = placeScreen(movedScreen, world)
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.screen, world.colour)
@@ -177,8 +175,6 @@ HAND_STATE.DRAWING = {
 			target: world,
 			parent: pick.parent,
 		})
-		//removeScreenAddress(pick.address)
-		//hand.pick = placeScreen(drawnScreen, world)
 
 		if (!Mouse.Left) {
 

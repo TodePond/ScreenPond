@@ -118,8 +118,21 @@ export const replaceAddress = ({address, screen, target, parent, ...options} = {
 
 	// Pick where to place the screen
 	const oldScreen = getScreenFromAddress(address)
-	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, snap: parent, ignore: oldScreen}))
-	const isStillWithParent = picks.some(pick => pick.screen === parent)
+	let picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore: oldScreen}))
+	let isStillWithParent = picks.some(pick => pick.screen === parent)
+
+	if (!isStillWithParent) {
+		const snapPicks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore: oldScreen, snap: parent}))
+		const snapIsStillWithParent = snapPicks.some(pick => pick.screen === parent)
+		if (snapIsStillWithParent) {
+			const depth = Math.min(...picks.map(pick => pick.depth))
+			const snapDepth = Math.min(...snapPicks.map(pick => pick.depth))
+			if (snapDepth >= depth) {
+				picks = snapPicks
+				isStillWithParent = snapIsStillWithParent
+			}
+		}
+	}
 
 	// Decide which pick (out of the 4) to use as the basis for the placement
 	const [head, ...tail] = picks

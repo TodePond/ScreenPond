@@ -18,6 +18,7 @@ const makePick = ({screen, corners, position, part, parent, number, depth, addre
 
 export const pickInScreen = (screen, position, options = {}) => {
 
+	// Options
 	let {
 		parent = undefined,
 		pity = [0, 0],
@@ -30,6 +31,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		address = undefined,
 	} = options
 
+	// Check if this screen is the one we want to snap to!
 	let snapped = false
 	if (snap !== undefined && address !== undefined) {
 		const addressedScreen = getScreenFromAddress(address)
@@ -38,6 +40,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		}
 	}
 
+	// Otherwise, look through all this screen's children
 	if (!snapped && depth < maxDepth) {
 		let i = -1
 		for (const child of screen.colour.screens) {
@@ -64,10 +67,9 @@ export const pickInScreen = (screen, position, options = {}) => {
 		}
 	}
 
+	// If we didn't pick any children, pick this screen
 	if (part === undefined) part = getMappedPositionPart(position, pity)
-
 	let pickedScreen = parent === undefined? screen : parent.colour.screens[number]
-	//if (snap === screen) pickedScreen = snap
 	const pick = makePick({
 		screen: pickedScreen,
 		corners: screen.corners,
@@ -80,48 +82,29 @@ export const pickInScreen = (screen, position, options = {}) => {
 	return pick
 }
 
-// LEGACY FUNCTION! newer alternative: 'replaceAddress' (which is better because it tries harder to stay in the current screen before swapping)
-// Finds where to put a screen in a colour
+// Finds where to place a NEW screen in a colour
+// It picks a parent based on corner A
 // Returns a pick object for the placed screen
 export const placeScreen = (screen, target, options = {}) => {
 	
 	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options}))
-	const [a] = picks
+	const [head] = picks
 
-	// Assess this placement!
-	// Required: All picks have the same depth
-	// Required: All picks have the same screen
-	let depth = a.depth
-	let deepestDepth = -Infinity
-	let parent = a.screen
-	let hasSingleParent = true
-	let hasSingleDepth = true
-	for (const pick of picks) {
-		if (pick.depth !== depth) hasSingleDepth = false
-		if (parent !== pick.screen) hasSingleParent = false
-		if (pick.depth > deepestDepth) deepestDepth = pick.depth
-	}
-
-	if (!hasSingleParent || !hasSingleDepth) {
-		let {maxDepth = deepestDepth} = options
-		maxDepth--
-		return placeScreen(screen, target, {...options, maxDepth})
-	}
-
-	const relativeCorners = getMappedPositions(screen.corners, a.corners)
+	const relativeCorners = getMappedPositions(screen.corners, head.corners)
 	const relativeScreen = makeScreen(screen.colour, relativeCorners)
 
+	const parent = head.screen
 	const number = addScreen(parent.colour, relativeScreen)
 	const {part = PART_TYPE.UNKNOWN} = options
 
 	const pick = makePick({
 		screen,
 		corners: screen.corners,
-		position: a.position,
+		position: head.position,
 		parent,
 		number,
 		part,
-		depth,
+		depth: head.depth,
 	})
 
 	return pick
@@ -133,6 +116,7 @@ export const placeScreen = (screen, target, options = {}) => {
 // parent = The current screen's parent, which we should try our best to stay in
 export const replaceAddress = ({address, screen, target, parent, ...options} = {}) => {
 
+	// Pick where to place the screen
 	const oldScreen = getScreenFromAddress(address)
 	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, snap: parent, ignore: oldScreen}))
 	const isStillWithParent = picks.some(pick => pick.screen === parent)
@@ -148,18 +132,18 @@ export const replaceAddress = ({address, screen, target, parent, ...options} = {
 		}
 	}
 
+	// Place the screen
 	const relativeCorners = getMappedPositions(screen.corners, pickLeader.corners)
 	const relativeScreen = makeScreen(screen.colour, relativeCorners)
-	
 	let number = address.number
 	if (isStillWithParent) {
 		oldScreen.corners = relativeCorners
 	} else {
 		removeScreenAddress(address)
 		number = addScreen(pickLeader.screen.colour, relativeScreen)
-		//print("switch")
 	}
 
+	// Return info about the picked placement
 	const {part = PART_TYPE.UNKNOWN} = options
 	const pick = makePick({
 		screen,
@@ -170,9 +154,8 @@ export const replaceAddress = ({address, screen, target, parent, ...options} = {
 		part,
 		depth: pickLeader.depth,
 	})
-
 	return pick
-
+	
 }
 
 export const tryToSurroundScreens = (screen, colour) => {

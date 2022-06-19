@@ -1,12 +1,13 @@
 import { getMappedPosition, getMappedPositions, getRelativePosition, getRelativePositions, getScaledPosition, getViewPosition, isMappedPositionInCorners } from "./position.js"
 import { makeRectangleCorners, getPositionedCorners, getCornersPosition } from "./corners.js"
 import { makeScreen } from "./screen.js"
-import { pickInScreen, placeScreen, tryToSurroundScreens } from "./pick.js"
-import { addScreen, removeScreen, removeScreenNumber, removeScreensSet } from "./colour.js"
+import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
+import { addScreen, removeScreen, removeScreenAddress, removeScreenNumber, removeScreensSet } from "./colour.js"
 import { subtractVector, addVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { PART_TYPE } from "./part.js"
+import { makeAddress } from "./address.js"
 
 //======//
 // HAND //
@@ -127,9 +128,6 @@ HAND_STATE.MOVING = {
 
 		const {pick} = hand
 
-		// Pick up the screen! (we'll place it down again later)
-		removeScreenNumber(pick.parent.colour, pick.number)
-
 		// Move
 		const mousePosition = getMousePosition(context, world.corners)
 		const handMovement = subtractVector(mousePosition, hand.handStart)
@@ -137,8 +135,15 @@ HAND_STATE.MOVING = {
 		const movedCorners = getPositionedCorners(pick.corners, pickMovement)
 		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
 
-		// Place down the screen again
-		hand.pick = placeScreen(movedScreen, world)
+		// Replace
+		hand.pick = replaceAddress({
+			address: pick.address,
+			screen: movedScreen,
+			target: world,
+			parent: pick.parent,
+		})
+		//removeScreenAddress(pick.address)
+		//hand.pick = placeScreen(movedScreen, world)
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.screen, world.colour)
@@ -157,9 +162,6 @@ HAND_STATE.DRAWING = {
 
 		const {pick} = hand
 
-		// Pick up the screen! (we'll place it down again later)
-		removeScreenNumber(pick.parent.colour, pick.number)
-
 		// Draw
 		const mousePosition = getMousePosition(context, world.corners)
 		const handMovement = subtractVector(mousePosition, hand.handStart)
@@ -167,13 +169,21 @@ HAND_STATE.DRAWING = {
 		const [x, y] = hand.pickStart
 		const drawnCorners = makeRectangleCorners(x, y, width, height)
 		const drawnScreen = makeScreen(pick.screen.colour, drawnCorners)
-		hand.pick = placeScreen(drawnScreen, world)
+
+		// Replace
+		hand.pick = replaceAddress({
+			address: pick.address,
+			screen: drawnScreen,
+			target: world,
+			parent: pick.parent,
+		})
+		//removeScreenAddress(pick.address)
+		//hand.pick = placeScreen(drawnScreen, world)
 
 		if (!Mouse.Left) {
 
 			// Check for surrounded screens
 			tryToSurroundScreens(hand.pick.screen, world.colour)
-			
 			clearQueue(context, queue, world)
 			
 			return HAND_STATE.FREE

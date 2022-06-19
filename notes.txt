@@ -13,11 +13,23 @@ Corners = Four view positions (from 0.0 to 1.0) representing the corners of a qu
 Hex = Hex string representing a colour value
 Colour = Object containing a hex and list of screens
 Screen = Object representing a positioned colour
-
 World = Single screen that fills up the view
 
-Pick = Object representing a position in a specific colour. When a pick is used to represent a screen, its 'position' is the corner A
+Address = Object containing the number and parent colour of a screen
 Part = Object representing a part of a screen (Inside, Outside, Edge, Corner)
+
+--------
+Pick = Object representing a position in a specific colour. When a pick is used to represent a screen, its 'position' is the corner A
+.screen = The screen object that was picked
+.corners = The view corners of the picked screen's parent
+.position = The position of the picked screen in its parent
+.part = The part of the picked screen that was picked
+.parent = The parent screen of the picked screen
+.address = The address of the picked screen
+.depth = How many layers deep we had to go through to pick the screen
+--------
+
+^^^ Pick is the largest and most complicated object
 
 =============================================================
 

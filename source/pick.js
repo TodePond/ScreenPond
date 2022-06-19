@@ -3,14 +3,16 @@ import { makeScreen } from "./screen.js"
 import { getMousePosition } from "./hand.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
 import { getZeroedCorners, VIEW_CORNERS } from "./corners.js"
-import { addScreen, removeScreen, removeScreenNumber, removeScreensSet } from "./colour.js"
+import { addScreen, removeScreen, removeScreenAddress, removeScreenNumber, removeScreensSet } from "./colour.js"
+import { getScreenFromAddress, makeAddress } from "./address.js"
 
 //======//
 // PICK //
 //======//
 // A pick 
-const makePick = ({screen, corners, position, part, parent, number, depth} = {}) => {
-	const pick = {screen, corners, position, part, parent, number, depth}
+const makePick = ({screen, corners, position, part, parent, number, depth, address} = {}) => {
+	if (address === undefined && parent !== undefined) address = makeAddress(parent.colour, number)
+	const pick = {screen, corners, position, part, parent, number, depth, address}
 	return pick
 }
 
@@ -66,6 +68,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 	return pick
 }
 
+// LEGACY FUNCTION! newer alternative: 'replaceAddress' (which is better because it tries harder to stay in the current screen before swapping)
 // Finds where to put a screen in a colour
 // Returns a pick object for the placed screen
 export const placeScreen = (screen, target, options = {}) => {
@@ -110,6 +113,43 @@ export const placeScreen = (screen, target, options = {}) => {
 	})
 
 	return pick
+}
+
+// address = Address of the screen we want to replace
+// screen = What we want to replace the it with
+// target = The screen that we are placing into (at the top level)
+// parent = The current screen's parent, which we should try our best to stay in
+export const replaceAddress = ({address, screen, target, parent, ...options} = {}) => {
+
+	const oldScreen = getScreenFromAddress(address)
+	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore: oldScreen, maxDepth: 1000}))
+	const isStillWithParent = picks.some(pick => pick.screen === parent)
+
+	const [head] = picks
+	let pickLeader = head
+	if (isStillWithParent) {
+		pickLeader = picks.find(pick => pick.screen === parent)
+	}
+
+	const relativeCorners = getMappedPositions(screen.corners, pickLeader.corners)
+	const relativeScreen = makeScreen(screen.colour, relativeCorners)
+	
+	removeScreenAddress(address)
+	const number = addScreen(pickLeader.screen.colour, relativeScreen)
+
+	const {part = PART_TYPE.UNKNOWN} = options
+	const pick = makePick({
+		screen,
+		corners: screen.corners,
+		position: pickLeader.position,
+		parent: pickLeader.screen,
+		number,
+		part,
+		depth: pickLeader.depth,
+	})
+
+	return pick
+
 }
 
 export const tryToSurroundScreens = (screen, colour) => {

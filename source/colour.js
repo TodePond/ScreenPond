@@ -48,6 +48,11 @@ export const removeScreenNumber = (colour, number) => {
 	colour.screens.splice(number, 1)
 }
 
+export const removeScreenAddress = (address) => {
+	const {colour, number} = address
+	removeScreenNumber(colour, number)
+}
+
 export const addScreen = (colour, screen) => {
 	const number = colour.screens.push(screen) - 1
 	return number

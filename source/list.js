@@ -5,7 +5,7 @@ export class LinkedList {
 	constructor(iterable = []) {
 		this.start = undefined
 		this.end = undefined
-		this.isEmpty = undefined
+		this.isEmpty = true
 
 		for (const item of iterable) {
 			this.push(item)

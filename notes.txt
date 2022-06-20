@@ -16,10 +16,13 @@ Screen = Object representing a positioned colour
 World = Single screen that fills up the view
 
 Address = Object containing the number and parent colour of a screen
-Part = Object representing a part of a screen (Inside, Outside, Edge, Corner)
-
---------
 Pick = Object representing a position in a specific colour. When a pick is used to represent a screen, its 'position' is the corner A
+Part = Object representing a part of a screen (Inside, Outside, Edge, Corner)
+Route = An object containing the steps we took to pick a screen
+
+==============================================================
+
+Pick
 .screen = The screen object that was picked
 .corners = The view corners of the picked screen's parent
 .position = The position of the picked screen in its parent
@@ -27,9 +30,7 @@ Pick = Object representing a position in a specific colour. When a pick is used 
 .parent = The parent screen of the picked screen
 .address = The address of the picked screen
 .depth = How many layers deep we had to go through to pick the screen
---------
-
-^^^ Pick is the largest and most complicated object
+.route = The route we took to get to this pick
 
 =============================================================
 

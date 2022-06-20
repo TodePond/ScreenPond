@@ -1,18 +1,17 @@
 import { getMappedPosition, getRelativePositions, getRelativePosition, getScaledPosition, getMappedPositions, isMappedPositionInCorners } from "./position.js"
 import { makeScreen } from "./screen.js"
-import { getMousePosition } from "./hand.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
-import { getZeroedCorners, VIEW_CORNERS } from "./corners.js"
-import { addScreen, removeScreen, removeScreenAddress, removeScreenNumber, removeScreensSet } from "./colour.js"
+import { addScreen, removeScreenAddress, removeScreensSet } from "./colour.js"
 import { getScreenFromAddress, makeAddress } from "./address.js"
+import { addStep, makeRoute } from "./route.js"
 
 //======//
 // PICK //
 //======//
 // A pick 
-const makePick = ({screen, corners, position, part, parent, number, depth, address} = {}) => {
+const makePick = ({screen, corners, position, part, parent, number, depth, address, route} = {}) => {
 	if (address === undefined && parent !== undefined) address = makeAddress(parent.colour, number)
-	const pick = {screen, corners, position, part, parent, number, depth, address}
+	const pick = {screen, corners, position, part, parent, number, depth, address, route}
 	return pick
 }
 
@@ -30,6 +29,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		number = undefined,
 		snap = undefined,
 		address = undefined,
+		route = undefined,
 	} = options
 
 	// Check if this screen is the one we want to snap to!
@@ -41,11 +41,22 @@ export const pickInScreen = (screen, position, options = {}) => {
 		}
 	}
 
-	// Otherwise, look through all this screen's children
+	// Keep track of the route we go on
+	if (route === undefined) {
+		route = makeRoute(screen)
+	} else {
+		addStep(route, number)
+	}
+
+	// Look through all this screen's children
 	if (!snapped && depth < maxDepth) {
 		let i = -1
 		for (const child of screen.colour.screens) {
 			i++
+
+			if (child === ignore && (ignoreDepth === undefined || ignoreDepth === depth + 1)) {
+				continue
+			}
 
 			const scaledPity = getScaledPosition(pity, child.corners).map(axis => Math.abs(axis))
 			const mappedPosition = getMappedPosition(position, child.corners)
@@ -55,7 +66,8 @@ export const pickInScreen = (screen, position, options = {}) => {
 
 			const relativeCorners = getRelativePositions(child.corners, screen.corners)
 			const relativeChild = makeScreen(child.colour, relativeCorners)
-			const result = pickInScreen(relativeChild, mappedPosition, {
+
+			return pickInScreen(relativeChild, mappedPosition, {
 				...options,
 				pity: scaledPity,
 				parent: screen,
@@ -63,8 +75,8 @@ export const pickInScreen = (screen, position, options = {}) => {
 				number: i,
 				depth: depth + 1,
 				address: makeAddress(screen.colour, i),
+				route,
 			})
-			if (result.part !== PART_TYPE.IGNORE) return result
 		}
 	}
 
@@ -73,11 +85,6 @@ export const pickInScreen = (screen, position, options = {}) => {
 
 	// Get the part of the screen
 	if (part === undefined) part = getMappedPositionPart(position, pity)
-	if (ignore === pickedScreen) {
-		if (ignoreDepth === undefined || ignoreDepth === depth) {
-			part = PART_TYPE.IGNORE
-		}
-	}
 
 	// Collect together the pick information
 	const pick = makePick({
@@ -88,6 +95,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		parent,
 		number,
 		depth,
+		route,
 	})
 	return pick
 }
@@ -126,8 +134,9 @@ export const placeScreen = (screen, target, options = {}) => {
 // parent = The current screen's parent, which we should try our best to stay in
 export const replaceAddress = ({address, screen, target, parent, depth, ...options} = {}) => {
 
-	// Pick where to place the screen
 	const oldScreen = getScreenFromAddress(address)
+
+	// Pick where to place the screen
 	const pickOptions = {...options, ignore: oldScreen, ignoreDepth: depth}
 	let picks = screen.corners.map(corner => pickInScreen(target, corner, pickOptions))
 	let isStillWithParent = picks.some(pick => pick.screen === parent)
@@ -169,6 +178,8 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 
 	// Return info about the picked placement
 	const {part = PART_TYPE.UNKNOWN} = options
+	const route = pickLeader.route
+	addStep(route, number)
 	const pick = makePick({
 		screen,
 		corners: screen.corners,
@@ -177,6 +188,7 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 		number,
 		part,
 		depth: pickLeader.depth + 1,
+		route,
 	})
 	return pick
 	

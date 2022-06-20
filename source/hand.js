@@ -8,6 +8,7 @@ import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { PART_TYPE } from "./part.js"
 import { makeAddress } from "./address.js"
+import { getDrawnScreenFromRoute } from "./route.js"
 
 //======//
 // HAND //
@@ -143,6 +144,8 @@ HAND_STATE.MOVING = {
 			parent: pick.parent,
 			depth: pick.depth,
 		})
+
+		const drawnScreen = getDrawnScreenFromRoute(hand.pick.route)
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.address)

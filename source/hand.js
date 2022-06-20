@@ -141,6 +141,7 @@ HAND_STATE.MOVING = {
 			screen: movedScreen,
 			target: world,
 			parent: pick.parent,
+			depth: pick.depth,
 		})
 
 		if (!Mouse.Left) {
@@ -174,6 +175,7 @@ HAND_STATE.DRAWING = {
 			screen: drawnScreen,
 			target: world,
 			parent: pick.parent,
+			depth: pick.depth,
 		})
 
 		if (!Mouse.Left) {

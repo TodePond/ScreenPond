@@ -25,6 +25,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		depth = 0,
 		maxDepth = 1000,
 		ignore = undefined,
+		ignoreDepth = undefined,
 		part = undefined,
 		number = undefined,
 		snap = undefined,
@@ -45,7 +46,6 @@ export const pickInScreen = (screen, position, options = {}) => {
 		let i = -1
 		for (const child of screen.colour.screens) {
 			i++
-			if (child === ignore) continue
 
 			const scaledPity = getScaledPosition(pity, child.corners).map(axis => Math.abs(axis))
 			const mappedPosition = getMappedPosition(position, child.corners)
@@ -55,7 +55,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 
 			const relativeCorners = getRelativePositions(child.corners, screen.corners)
 			const relativeChild = makeScreen(child.colour, relativeCorners)
-			return pickInScreen(relativeChild, mappedPosition, {
+			const result = pickInScreen(relativeChild, mappedPosition, {
 				...options,
 				pity: scaledPity,
 				parent: screen,
@@ -64,12 +64,22 @@ export const pickInScreen = (screen, position, options = {}) => {
 				depth: depth + 1,
 				address: makeAddress(screen.colour, i),
 			})
+			if (result.part !== PART_TYPE.IGNORE) return result
 		}
 	}
 
 	// If we didn't pick any children, pick this screen
-	if (part === undefined) part = getMappedPositionPart(position, pity)
 	let pickedScreen = parent === undefined? screen : parent.colour.screens[number]
+
+	// Get the part of the screen
+	if (part === undefined) part = getMappedPositionPart(position, pity)
+	if (ignore === pickedScreen) {
+		if (ignoreDepth === undefined || ignoreDepth === depth) {
+			part = PART_TYPE.IGNORE
+		}
+	}
+
+	// Collect together the pick information
 	const pick = makePick({
 		screen: pickedScreen,
 		corners: screen.corners,
@@ -114,15 +124,16 @@ export const placeScreen = (screen, target, options = {}) => {
 // screen = What we want to replace the it with
 // target = The screen that we are placing into (at the top level)
 // parent = The current screen's parent, which we should try our best to stay in
-export const replaceAddress = ({address, screen, target, parent, ...options} = {}) => {
+export const replaceAddress = ({address, screen, target, parent, depth, ...options} = {}) => {
 
 	// Pick where to place the screen
 	const oldScreen = getScreenFromAddress(address)
-	let picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore: oldScreen}))
+	const pickOptions = {...options, ignore: oldScreen, ignoreDepth: depth}
+	let picks = screen.corners.map(corner => pickInScreen(target, corner, pickOptions))
 	let isStillWithParent = picks.some(pick => pick.screen === parent)
 
 	if (!isStillWithParent) {
-		const snapPicks = screen.corners.map(corner => pickInScreen(target, corner, {...options, ignore: oldScreen, snap: parent}))
+		const snapPicks = screen.corners.map(corner => pickInScreen(target, corner, {...pickOptions, snap: parent}))
 		const snapIsStillWithParent = snapPicks.some(pick => pick.screen === parent)
 		if (snapIsStillWithParent) {
 			const depth = Math.min(...picks.map(pick => pick.depth))
@@ -165,7 +176,7 @@ export const replaceAddress = ({address, screen, target, parent, ...options} = {
 		parent: pickLeader.screen,
 		number,
 		part,
-		depth: pickLeader.depth,
+		depth: pickLeader.depth + 1,
 	})
 	return pick
 	

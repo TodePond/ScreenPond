@@ -23,6 +23,12 @@ export const getCanvasPositions = (context, viewPositions) => {
 	return canvasPositions
 }
 
+export const getMousePosition = (context, corners) => {
+	const viewPosition = getViewPosition(context, Mouse.position)
+	const position = getMappedPosition(viewPosition, corners)
+	return position
+}
+
 // HIGHER screen position -> DEEPER screen position
 //
 // Position... within a higher screen

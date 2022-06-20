@@ -1,13 +1,11 @@
-import { getMappedPosition, getMappedPositions, getRelativePosition, getRelativePositions, getScaledPosition, getViewPosition, isMappedPositionInCorners } from "./position.js"
+import { getMousePosition } from "./position.js"
 import { makeRectangleCorners, getPositionedCorners, getCornersPosition } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
-import { addScreen, removeScreen, removeScreenAddress, removeScreenNumber, removeScreensSet } from "./colour.js"
-import { subtractVector, addVector } from "./vector.js"
+import { subtractVector, addVector, scaleVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { PART_TYPE } from "./part.js"
-import { makeAddress } from "./address.js"
 import { getDrawnScreenFromRoute } from "./route.js"
 
 //======//
@@ -49,12 +47,6 @@ export const fireHandEvent = (context, hand, eventName, args = {}) => {
 	}
 
 	hand.state = newState
-}
-
-export const getMousePosition = (context, corners) => {
-	const viewPosition = getViewPosition(context, Mouse.position)
-	const position = getMappedPosition(viewPosition, corners)
-	return position
 }
 
 //==========//
@@ -132,8 +124,8 @@ HAND_STATE.MOVING = {
 		// Move
 		const mousePosition = getMousePosition(context, world.corners)
 		const handMovement = subtractVector(mousePosition, hand.handStart)
-		const pickMovement = addVector(hand.pickStart, handMovement)
-		const movedCorners = getPositionedCorners(pick.corners, pickMovement)
+		const movedPosition = addVector(hand.pickStart, handMovement)
+		const movedCorners = getPositionedCorners(pick.corners, movedPosition)
 		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
 
 		// Replace
@@ -146,6 +138,10 @@ HAND_STATE.MOVING = {
 		})
 
 		const drawnScreen = getDrawnScreenFromRoute(hand.pick.route)
+		const drawnPosition = getCornersPosition(drawnScreen.corners)
+		hand.pickStart = drawnPosition
+		hand.handStart = mousePosition
+		hand.pick.corners = drawnScreen.corners
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.address)

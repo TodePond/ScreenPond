@@ -1,5 +1,5 @@
 import { getMousePosition } from "./position.js"
-import { makeRectangleCorners, getPositionedCorners, getCornersPosition } from "./corners.js"
+import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
 import { subtractVector, addVector, scaleVector } from "./vector.js"
@@ -73,7 +73,7 @@ HAND_STATE.FREE = {
 	tick: ({context, hand, world, queue}) => {
 		
 		//======== HOVER ========//
-		const mousePosition = getMousePosition(context, world.corners)
+		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		hand.handStart = mousePosition
 
 		const pity = HAND_PICK_PITY
@@ -122,7 +122,7 @@ HAND_STATE.MOVING = {
 		const {pick} = hand
 
 		// Move
-		const mousePosition = getMousePosition(context, world.corners)
+		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		const handMovement = subtractVector(mousePosition, hand.handStart)
 		const movedPosition = addVector(hand.pickStart, handMovement)
 		const movedCorners = getPositionedCorners(pick.corners, movedPosition)
@@ -139,9 +139,13 @@ HAND_STATE.MOVING = {
 
 		const drawnScreen = getDrawnScreenFromRoute(hand.pick.route)
 		const drawnPosition = getCornersPosition(drawnScreen.corners)
-		hand.pickStart = drawnPosition
-		hand.handStart = mousePosition
-		hand.pick.corners = drawnScreen.corners
+		//hand.pickStart = drawnPosition
+		//hand.handStart = mousePosition
+		//hand.pick.corners = drawnScreen.corners
+
+		// TODO: Move world to reflect the new position of the cursor!!!
+		const missDisplacement = subtractVector(movedPosition, drawnPosition)
+		world.corners = getMovedCorners(world.corners, missDisplacement)
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.address)
@@ -161,7 +165,7 @@ HAND_STATE.DRAWING = {
 		const {pick} = hand
 
 		// Draw
-		const mousePosition = getMousePosition(context, world.corners)
+		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		const handMovement = subtractVector(mousePosition, hand.handStart)
 		const [width, height] = handMovement
 		const [x, y] = hand.pickStart

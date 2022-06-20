@@ -71,7 +71,7 @@ PRESET.SINGLE = createPreset({
 			{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.25, 0.25, 0.45, 0.45), 0.0)},
 		],
 		[RED]: [
-			{hex: BLUE, corners: getRotatedCorners(makeRectangleCorners(0.05, 0.05, 0.45, 0.45), 0.0)},
+			{hex: BLUE, corners: getRotatedCorners(makeRectangleCorners(0.2, 0.2, 0.45, 0.45), 0.0)},
 		],
 	}
 })

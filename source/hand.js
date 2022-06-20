@@ -144,7 +144,7 @@ HAND_STATE.MOVING = {
 		})
 
 		if (!Mouse.Left) {
-			tryToSurroundScreens(hand.pick.screen, world.colour)
+			tryToSurroundScreens(hand.pick.address)
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}
@@ -179,7 +179,7 @@ HAND_STATE.DRAWING = {
 		if (!Mouse.Left) {
 
 			// Check for surrounded screens
-			tryToSurroundScreens(hand.pick.screen, world.colour)
+			tryToSurroundScreens(hand.pick.address)
 			clearQueue(context, queue, world)
 			
 			return HAND_STATE.FREE

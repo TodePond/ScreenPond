@@ -146,14 +146,14 @@ export const replaceAddress = ({address, screen, target, parent, ...options} = {
 	}
 
 	// Place the screen
-	const relativeCorners = getMappedPositions(screen.corners, pickLeader.corners)
-	const relativeScreen = makeScreen(screen.colour, relativeCorners)
+	const mappedCorners = getMappedPositions(screen.corners, pickLeader.corners)
 	let number = address.number
 	if (isStillWithParent) {
-		oldScreen.corners = relativeCorners
+		oldScreen.corners = mappedCorners
 	} else {
+		const mappedScreen = makeScreen(screen.colour, mappedCorners)
 		removeScreenAddress(address)
-		number = addScreen(pickLeader.screen.colour, relativeScreen)
+		number = addScreen(pickLeader.screen.colour, mappedScreen)
 	}
 
 	// Return info about the picked placement
@@ -171,7 +171,10 @@ export const replaceAddress = ({address, screen, target, parent, ...options} = {
 	
 }
 
-export const tryToSurroundScreens = (screen, colour) => {
+export const tryToSurroundScreens = (address) => {
+
+	const {colour} = address
+	const screen = getScreenFromAddress(address)
 
 	const surroundedScreensSet = new Set()
 	const length = colour.screens.length

@@ -25,8 +25,8 @@ export const getDrawnScreenFromRoute = (route, stepNumber = route.length) => {
 
 		const number = step.item
 		const child = screen.colour.screens[number]
-		const mappedCorners = getRelativePositions(child.corners, screen.corners)
-		screen = makeScreen(child.colour, mappedCorners)
+		const relativeCorners = getRelativePositions(child.corners, screen.corners)
+		screen = makeScreen(child.colour, relativeCorners)
 		
 		i++
 	}

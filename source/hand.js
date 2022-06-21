@@ -149,7 +149,8 @@ HAND_STATE.MOVING = {
 
 		//print(newDrawnParent.colour, oldDrawnParent.colour)
 
-		const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition)
+		const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition).d
+		const missDistance = Math.hypot(...missDisplacement)
 		world.corners = getMovedCorners(world.corners, missDisplacement)
 
 		//print(parent.colour, drawnParent.colour)

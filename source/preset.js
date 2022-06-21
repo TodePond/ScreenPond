@@ -165,12 +165,12 @@ PRESET.GRID2 = createPreset({
 			//{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
 		],
 		[RED]: [
-			{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.25, 0.25, 0.5, 0.5), 0.0)},
+			{hex: BLUE, corners: getRotatedCorners(makeRectangleCorners(0.25, 0.25, 0.3, 0.3), 0.0)},
 		],
 	},
 	update: ({colours, queue, world, show, hand}) => {
-		rotateScreenNumber(colours[GREY], 0, 0.005)
-		const {context} = show
-		clearQueue(context, queue, world)
+		//rotateScreenNumber(colours[GREY], 0, 0.005)
+		//const {context} = show
+		//clearQueue(context, queue, world)
 	}
 })

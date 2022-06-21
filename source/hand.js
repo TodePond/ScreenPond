@@ -1,4 +1,4 @@
-import { getMappedPosition, getMousePosition } from "./position.js"
+import { getMappedPosition, getMappedPositions, getMousePosition, getRelativePositions } from "./position.js"
 import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
@@ -75,9 +75,8 @@ HAND_STATE.FREE = {
 		
 		//======== HOVER ========//
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
-		hand.handStart = mousePosition
-
 		const worldMousePosition = getMappedPosition(mousePosition, world.corners)
+		hand.handStart = mousePosition
 
 		const pity = HAND_PICK_PITY
 		const pick = pickInScreen(world, worldMousePosition, {pity})
@@ -95,7 +94,6 @@ HAND_STATE.FREE = {
 
 			//======== MOVE ========//
 			if (pick.part.type === PART_TYPE.EDGE) {
-
 				hand.pickStart = getCornersPosition(pick.corners)
 				return HAND_STATE.MOVING
 
@@ -123,20 +121,24 @@ HAND_STATE.MOVING = {
 	tick: ({context, hand, world, queue}) => {
 
 		const {pick} = hand
+
+		// Remember some stuff for after the move
 		const oldRoute = pick.route
-		
-		//pick.route.steps.pop()
 		const oldDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
 		const oldDrawnParentPosition = getCornersPosition(oldDrawnParent.corners)
 
-		// Move
+		// Work out mouse movement
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		const handMovement = subtractVector(mousePosition, hand.handStart)
+
+		// Work out screen movement
 		const movedPosition = addVector(hand.pickStart, handMovement)
 		const movedCorners = getPositionedCorners(pick.corners, movedPosition)
 		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
+		const mappedMovedCorners = getMappedPositions(movedCorners, world.corners)
+		const mappedMovedScreen = makeScreen(pick.screen.colour, mappedMovedCorners)
 
-		// Replace
+		// Replace screen with moved screen
 		hand.pick = replaceAddress({
 			address: pick.address,
 			screen: movedScreen,
@@ -145,12 +147,15 @@ HAND_STATE.MOVING = {
 			depth: pick.depth,
 		})
 
+		//print(...movedCorners.map(c => c.map(a => a.toFixed(2))))
+
+		// Yank the camera
 		if (areRoutesEqual(oldRoute, hand.pick.route)) {
 
 			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
 	
-			const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition).d
+			const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition)
 			const missDistance = Math.hypot(...missDisplacement)
 			world.corners = getMovedCorners(world.corners, missDisplacement)
 		}

@@ -137,6 +137,8 @@ export const placeScreen = (screen, target, options = {}) => {
 // screen = What we want to replace the it with
 // target = The screen that we are placing into (at the top level)
 // parent = The current screen's parent, which we should try our best to stay in
+//
+// note: 'screen' and 'target' should have their corners be relative to the view
 export const replaceAddress = ({address, screen, target, parent, depth, ...options} = {}) => {
 
 	const oldScreen = getScreenFromAddress(address)
@@ -177,7 +179,6 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 		oldScreen.corners = mappedCorners
 	} else {
 		const mappedScreen = makeScreen(screen.colour, mappedCorners)
-		removeScreenAddress(address)
 		number = addScreen(pickLeader.screen.colour, mappedScreen)
 	}
 

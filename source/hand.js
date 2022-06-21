@@ -1,4 +1,4 @@
-import { getMousePosition } from "./position.js"
+import { getMappedPosition, getMousePosition } from "./position.js"
 import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
@@ -76,8 +76,10 @@ HAND_STATE.FREE = {
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		hand.handStart = mousePosition
 
+		const worldMousePosition = getMappedPosition(mousePosition, world.corners)
+
 		const pity = HAND_PICK_PITY
-		const pick = pickInScreen(world, mousePosition, {pity})
+		const pick = pickInScreen(world, worldMousePosition, {pity})
 		hand.pick = pick
 			
 		if (pick.part.type === PART_TYPE.EDGE) {

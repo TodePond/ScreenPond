@@ -179,6 +179,7 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 		oldScreen.corners = mappedCorners
 	} else {
 		const mappedScreen = makeScreen(screen.colour, mappedCorners)
+		removeScreenAddress(address)
 		number = addScreen(pickLeader.screen.colour, mappedScreen)
 	}
 

@@ -6,7 +6,8 @@ import { subtractVector, addVector, scaleVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { PART_TYPE } from "./part.js"
-import { getDrawnScreenFromRoute } from "./route.js"
+import { getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
+import { getScreenFromAddress } from "./address.js"
 
 //======//
 // HAND //
@@ -122,6 +123,10 @@ HAND_STATE.MOVING = {
 	tick: ({context, hand, world, queue}) => {
 
 		const {pick} = hand
+		
+		//pick.route.steps.pop()
+		const oldDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
+		const oldDrawnParentPosition = getCornersPosition(oldDrawnParent.corners)
 
 		// Move
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
@@ -139,15 +144,23 @@ HAND_STATE.MOVING = {
 			depth: pick.depth,
 		})
 
-		const drawnScreen = getDrawnScreenFromRoute(hand.pick.route)
-		const drawnPosition = getCornersPosition(drawnScreen.corners)
+		const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
+		const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
+
+		//print(newDrawnParent.colour, oldDrawnParent.colour)
+
+		const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition)
+		world.corners = getMovedCorners(world.corners, missDisplacement)
+
+		//print(parent.colour, drawnParent.colour)
+
 		//hand.pickStart = drawnPosition
 		//hand.handStart = mousePosition
 		//hand.pick.corners = drawnScreen.corners
 
 		// TODO: Move world to reflect the new position of the cursor!!!
-		const missDisplacement = subtractVector(movedPosition, drawnPosition)
-		world.corners = getMovedCorners(world.corners, missDisplacement)
+		//const missDisplacement = subtractVector(movedPosition, drawnPosition)
+		//world.corners = getMovedCorners(world.corners, missDisplacement)
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.address)

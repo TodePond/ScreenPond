@@ -33,6 +33,26 @@ export class LinkedList {
 		}
 	}
 
+	pop() {
+		
+		if (this.isEmpty) {
+			return undefined
+		}
+		
+		const item = this.start.item
+
+		if (this.start === this.end) {
+			this.clear()
+			return item
+		}
+
+		
+		this.end = this.end.previous
+		this.end.next = undefined
+		return item
+
+	}
+
 	shift() {
 
 		if (this.isEmpty) {

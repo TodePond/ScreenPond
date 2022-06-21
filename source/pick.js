@@ -10,7 +10,10 @@ import { addStep, makeRoute } from "./route.js"
 //======//
 // A pick 
 const makePick = ({screen, corners, position, part, parent, number, depth, address, route} = {}) => {
-	if (address === undefined && parent !== undefined) address = makeAddress(parent.colour, number)
+	if (address === undefined && parent !== undefined && number !== undefined) {
+		address = makeAddress(parent.colour, number)
+	}
+
 	const pick = {screen, corners, position, part, parent, number, depth, address, route}
 	return pick
 }
@@ -43,9 +46,8 @@ export const pickInScreen = (screen, position, options = {}) => {
 
 	// Keep track of the route we go on
 	if (route === undefined) {
-		route = makeRoute(screen)
-	} else {
-		addStep(route, number)
+		const start = screen
+		route = makeRoute(start)
 	}
 
 	// Look through all this screen's children
@@ -67,10 +69,13 @@ export const pickInScreen = (screen, position, options = {}) => {
 			const relativeCorners = getRelativePositions(child.corners, screen.corners)
 			const relativeChild = makeScreen(child.colour, relativeCorners)
 
+			addStep(route, i)
+			const addressedScreen = address === undefined? screen : getScreenFromAddress(address)
+
 			return pickInScreen(relativeChild, mappedPosition, {
 				...options,
 				pity: scaledPity,
-				parent: screen,
+				parent: addressedScreen,
 				part: childPart,
 				number: i,
 				depth: depth + 1,
@@ -180,6 +185,9 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 	const {part = PART_TYPE.UNKNOWN} = options
 	const route = pickLeader.route
 	addStep(route, number)
+	
+	//print(pickLeader.screen === window.global.colours[GREEN].screens[0])
+
 	const pick = makePick({
 		screen,
 		corners: screen.corners,

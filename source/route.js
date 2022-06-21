@@ -47,3 +47,16 @@ export const getAddressedScreenFromRoute = (route, stepNumber = route.length) =>
 	}
 	return screen
 }
+
+export const areRoutesEqual = (a, b) => {
+	if (a.start !== b.start) return false
+	if (a.length !== b.length) return false
+	const aSteps = [...a.steps]
+	let i = 0
+	for (const bStep of b.steps) {
+		const aStep = aSteps[i]
+		if (aStep.item !== bStep.item) return false
+		i++
+	}
+	return true
+}

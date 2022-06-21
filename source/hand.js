@@ -6,7 +6,7 @@ import { subtractVector, addVector, scaleVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { PART_TYPE } from "./part.js"
-import { getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
+import { areRoutesEqual, getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
 import { getScreenFromAddress } from "./address.js"
 
 //======//
@@ -123,6 +123,7 @@ HAND_STATE.MOVING = {
 	tick: ({context, hand, world, queue}) => {
 
 		const {pick} = hand
+		const oldRoute = pick.route
 		
 		//pick.route.steps.pop()
 		const oldDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
@@ -144,14 +145,17 @@ HAND_STATE.MOVING = {
 			depth: pick.depth,
 		})
 
-		const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
-		const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
+		if (areRoutesEqual(oldRoute, hand.pick.route)) {
 
-		//print(newDrawnParent.colour, oldDrawnParent.colour)
+			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
+			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
+	
+			const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition).d
+			const missDistance = Math.hypot(...missDisplacement)
+			world.corners = getMovedCorners(world.corners, missDisplacement)
+		}
 
-		const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition).d
-		const missDistance = Math.hypot(...missDisplacement)
-		world.corners = getMovedCorners(world.corners, missDisplacement)
+		
 
 		//print(parent.colour, drawnParent.colour)
 

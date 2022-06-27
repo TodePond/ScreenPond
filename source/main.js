@@ -26,4 +26,4 @@ show.supertick = (context) => {
 }
 
 registerColourPickers(global.hand, COLOUR_HEXES, global.colours)
-loadPresetName(global, "GRID2")
+loadPresetName(global, "SINGLE")

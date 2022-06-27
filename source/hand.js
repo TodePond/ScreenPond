@@ -124,11 +124,10 @@ HAND_STATE.MOVING = {
 
 		// Remember some stuff for after the move
 		const oldAddressedScreen = pick.screen
-		const oldDrawnCorners = pick.corners
 
 		const oldRoute = pick.route
 		const oldDrawnParent = getDrawnScreenFromRoute(oldRoute, oldRoute.length - 2)
-		//const oldDrawnParentPosition = getCornersPosition(oldDrawnParent.corners)
+		const oldDrawnParentPosition = getCornersPosition(oldDrawnParent.corners)
 
 		// Work out mouse movement
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
@@ -162,7 +161,6 @@ HAND_STATE.MOVING = {
 		//hand.handStart = mousePosition
 
 		// Yank the camera
-		/*
 		if (areRoutesEqual(oldRoute, hand.pick.route)) {
 			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
@@ -171,7 +169,6 @@ HAND_STATE.MOVING = {
 			//const missDistance = Math.hypot(...missDisplacement)
 			world.corners = getMovedCorners(world.corners, missDisplacement)
 		}
-		*/
 
 		//print(parent.colour, drawnParent.colour)
 

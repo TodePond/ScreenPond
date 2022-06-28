@@ -183,6 +183,7 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 		const mappedScreen = makeScreen(screen.colour, mappedCorners)
 		if (address.colour === pickLeader.screen.colour) {
 			setScreenNumber(address.colour, address.number, mappedScreen)
+			number = address.number
 		} else {
 			removeScreenAddress(address)
 			number = addScreen(pickLeader.screen.colour, mappedScreen)
@@ -196,7 +197,8 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 	
 	//print(pickLeader.screen === window.global.colours[GREEN].screens[0])
 
-	const resultParent = pickLeader.address === undefined? pickLeader.screen : getScreenFromAddress(pickLeader.address)
+	let resultParent = pickLeader.address === undefined? pickLeader.screen : getScreenFromAddress(pickLeader.address)
+	if (resultParent === undefined) resultParent = pickLeader.screen
 
 	const pick = makePick({
 		screen,

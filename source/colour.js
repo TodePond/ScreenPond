@@ -1,4 +1,6 @@
+import { makeAddress } from "./address.js"
 import { getRotatedCorners } from "./corners.js"
+import { addStep, makeRoute } from "./route.js"
 
 //========//
 // COLOUR //
@@ -65,4 +67,37 @@ export const setScreenNumber = (colour, number, screen) => {
 export const rotateScreenNumber = (colour, number, angle) => {
 	const screen = colour.screens[number]
 	screen.corners = getRotatedCorners(screen.corners, angle)
+}
+
+// Corrects a provided route too
+export const moveAddressToBack = (address, route = undefined) => {
+	const {colour, number} = address
+	const screen = colour.screens[number]
+	removeScreenAddress(address)
+	const newNumber = addScreen(colour, screen)
+	const newAddress = makeAddress(colour, newNumber)
+	if (route === undefined) {
+		return newAddress
+	}
+
+	const {start, steps} = route
+	let routeScreen = start
+
+	const newRoute = makeRoute(start)
+
+	for (const step of steps) {
+		let stepNumber = step.item
+		if (routeScreen.colour === colour) {
+			if (stepNumber === number) {
+				stepNumber = newNumber
+			} else if (stepNumber > number) {
+				stepNumber--
+			}
+		}
+		addStep(newRoute, stepNumber)
+		routeScreen = routeScreen.colour.screens[stepNumber]
+	}
+
+	return [newAddress, newRoute]
+	
 }

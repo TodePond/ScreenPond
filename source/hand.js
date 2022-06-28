@@ -7,7 +7,8 @@ import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { PART_TYPE } from "./part.js"
 import { areRoutesEqual, getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
-import { areAddressesEqual, getScreenFromAddress } from "./address.js"
+import { areAddressesEqual, getScreenFromAddress, makeAddress } from "./address.js"
+import { moveAddressToBack } from "./colour.js"
 
 //======//
 // HAND //
@@ -27,6 +28,7 @@ export const makeHand = (colours) => ({
 
 	startAddressedScreen: undefined,
 	startDrawnParent: undefined,
+	hasChangedParent: false,
 	//startRoute: undefined,
 
 })
@@ -98,10 +100,16 @@ HAND_STATE.FREE = {
 
 			//======== MOVE ========//
 			if (pick.part.type === PART_TYPE.EDGE) {
+
+				const [newAddress, newRoute] = moveAddressToBack(pick.address, pick.route)
+				hand.pick.address = newAddress
+				hand.pick.route = newRoute
+
 				hand.pickStart = getCornersPosition(pick.screen.corners)
 				hand.startAddressedScreen = pick.screen
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
 				//hand.startRoute = pick.route
+				hand.hasChangedParent = false
 				return HAND_STATE.MOVING
 
 			//======== ROTATE + SCALE ========//
@@ -159,12 +167,13 @@ HAND_STATE.MOVING = {
 		
 		//pick.screen = getAddressedScreenFromRoute(newPick.route)
 		//pick.route = newPick.route
+		if (newPick.address === undefined) {
+			print(newPick)
+		}
 		pick.address = newPick.address
 		pick.parent = newPick.parent
 		pick.depth = newPick.depth
-		pick.parent = newPick.parent
 		
-
 		//print(...movedCorners.map(c => c.map(a => a.toFixed(2))))
 
 		//oldAddressedScreen.corners = getMappedPositions(movedScreen.corners, oldDrawnParent.corners)
@@ -173,9 +182,8 @@ HAND_STATE.MOVING = {
 		//hand.handStart = mousePosition
 
 		// Yank the camera
-		if (newPick.isWithinParent) {
-		//if (hand.startAddressedParent === addressedParent) {
-		//if (areRoutesEqual(oldRoute, newPick.route)) {
+		if (!hand.hasChangedParent && newPick.isWithinParent) {
+		//if (areRoutesEqual(hand.startRoute, newPick.route)) {
 			
 			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
@@ -185,6 +193,7 @@ HAND_STATE.MOVING = {
 			world.corners = getMovedCorners(world.corners, missDisplacement)
 			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 		} else {
+			hand.hasChangedParent = true
 			//hand.startRoute = newPick.route
 			//pick.handStart = mousePosition
 			//pick.pickStart = getCornersPosition(pick.screen.corners)

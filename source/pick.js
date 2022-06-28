@@ -1,7 +1,7 @@
 import { getMappedPosition, getRelativePositions, getRelativePosition, getScaledPosition, getMappedPositions, isMappedPositionInCorners } from "./position.js"
 import { makeScreen } from "./screen.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
-import { addScreen, removeScreenAddress, removeScreensSet } from "./colour.js"
+import { addScreen, removeScreenAddress, removeScreensSet, setScreenNumber } from "./colour.js"
 import { getScreenFromAddress, makeAddress } from "./address.js"
 import { addStep, makeRoute } from "./route.js"
 
@@ -9,12 +9,12 @@ import { addStep, makeRoute } from "./route.js"
 // PICK //
 //======//
 // A pick 
-const makePick = ({screen, corners, position, part, parent, number, depth, address, route} = {}) => {
+const makePick = ({screen, corners, position, part, parent, number, depth, address, route, ...data} = {}) => {
 	if (address === undefined && parent !== undefined && number !== undefined) {
 		address = makeAddress(parent.colour, number)
 	}
 
-	const pick = {screen, corners, position, part, parent, number, depth, address, route}
+	const pick = {screen, corners, position, part, parent, number, depth, address, route, ...data}
 	return pick
 }
 
@@ -177,14 +177,22 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 	// Place the screen
 	const mappedCorners = getMappedPositions(screen.corners, pickLeader.corners)
 	let number = address.number
-	const mappedScreen = makeScreen(screen.colour, mappedCorners)
-	removeScreenAddress(address)
-	number = addScreen(pickLeader.screen.colour, mappedScreen)
+	if (false && isStillWithParent) {
+		oldScreen.corners = mappedCorners
+	} else {
+		const mappedScreen = makeScreen(screen.colour, mappedCorners)
+		if (address.colour === pickLeader.screen.colour) {
+			setScreenNumber(address.colour, address.number, mappedScreen)
+		} else {
+			removeScreenAddress(address)
+			number = addScreen(pickLeader.screen.colour, mappedScreen)
+		}
+	}
 
 	// Return info about the picked placement
 	const {part = PART_TYPE.UNKNOWN} = options
 	const route = pickLeader.route
-	addStep(route, number)
+	//addStep(route, number)
 	
 	//print(pickLeader.screen === window.global.colours[GREEN].screens[0])
 
@@ -199,6 +207,7 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 		part,
 		depth: pickLeader.depth + 1,
 		route,
+		isWithinParent: isStillWithParent,
 	})
 	return pick
 	

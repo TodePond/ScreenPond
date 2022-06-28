@@ -58,6 +58,10 @@ export const addScreen = (colour, screen) => {
 	return number
 }
 
+export const setScreenNumber = (colour, number, screen) => {
+	colour.screens[number] = screen
+}
+
 export const rotateScreenNumber = (colour, number, angle) => {
 	const screen = colour.screens[number]
 	screen.corners = getRotatedCorners(screen.corners, angle)

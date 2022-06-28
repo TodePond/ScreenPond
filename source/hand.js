@@ -7,7 +7,7 @@ import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { PART_TYPE } from "./part.js"
 import { areRoutesEqual, getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
-import { getScreenFromAddress } from "./address.js"
+import { areAddressesEqual, getScreenFromAddress } from "./address.js"
 
 //======//
 // HAND //
@@ -27,7 +27,7 @@ export const makeHand = (colours) => ({
 
 	startAddressedScreen: undefined,
 	startDrawnParent: undefined,
-	startRoute: undefined,
+	//startRoute: undefined,
 
 })
 
@@ -101,7 +101,7 @@ HAND_STATE.FREE = {
 				hand.pickStart = getCornersPosition(pick.screen.corners)
 				hand.startAddressedScreen = pick.screen
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
-				hand.startRoute = pick.route
+				//hand.startRoute = pick.route
 				return HAND_STATE.MOVING
 
 			//======== ROTATE + SCALE ========//
@@ -131,9 +131,7 @@ HAND_STATE.MOVING = {
 
 		// Remember some stuff for after the move
 		const oldAddressedScreen = hand.startAddressedScreen
-		const oldRoute = hand.startRoute
 		const oldDrawnParent = hand.startDrawnParent
-		//const oldDrawnParent = getDrawnScreenFromRoute(oldRoute, oldRoute.length - 2)
 		const oldDrawnParentPosition = getCornersPosition(oldDrawnParent.corners)
 
 		// Work out mouse movement
@@ -175,7 +173,9 @@ HAND_STATE.MOVING = {
 		//hand.handStart = mousePosition
 
 		// Yank the camera
-		if (areRoutesEqual(oldRoute, newPick.route)) {
+		if (newPick.isWithinParent) {
+		//if (hand.startAddressedParent === addressedParent) {
+		//if (areRoutesEqual(oldRoute, newPick.route)) {
 			
 			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)

@@ -142,14 +142,16 @@ export const placeScreen = (screen, target, options = {}) => {
 export const replaceAddress = ({address, screen, target, parent, depth, ...options} = {}) => {
 
 	const oldScreen = getScreenFromAddress(address)
+	const targetedCorners = getMappedPositions(screen.corners, target.corners)
+	const targetedScreen = makeScreen(screen.colour, targetedCorners)
 
 	// Pick where to place the screen
 	const pickOptions = {...options, ignore: oldScreen, ignoreDepth: depth}
-	let picks = screen.corners.map(corner => pickInScreen(target, corner, pickOptions))
+	let picks = targetedScreen.corners.map(corner => pickInScreen(target, corner, pickOptions))
 	let isStillWithParent = picks.some(pick => pick.screen === parent)
 
 	if (!isStillWithParent) {
-		const snapPicks = screen.corners.map(corner => pickInScreen(target, corner, {...pickOptions, snap: parent}))
+		const snapPicks = targetedScreen.corners.map(corner => pickInScreen(target, corner, {...pickOptions, snap: parent}))
 		const snapIsStillWithParent = snapPicks.some(pick => pick.screen === parent)
 		if (snapIsStillWithParent) {
 			const depth = Math.min(...picks.map(pick => pick.depth))
@@ -175,13 +177,9 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 	// Place the screen
 	const mappedCorners = getMappedPositions(screen.corners, pickLeader.corners)
 	let number = address.number
-	if (false && isStillWithParent) {
-		oldScreen.corners = mappedCorners
-	} else {
-		const mappedScreen = makeScreen(screen.colour, mappedCorners)
-		removeScreenAddress(address)
-		number = addScreen(pickLeader.screen.colour, mappedScreen)
-	}
+	const mappedScreen = makeScreen(screen.colour, mappedCorners)
+	removeScreenAddress(address)
+	number = addScreen(pickLeader.screen.colour, mappedScreen)
 
 	// Return info about the picked placement
 	const {part = PART_TYPE.UNKNOWN} = options

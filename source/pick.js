@@ -188,11 +188,13 @@ export const replaceAddress = ({address, screen, target, parent, depth, ...optio
 	
 	//print(pickLeader.screen === window.global.colours[GREEN].screens[0])
 
+	const resultParent = pickLeader.address === undefined? pickLeader.screen : getScreenFromAddress(pickLeader.address)
+
 	const pick = makePick({
 		screen,
 		corners: screen.corners,
 		position: pickLeader.position,
-		parent: pickLeader.screen,
+		parent: resultParent,
 		number,
 		part,
 		depth: pickLeader.depth + 1,

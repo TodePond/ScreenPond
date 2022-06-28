@@ -180,14 +180,12 @@ HAND_STATE.MOVING = {
 			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
 
-			
-	
 			const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition)
 			//const missDistance = Math.hypot(...missDisplacement)
 			world.corners = getMovedCorners(world.corners, missDisplacement)
 			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 		} else {
-			//pick.route = newPick.route
+			//hand.startRoute = newPick.route
 			//pick.handStart = mousePosition
 			//pick.pickStart = getCornersPosition(pick.screen.corners)
 		}

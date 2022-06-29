@@ -27,7 +27,8 @@ export const makeColours = () => {
 
 export const makeColour = (hex) => {
 	const screens = []
-	const colour = {hex, screens}
+	const parentNumber = 0
+	const colour = {hex, screens, parentNumber}
 	return colour
 }
 
@@ -100,4 +101,17 @@ export const moveAddressToBack = (address, route = undefined) => {
 
 	return [newAddress, newRoute]
 	
+}
+
+// This could be cached if a performance boost is needed
+export const getColourParents = (childColour, colours) => {
+	const parents = []
+	for (const colour of colours) {
+		for (const screen of colour.screens) {
+			if (screen.colour === childColour) {
+				parents.push(screen)
+			}
+		}
+	}
+	return parents
 }

@@ -9,6 +9,7 @@ import { PART_TYPE } from "./part.js"
 import { areRoutesEqual, getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
 import { areAddressesEqual, getScreenFromAddress, makeAddress } from "./address.js"
 import { moveAddressToBack } from "./colour.js"
+import { setWorldCorners } from "./world.js"
 
 //======//
 // HAND //
@@ -135,7 +136,7 @@ HAND_STATE.FREE = {
 
 HAND_STATE.MOVING = {
 	cursor: "move",
-	tick: ({context, hand, world, queue}) => {
+	tick: ({context, hand, world, queue, colours}) => {
 
 		const {pick} = hand
 
@@ -167,41 +168,24 @@ HAND_STATE.MOVING = {
 			depth: pick.depth,
 		})
 		
-		//pick.screen = getAddressedScreenFromRoute(newPick.route)
-		//pick.route = newPick.route
-		if (newPick.address === undefined) {
-			print(newPick)
-		}
 		pick.address = newPick.address
 		pick.parent = newPick.parent
 		pick.depth = newPick.depth
 		
-		//print(...movedCorners.map(c => c.map(a => a.toFixed(2))))
-
-		//oldAddressedScreen.corners = getMappedPositions(movedScreen.corners, oldDrawnParent.corners)
-		
-		//hand.pickStart = getCornersPosition(oldScreen.corners)
-		//hand.handStart = mousePosition
-
 		// Yank the camera
 		if (!hand.hasChangedParent && newPick.isWithinParent) {
-		//if (areRoutesEqual(hand.startRoute, newPick.route)) {
 			
 			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
 
 			const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition)
-			//const missDistance = Math.hypot(...missDisplacement)
-			world.corners = getMovedCorners(world.corners, missDisplacement)
+			const worldCorners = getMovedCorners(world.corners, missDisplacement)
+			setWorldCorners(world, worldCorners, colours)
 			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
+
 		} else {
 			hand.hasChangedParent = true
-			//hand.startRoute = newPick.route
-			//pick.handStart = mousePosition
-			//pick.pickStart = getCornersPosition(pick.screen.corners)
 		}
-
-		//print(parent.colour, drawnParent.colour)
 
 		if (!Mouse.Left) {
 			tryToSurroundScreens(hand.pick.address)

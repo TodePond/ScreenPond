@@ -85,7 +85,7 @@ HAND_STATE.FREE = {
 		hand.handStart = mousePosition
 
 		const pity = HAND_PICK_PITY
-		const pick = pickInScreen(world, worldMousePosition, {pity})
+		const pick = pickInScreen(world, worldMousePosition, {pity, bruteForceDepth: 10})
 		hand.pick = pick
 			
 		if (pick.part.type === PART_TYPE.EDGE) {
@@ -233,6 +233,7 @@ HAND_STATE.DRAWING = {
 			target: world,
 			parent: pick.parent,
 			depth: pick.depth,
+			bruteForceDepth: 10,
 		})
 
 		if (!Mouse.Left) {

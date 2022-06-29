@@ -16,6 +16,13 @@ export const addStep = (route, number) => {
 	route.length++
 }
 
+export const popStep = (route) => {
+	if (!route.steps.isEmpty) {
+		route.length--
+	}
+	route.steps.pop()
+}
+
 export const getDrawnScreenFromRoute = (route, stepNumber = route.length) => {
 	const {start, steps} = route
 	let screen = start

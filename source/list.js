@@ -38,19 +38,16 @@ export class LinkedList {
 		if (this.isEmpty) {
 			return undefined
 		}
-		
-		const item = this.start.item
 
+		const item = this.start.item
 		if (this.start === this.end) {
 			this.clear()
 			return item
 		}
 
-		
 		this.end = this.end.previous
 		this.end.next = undefined
 		return item
-
 	}
 
 	shift() {
@@ -60,7 +57,6 @@ export class LinkedList {
 		}
 
 		const item = this.start.item
-
 		if (this.start === this.end) {
 			this.clear()
 			return item

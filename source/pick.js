@@ -3,7 +3,7 @@ import { makeScreen } from "./screen.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
 import { addScreen, removeScreenAddress, removeScreensSet, setScreenNumber } from "./colour.js"
 import { getScreenFromAddress, makeAddress } from "./address.js"
-import { addStep, makeRoute } from "./route.js"
+import { addStep, makeRoute, popStep } from "./route.js"
 
 //======//
 // PICK //
@@ -33,6 +33,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		snap = undefined,
 		address = undefined,
 		route = undefined,
+		bruteForceDepth = 0,
 	} = options
 
 	// Check if this screen is the one we want to snap to!
@@ -64,7 +65,29 @@ export const pickInScreen = (screen, position, options = {}) => {
 			const mappedPosition = getMappedPosition(position, child.corners)
 			const childPart = getMappedPositionPart(mappedPosition, scaledPity)
 
-			if (childPart.type === PART_TYPE.OUTSIDE) continue
+			if (childPart.type === PART_TYPE.OUTSIDE) {
+				if (bruteForceDepth <= 0) continue
+				const relativeCorners = getRelativePositions(child.corners, screen.corners)
+				const relativeChild = makeScreen(child.colour, relativeCorners)
+				addStep(route, i)
+				const addressedScreen = address === undefined? screen : getScreenFromAddress(address)
+				const result = pickInScreen(relativeChild, mappedPosition, {
+					...options,
+					pity: scaledPity,
+					parent: addressedScreen,
+					part: childPart,
+					number: i,
+					depth: depth + 1,
+					address: makeAddress(screen.colour, i),
+					route,
+					bruteForceDepth: bruteForceDepth - 1,
+				})
+				if (result.part.type !== PART_TYPE.OUTSIDE) {
+					return result
+				}
+				popStep(route)
+				continue
+			}
 
 			const relativeCorners = getRelativePositions(child.corners, screen.corners)
 			const relativeChild = makeScreen(child.colour, relativeCorners)
@@ -110,7 +133,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 // Returns a pick object for the placed screen
 export const placeScreen = (screen, target, options = {}) => {
 	
-	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options}))
+	const picks = screen.corners.map(corner => pickInScreen(target, corner, {...options, bruteForceDepth: 0}))
 	const [head] = picks
 
 	const relativeCorners = getMappedPositions(screen.corners, head.corners)

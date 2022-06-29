@@ -34,6 +34,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		address = undefined,
 		route = undefined,
 		bruteForceDepth = 0,
+		maxBruteForce = Infinity,
 	} = options
 
 	// Check if this screen is the one we want to snap to!
@@ -67,6 +68,8 @@ export const pickInScreen = (screen, position, options = {}) => {
 
 			if (childPart.type === PART_TYPE.OUTSIDE) {
 				if (bruteForceDepth <= 0) continue
+				if (maxBruteForce <= 0) continue
+				maxBruteForce--
 				const relativeCorners = getRelativePositions(child.corners, screen.corners)
 				const relativeChild = makeScreen(child.colour, relativeCorners)
 				addStep(route, i)
@@ -81,6 +84,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 					address: makeAddress(screen.colour, i),
 					route,
 					bruteForceDepth: bruteForceDepth - 1,
+					maxBruteForce,
 				})
 				if (result.part.type !== PART_TYPE.OUTSIDE) {
 					return result
@@ -104,6 +108,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 				depth: depth + 1,
 				address: makeAddress(screen.colour, i),
 				route,
+				maxBruteForce,
 			})
 		}
 	}

@@ -74,6 +74,8 @@ HAND_STATE.START = {
 	tick: () => HAND_STATE.FREE,
 }
 
+const HAND_PICK_BRUTE_FORCE_DEPTH = 10
+const HAND_MAX_BRUTE_FORCE = 1000
 const HAND_PICK_PITY = [0.006].repeat(2)
 HAND_STATE.FREE = {
 	cursor: "default",
@@ -85,7 +87,7 @@ HAND_STATE.FREE = {
 		hand.handStart = mousePosition
 
 		const pity = HAND_PICK_PITY
-		const pick = pickInScreen(world, worldMousePosition, {pity, bruteForceDepth: 10})
+		const pick = pickInScreen(world, worldMousePosition, {pity, bruteForceDepth: HAND_PICK_BRUTE_FORCE_DEPTH, maxBruteForce: HAND_MAX_BRUTE_FORCE})
 		hand.pick = pick
 			
 		if (pick.part.type === PART_TYPE.EDGE) {
@@ -233,7 +235,8 @@ HAND_STATE.DRAWING = {
 			target: world,
 			parent: pick.parent,
 			depth: pick.depth,
-			bruteForceDepth: 10,
+			//bruteForceDepth: HAND_PICK_BRUTE_FORCE_DEPTH,
+			//maxBruteForce: HAND_MAX_BRUTE_FORCE,
 		})
 
 		if (!Mouse.Left) {

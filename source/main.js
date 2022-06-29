@@ -3,6 +3,7 @@ import { fireHandEvent, registerColourPickers } from "./hand.js"
 import { loadPresetName } from "./preset.js"
 import { clearQueue, continueDrawingQueue } from "./draw.js"
 import { COLOUR_HEXES } from "./colour.js"
+import { registerMouseWheel, updateZoom } from "./zoom.js"
 
 //======//
 // MAIN //
@@ -20,10 +21,12 @@ show.tick = () => {
 }
 
 show.supertick = (context) => {
-	const {queue, hand} = global
+	const {queue, hand, zoomer, world, colours} = global
 	fireHandEvent(context, hand, "tick", global)
+	updateZoom(context, queue, zoomer, world, colours)
 	continueDrawingQueue(context, queue)
 }
 
 registerColourPickers(global.hand, COLOUR_HEXES, global.colours)
+registerMouseWheel(global.zoomer)
 loadPresetName(global, "EMPTY")

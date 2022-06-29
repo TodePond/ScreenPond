@@ -88,7 +88,11 @@ HAND_STATE.FREE = {
 		hand.handStart = mousePosition
 
 		const pity = HAND_PICK_PITY
-		const pick = pickInScreen(world, worldMousePosition, {pity, bruteForceDepth: HAND_PICK_BRUTE_FORCE_DEPTH, maxBruteForce: HAND_MAX_BRUTE_FORCE})
+		const pick = pickInScreen(world, worldMousePosition, {
+			pity,
+			//bruteForceDepth: HAND_PICK_BRUTE_FORCE_DEPTH,
+			//maxBruteForce: HAND_MAX_BRUTE_FORCE,
+		})
 		hand.pick = pick
 			
 		if (pick.part.type === PART_TYPE.EDGE) {

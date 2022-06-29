@@ -95,3 +95,22 @@ export const getScaledPosition = (position, corners) => {
 	const scaledPosition = getMappedPosition(position, zeroedCorners)
 	return scaledPosition
 }
+
+export const getZoomedPosition = (position, zoom, origin) => {
+
+	const [x, y] = position
+	const [ox, oy] = origin
+	const originedPosition = [x-ox, y-oy]
+
+	const zoomedPosition = originedPosition.map(axis => axis * zoom)
+
+	const [zx, zy] = zoomedPosition
+	const movedPosition = [zx+ox, zy+oy]
+
+	return movedPosition
+}
+
+export const getZoomedPositions = (positions, zoom, origin) => {
+	const zoomedPositions = positions.map(position => getZoomedPosition(position, zoom, origin))
+	return zoomedPositions
+}

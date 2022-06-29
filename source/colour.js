@@ -111,7 +111,7 @@ export const getColourParents = (childColour, colours) => {
 	for (const colour of colours) {
 		for (const screen of colour.screens) {
 			if (screen.colour === childColour) {
-				const inverseCorners = getMappedPositions(VIEW_CORNERS, screen.corners).d
+				const inverseCorners = getMappedPositions(VIEW_CORNERS, screen.corners)
 				const parent = makeScreen(colour, inverseCorners)
 				parents.push(parent)
 			}

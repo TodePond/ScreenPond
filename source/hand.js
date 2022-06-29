@@ -19,6 +19,7 @@ export const makeHand = (colours) => ({
 	state: HAND_STATE.START,
 	cursor: HAND_STATE.START.cursor,
 	colour: colours[GREEN],
+	hidden: false,
 	
 	// What is the hand holding?
 	pick: undefined,
@@ -54,6 +55,10 @@ export const fireHandEvent = (context, hand, eventName, args = {}) => {
 		hand.cursor = newState.cursor
 	}
 
+	if (hand.hidden) {
+		context.canvas.style["cursor"] = "crosshair"
+	}
+
 	hand.state = newState
 }
 
@@ -65,6 +70,9 @@ export const registerColourPickers = (hand, hexes, colours) => {
 		const hex = hexes[i]
 		onkeydown(`${i+1}`, () => hand.colour = colours[hex])
 	}
+
+	onkeydown("q", () => hand.hidden = !hand.hidden)
+	
 }
 
 //========//

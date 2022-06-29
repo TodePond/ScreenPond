@@ -112,7 +112,7 @@ PRESET.INFINITE = createPreset({
 	},
 	update: ({colours, queue, show, hand, world}) => {
 		const s1 = colours[GREEN].screens[0]
-		s1.corners = getRotatedCorners(s1.corners, 0.005)
+		s1.corners = getRotatedCorners(s1.corners, 0.001)
 		const {context} = show
 		clearQueue(context, queue, world)
 	}

@@ -22,7 +22,7 @@ export const setWorldCorners = (world, corners, colours) => {
 		const relativeChildCorners = getRelativePositions(child.corners, world.corners)
 		const parts = relativeChildCorners.map(corner => getMappedPositionPart(corner))
 		if (parts.every(part => part.type === PART_TYPE.OUTSIDE)) {
-			print("ZOMMED")
+			// Fully entered world!!
 		}
 	}
 

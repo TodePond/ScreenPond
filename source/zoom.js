@@ -8,7 +8,8 @@ import { setWorldCorners } from "./world.js"
 //======//
 export const makeZoomer = () => {
 	const zoomer = {
-		speed: 1.0,
+		speed: 0.0,
+		desiredSpeed: 0.0,
 	}
 	return zoomer
 }
@@ -16,18 +17,33 @@ export const makeZoomer = () => {
 export const registerMouseWheel = (zoomer) => {
 	
 	on.mousewheel(e => {
-		const dspeed = e.deltaY * -0.0001
-		zoomer.speed += dspeed
+		const dspeed = Math.sign(e.deltaY)
+		zoomer.desiredSpeed += dspeed
+	})
+
+	on.keydown(e => {
+		if (e.key === "r") {
+			zoomer.desiredSpeed = 0.0
+		}
 	})
 
 }
 
 export const updateZoom = (context, queue, zoomer, world, colours) => {
 
+	const missingSpeed = zoomer.desiredSpeed - zoomer.speed
+	
+	zoomer.speed += Math.sign(missingSpeed) * 0.1
+
+	if (Math.abs(missingSpeed) < 0.001) {
+		zoomer.speed = zoomer.desiredSpeed
+	}
+
+
 	if (zoomer.speed === 1.0) return
 
 	const mousePosition = getMousePosition(context, VIEW_CORNERS)
-	const zoomedCorners = getZoomedPositions(world.corners, zoomer.speed, mousePosition)
+	const zoomedCorners = getZoomedPositions(world.corners, 1.0 + (zoomer.speed * -0.0025), mousePosition)
 	setWorldCorners(world, zoomedCorners, colours)
 	clearQueue(context, queue, world)
 }

@@ -33,17 +33,16 @@ export const updateZoom = (context, queue, zoomer, world, colours) => {
 
 	const missingSpeed = zoomer.desiredSpeed - zoomer.speed
 	
-	zoomer.speed += Math.sign(missingSpeed) * 0.1
-
-	if (Math.abs(missingSpeed) < 0.001) {
-		zoomer.speed = zoomer.desiredSpeed
+	zoomer.speed += Math.sign(missingSpeed) * 0.15
+	
+	if (Math.abs(zoomer.speed) < 0.001) {
+		zoomer.speed = 0.0
 	}
 
-
-	if (zoomer.speed === 1.0) return
+	if (zoomer.speed === 0.0) return
 
 	const mousePosition = getMousePosition(context, VIEW_CORNERS)
-	const zoomedCorners = getZoomedPositions(world.corners, 1.0 + (zoomer.speed * -0.0025), mousePosition)
+	const zoomedCorners = getZoomedPositions(world.corners, 1.0 + (zoomer.speed * -0.002), mousePosition)
 	setWorldCorners(world, zoomedCorners, colours)
 	clearQueue(context, queue, world)
 }

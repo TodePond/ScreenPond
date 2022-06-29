@@ -1,6 +1,8 @@
 import { makeAddress } from "./address.js"
-import { getRotatedCorners } from "./corners.js"
+import { getRotatedCorners, VIEW_CORNERS } from "./corners.js"
+import { getMappedPositions } from "./position.js"
 import { addStep, makeRoute } from "./route.js"
+import { makeScreen } from "./screen.js"
 
 //========//
 // COLOUR //
@@ -109,7 +111,9 @@ export const getColourParents = (childColour, colours) => {
 	for (const colour of colours) {
 		for (const screen of colour.screens) {
 			if (screen.colour === childColour) {
-				parents.push(screen)
+				const inverseCorners = getMappedPositions(VIEW_CORNERS, screen.corners).d
+				const parent = makeScreen(colour, inverseCorners)
+				parents.push(parent)
 			}
 		}
 	}

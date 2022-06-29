@@ -1,7 +1,7 @@
 import { getColourParents } from "./colour.js"
-import { makeRectangleCorners } from "./corners.js"
+import { makeRectangleCorners, VIEW_CORNERS } from "./corners.js"
 import { getMappedPositionPart, PART_TYPE } from "./part.js"
-import { getRelativePositions } from "./position.js"
+import { getMappedPositions, getRelativePositions } from "./position.js"
 import { makeScreen } from "./screen.js"
 
 //=======//
@@ -20,18 +20,33 @@ export const setWorldCorners = (world, corners, colours) => {
 	// Check if any children fill the whole world
 	for (const child of world.colour.screens) {
 		const relativeChildCorners = getRelativePositions(child.corners, world.corners)
-		const parts = relativeChildCorners.map(corner => getMappedPositionPart(corner))
-		if (parts.every(part => part.type === PART_TYPE.OUTSIDE)) {
-			// Fully entered world!!
+		const mappedViewCorners = getMappedPositions(VIEW_CORNERS, relativeChildCorners)
+
+		const parts = mappedViewCorners.map(corner => getMappedPositionPart(corner))
+		if (parts.every(part => part.type === PART_TYPE.INSIDE)) {
+			world.colour = child.colour
+			world.corners = relativeChildCorners
+			return
 		}
 	}
 
 	// Check that all world corners are outside the view
-	const parts = corners.map(corner => getMappedPositionPart(corner))
-	if (parts.every(part => part.type === PART_TYPE.OUTSIDE)) {
+	const mappedViewCorners = getMappedPositions(VIEW_CORNERS, corners)
+	const parts = mappedViewCorners.map(corner => getMappedPositionPart(corner))
+	if (parts.every(part => part.type === PART_TYPE.INSIDE)) {
 		return
 	}
 
 	const parents = getColourParents(world.colour, colours)
+	if (parents.length === 0) return
+	
+	world.colour.parentNumber++
+	if (world.colour.parentNumber >= parents.length) {
+		world.colour.parentNumber = 0
+	}
+
+	const parent = parents[world.colour.parentNumber]
+	world.corners = getRelativePositions(parent.corners, world.corners)
+	world.colour = parent.colour
 	
 }

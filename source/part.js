@@ -22,6 +22,7 @@ export const makePart = (type, number = 0) => {
 	return {type, number}
 }
 
+export const PART_CORNER_PITY_SCALE = 1.5
 export const getMappedPositionPart = (position, pity = [0, 0]) => {
 	const [x, y] = position
 	const [px, py] = pity.map(axis => Math.min(0.25, axis))

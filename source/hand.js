@@ -126,8 +126,10 @@ HAND_STATE.FREE = {
 				hand.pick.route = newRoute
 
 				hand.pickStart = getCornersPosition(pick.screen.corners)
-				hand.startCorners = getClonedCorners(pick.screen.corners)
+				hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
+				//hand.startCorners = getClonedCorners(pick.screen.corners)
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
+				hand.startPosition = getCornersPosition(hand.startCorners)
 				hand.hasChangedParent = false
 				return HAND_STATE.MOVING
 
@@ -178,23 +180,17 @@ HAND_STATE.MOVING = {
 
 		// Remember some stuff for after the move
 		const oldDrawnParent = hand.startDrawnParent
-		const oldDrawnParentPosition = getCornersPosition(oldDrawnParent.corners)
 
 		// Work out mouse movement
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		const movement = subtractVector(mousePosition, hand.handStart)
-		const scaledMovement = getScaledPosition(movement, oldDrawnParent.corners)
 
 		// Work out screen movement
-		const movedPosition = addVector(hand.pickStart, scaledMovement)
+		const movedPosition = addVector(hand.startPosition, movement)
 		const movedCorners = getPositionedCorners(hand.startCorners, movedPosition)
 
-		// Move the screen
-		//oldAddressedScreen.corners = movedCorners
-
 		// Replace screen with moved screen
-		const relativeMovedCorners = getRelativePositions(movedCorners, oldDrawnParent.corners)
-		const relativeMovedScreen = makeScreen(pick.screen.colour, relativeMovedCorners)
+		const relativeMovedScreen = makeScreen(pick.screen.colour, movedCorners)
 		const newPick = replaceAddress({
 			address: pick.address,
 			screen: relativeMovedScreen,
@@ -236,7 +232,6 @@ HAND_STATE.WARPING = {
 		const {pick} = hand
 
 		// Remember some stuff for after the move
-		const oldAddressedScreen = hand.startAddressedScreen
 		const oldDrawnParent = hand.startDrawnParent
 
 		// Work out mouse movement

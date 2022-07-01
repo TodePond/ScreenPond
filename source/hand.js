@@ -1,5 +1,5 @@
 import { getMappedPosition, getMappedPositions, getMousePosition, getRelativePositions, getScaledPosition } from "./position.js"
-import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners } from "./corners.js"
+import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners, getClonedCorners, getSubtractedCorners, getAddedCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
 import { subtractVector, addVector, scaleVector } from "./vector.js"
@@ -60,6 +60,10 @@ export const fireHandEvent = (context, hand, eventName, args = {}) => {
 	}
 
 	hand.state = newState
+}
+
+export const registerRightClick = () => {
+	on.contextmenu(e => e.preventDefault(), {passive: false})
 }
 
 //==========//
@@ -123,7 +127,6 @@ HAND_STATE.FREE = {
 				hand.pickStart = getCornersPosition(pick.screen.corners)
 				hand.startAddressedScreen = pick.screen
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
-				//hand.startRoute = pick.route
 				hand.hasChangedParent = false
 				return HAND_STATE.MOVING
 
@@ -140,6 +143,25 @@ HAND_STATE.FREE = {
 			hand.pick = placeScreen(screen, world)
 			hand.pickStart = getCornersPosition(hand.pick.screen.corners)
 			return HAND_STATE.DRAWING
+		}
+		
+		else if (Mouse.Right) {
+
+			//======== WARP ========//
+			if (pick.part.type === PART_TYPE.CORNER) {
+
+				const [newAddress, newRoute] = moveAddressToBack(pick.address, pick.route)
+				hand.pick.address = newAddress
+				hand.pick.route = newRoute
+
+				hand.startAddressedScreen = pick.screen
+				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
+				hand.pickStart = getCornersPosition(pick.screen.corners, hand.pick.part.number)
+
+				hand.hasChangedParent = false
+				return HAND_STATE.WARPING
+			}
+
 		}
 
 		return HAND_STATE.FREE
@@ -186,12 +208,9 @@ HAND_STATE.MOVING = {
 		
 		// Yank the camera
 		if (!hand.hasChangedParent && newPick.isWithinParent) {
-			
 			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
-			const newDrawnParentPosition = getCornersPosition(newDrawnParent.corners)
-
-			const missDisplacement = subtractVector(oldDrawnParentPosition, newDrawnParentPosition)
-			const worldCorners = getMovedCorners(world.corners, missDisplacement)
+			const parentDifferences = getSubtractedCorners(oldDrawnParent.corners, newDrawnParent.corners)
+			const worldCorners = getAddedCorners(world.corners, parentDifferences)
 			setWorldCorners(world, worldCorners, colours)
 			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 
@@ -207,6 +226,66 @@ HAND_STATE.MOVING = {
 
 		clearQueue(context, queue, world)
 		return HAND_STATE.MOVING
+	},
+}
+
+HAND_STATE.WARPING = {
+	cursor: "pointer",
+	tick: ({context, hand, world, queue, colours}) => {
+		const {pick} = hand
+
+		// Remember some stuff for after the move
+		const oldAddressedScreen = hand.startAddressedScreen
+		const oldDrawnParent = hand.startDrawnParent
+
+		// Work out mouse movement
+		const mousePosition = getMousePosition(context, VIEW_CORNERS)
+		const movement = subtractVector(mousePosition, hand.handStart)
+		const scaledMovement = getScaledPosition(movement, oldDrawnParent.corners)
+
+		// Work out screen movement
+		const movedPosition = addVector(hand.pickStart, scaledMovement)
+		const movedCorners = getClonedCorners(oldAddressedScreen.corners)
+		movedCorners[pick.part.number] = movedPosition
+
+		// Move the screen
+		oldAddressedScreen.corners = movedCorners
+
+		// Replace screen with moved screen
+		const relativeMovedCorners = getRelativePositions(movedCorners, oldDrawnParent.corners)
+		const relativeMovedScreen = makeScreen(pick.screen.colour, relativeMovedCorners)
+		const newPick = replaceAddress({
+			address: pick.address,
+			screen: relativeMovedScreen,
+			target: world,
+			parent: pick.parent,
+			depth: pick.depth,
+		})
+		
+		pick.address = newPick.address
+		pick.parent = newPick.parent
+		pick.depth = newPick.depth
+		
+		// Yank the camera
+		if (!hand.hasChangedParent && newPick.isWithinParent) {
+			const newDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
+			const parentDifferences = getSubtractedCorners(oldDrawnParent.corners, newDrawnParent.corners)
+			const worldCorners = getAddedCorners(world.corners, parentDifferences)
+			setWorldCorners(world, worldCorners, colours)
+			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
+
+		} else {
+			hand.hasChangedParent = true
+		}
+
+		if (!Mouse.Right) {
+			tryToSurroundScreens(hand.pick.address)
+			clearQueue(context, queue, world)
+			return HAND_STATE.FREE
+		}
+
+		clearQueue(context, queue, world)
+		return HAND_STATE.WARPING
 	},
 }
 

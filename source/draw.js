@@ -1,6 +1,5 @@
 import { getCanvasPositions, getRelativePositions } from "./position.js"
 import { makeScreen} from "./screen.js"
-import { VIEW_CORNERS } from "./corners.js"
 
 //======//
 // DRAW //

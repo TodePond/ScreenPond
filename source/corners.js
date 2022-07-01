@@ -58,8 +58,31 @@ export const getZeroedCorners = (corners) => {
 	return zeroedCorners
 }
 
-export const getCornersPosition = (corners) => {
-	const [a] = corners
-	const position = [...a]
+export const getCornersPosition = (corners, number = 0) => {
+	const corner = corners[number]
+	const position = [...corner]
 	return position
+}
+
+export const getClonedCorners = (corners) => {
+	const clonedCorners = corners.map(corner => [...corner])
+	return clonedCorners
+}
+
+export const getSubtractedCorners = (a, b) => {
+	const differences = []
+	for (let i = 0; i < 4; i++) {
+		const difference = subtractVector(a[i], b[i])
+		differences.push(difference)
+	}
+	return differences
+}
+
+export const getAddedCorners = (a, b) => {
+	const totals = []
+	for (let i = 0; i < 4; i++) {
+		const total = addVector(a[i], b[i])
+		totals.push(total)
+	}
+	return totals
 }

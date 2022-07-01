@@ -158,9 +158,9 @@ HAND_STATE.FREE = {
 				hand.pick.route = newRoute
 
 				hand.startAddressedScreen = pick.screen
-				hand.startCorners = getClonedCorners(pick.screen.corners)
+				hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
-				hand.pickStart = getCornersPosition(pick.screen.corners, hand.pick.part.number)
+				hand.pickStart = getCornersPosition(hand.startCorners, hand.pick.part.number)
 
 				hand.hasChangedParent = false
 				return HAND_STATE.WARPING
@@ -190,10 +190,10 @@ HAND_STATE.MOVING = {
 		const movedCorners = getPositionedCorners(hand.startCorners, movedPosition)
 
 		// Replace screen with moved screen
-		const relativeMovedScreen = makeScreen(pick.screen.colour, movedCorners)
+		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
 		const newPick = replaceAddress({
 			address: pick.address,
-			screen: relativeMovedScreen,
+			screen: movedScreen,
 			target: world,
 			parent: pick.parent,
 			depth: pick.depth,
@@ -237,22 +237,17 @@ HAND_STATE.WARPING = {
 		// Work out mouse movement
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		const movement = subtractVector(mousePosition, hand.handStart)
-		const scaledMovement = getScaledPosition(movement, oldDrawnParent.corners)
 
 		// Work out screen movement
-		const movedPosition = addVector(hand.pickStart, scaledMovement)
+		const movedPosition = addVector(hand.pickStart, movement)
 		const movedCorners = getClonedCorners(hand.startCorners)
 		movedCorners[pick.part.number] = movedPosition
 
-		// Move the screen
-		//oldAddressedScreen.corners = movedCorners
-
 		// Replace screen with moved screen
-		const relativeMovedCorners = getRelativePositions(movedCorners, oldDrawnParent.corners)
-		const relativeMovedScreen = makeScreen(pick.screen.colour, relativeMovedCorners)
+		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
 		const newPick = replaceAddress({
 			address: pick.address,
-			screen: relativeMovedScreen,
+			screen: movedScreen,
 			target: world,
 			parent: pick.parent,
 			depth: pick.depth,

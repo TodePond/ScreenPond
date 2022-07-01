@@ -125,7 +125,7 @@ HAND_STATE.FREE = {
 				hand.pick.route = newRoute
 
 				hand.pickStart = getCornersPosition(pick.screen.corners)
-				hand.startAddressedScreen = pick.screen
+				hand.startCorners = getClonedCorners(pick.screen.corners)
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
 				hand.hasChangedParent = false
 				return HAND_STATE.MOVING
@@ -155,6 +155,7 @@ HAND_STATE.FREE = {
 				hand.pick.route = newRoute
 
 				hand.startAddressedScreen = pick.screen
+				hand.startCorners = getClonedCorners(pick.screen.corners)
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
 				hand.pickStart = getCornersPosition(pick.screen.corners, hand.pick.part.number)
 
@@ -175,7 +176,6 @@ HAND_STATE.MOVING = {
 		const {pick} = hand
 
 		// Remember some stuff for after the move
-		const oldAddressedScreen = hand.startAddressedScreen
 		const oldDrawnParent = hand.startDrawnParent
 		const oldDrawnParentPosition = getCornersPosition(oldDrawnParent.corners)
 
@@ -186,10 +186,10 @@ HAND_STATE.MOVING = {
 
 		// Work out screen movement
 		const movedPosition = addVector(hand.pickStart, scaledMovement)
-		const movedCorners = getPositionedCorners(oldAddressedScreen.corners, movedPosition)
+		const movedCorners = getPositionedCorners(hand.startCorners, movedPosition)
 
 		// Move the screen
-		oldAddressedScreen.corners = movedCorners
+		//oldAddressedScreen.corners = movedCorners
 
 		// Replace screen with moved screen
 		const relativeMovedCorners = getRelativePositions(movedCorners, oldDrawnParent.corners)
@@ -241,15 +241,15 @@ HAND_STATE.WARPING = {
 		// Work out mouse movement
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		const movement = subtractVector(mousePosition, hand.handStart)
-		const scaledMovement = getScaledPosition(movement, oldDrawnParent.corners)
+		const scaledMovement = movement//getScaledPosition(movement, oldDrawnParent.corners)
 
 		// Work out screen movement
 		const movedPosition = addVector(hand.pickStart, scaledMovement)
-		const movedCorners = getClonedCorners(oldAddressedScreen.corners)
+		const movedCorners = getClonedCorners(hand.startCorners)
 		movedCorners[pick.part.number] = movedPosition
 
 		// Move the screen
-		oldAddressedScreen.corners = movedCorners
+		//oldAddressedScreen.corners = movedCorners
 
 		// Replace screen with moved screen
 		const relativeMovedCorners = getRelativePositions(movedCorners, oldDrawnParent.corners)

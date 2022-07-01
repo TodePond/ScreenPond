@@ -47,7 +47,7 @@ export const ibilerp = (point, corners) => {
 	const k0 = crossProductVector(h, e)
 		
 	// If edges are parallel, this is a linear equation
-	if (Math.abs(k2) < 0.001) {
+	if (Math.abs(k2) < 0.00001) {
 		const x = (h[0]*k1+f[0]*k0) / (e[0]*k1-g[0]*k0)
 		const y = -k0/k1
 		return [x, y]
@@ -61,7 +61,7 @@ export const ibilerp = (point, corners) => {
 	let v = (-k1 - w)*ik2
 	let u = (h[0] - f[0]*v)/(e[0] + g[0]*v)
 
-	if (u<0.0 || u>1.0 || v<0.0 || v>1.0) {
+	if (u<=0.0 || u>=1.0 || v<=0.0 || v>=1.0) {
 		v = (-k1 + w)*ik2
 		u = (h[0] - f[0]*v)/(e[0] + g[0]*v)
 	}

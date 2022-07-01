@@ -22,15 +22,15 @@ export const makePart = (type, number = 0) => {
 	return {type, number}
 }
 
-export const PART_CORNER_PITY_SCALE = 1.5
+export const PART_OUTSIDE_PITY_SCALE = 1.0
 export const getMappedPositionPart = (position, pity = [0, 0]) => {
 	const [x, y] = position
 	const [px, py] = pity.map(axis => Math.min(0.25, axis))
 
-	if (x <= 0.0-px) return makePart(PART_TYPE.OUTSIDE)
-	if (x >= 1.0+px) return makePart(PART_TYPE.OUTSIDE)
-	if (y <= 0.0-py) return makePart(PART_TYPE.OUTSIDE)
-	if (y >= 1.0+py) return makePart(PART_TYPE.OUTSIDE)
+	if (x <= 0.0-px*PART_OUTSIDE_PITY_SCALE) return makePart(PART_TYPE.OUTSIDE)
+	if (x >= 1.0+px*PART_OUTSIDE_PITY_SCALE) return makePart(PART_TYPE.OUTSIDE)
+	if (y <= 0.0-py*PART_OUTSIDE_PITY_SCALE) return makePart(PART_TYPE.OUTSIDE)
+	if (y >= 1.0+py*PART_OUTSIDE_PITY_SCALE) return makePart(PART_TYPE.OUTSIDE)
 
 	// Left Edge
 	if (x <= 0.0+px) {

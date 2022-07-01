@@ -35,6 +35,7 @@ export const pickInScreen = (screen, position, options = {}) => {
 		route = undefined,
 		bruteForceDepth = 0,
 		maxBruteForce = Infinity,
+		safe = true,
 	} = options
 
 	// Check if this screen is the one we want to snap to!
@@ -63,7 +64,10 @@ export const pickInScreen = (screen, position, options = {}) => {
 			}
 
 			const scaledPity = getScaledPosition(pity, child.corners).map(axis => Math.abs(axis))
-			const mappedPosition = getMappedPosition(position, child.corners)
+			const mappedPosition = getMappedPosition(position, child.corners, safe)
+			if (mappedPosition.some(axis => isNaN(axis))) {
+				continue
+			}
 			const childPart = getMappedPositionPart(mappedPosition, scaledPity)
 
 			if (childPart.type === PART_TYPE.OUTSIDE) {

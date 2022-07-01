@@ -49,8 +49,9 @@ export const getRelativePositions = (positions, corners) => {
 // Position... within a higher screen
 // Corners... of a deeper screen
 // Return: If we treat the deeper screen as the co-ordinates, where should we place the position?
-export const getMappedPosition = (position, corners) => {
+export const getMappedPosition = (position, corners, safe = true) => {
 	const mappedPosition = ibilerp(position, corners)
+	if (!safe) return mappedPosition
 	return mappedPosition.map(axis => isNaN(axis)? 0 : axis)
 }
 

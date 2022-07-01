@@ -104,6 +104,7 @@ HAND_STATE.FREE = {
 			pity,
 			//bruteForceDepth: HAND_PICK_BRUTE_FORCE_DEPTH,
 			//maxBruteForce: HAND_MAX_BRUTE_FORCE,
+			safe: false,
 		})
 		hand.pick = pick
 			
@@ -241,7 +242,7 @@ HAND_STATE.WARPING = {
 		// Work out mouse movement
 		const mousePosition = getMousePosition(context, VIEW_CORNERS)
 		const movement = subtractVector(mousePosition, hand.handStart)
-		const scaledMovement = movement//getScaledPosition(movement, oldDrawnParent.corners)
+		const scaledMovement = getScaledPosition(movement, oldDrawnParent.corners)
 
 		// Work out screen movement
 		const movedPosition = addVector(hand.pickStart, scaledMovement)

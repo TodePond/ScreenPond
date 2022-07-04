@@ -16,7 +16,6 @@ export const makeZoomer = () => {
 	return zoomer
 }
 
-let slowZoomMode = false
 export const registerMouseWheel = (zoomer) => {
 
 	onkeydown("z", () => zoomer.smoothMode = !zoomer.smoothMode)

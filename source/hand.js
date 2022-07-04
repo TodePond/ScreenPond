@@ -210,7 +210,7 @@ HAND_STATE.MOVING = {
 			const worldCorners = getAddedCorners(world.corners, parentDifferences)
 			setWorldCorners(world, worldCorners, colours)
 			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
-
+			hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
 		} else {
 			hand.hasChangedParent = true
 		}
@@ -264,7 +264,7 @@ HAND_STATE.WARPING = {
 			const worldCorners = getAddedCorners(world.corners, parentDifferences)
 			setWorldCorners(world, worldCorners, colours)
 			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
-
+			hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
 		} else {
 			hand.hasChangedParent = true
 		}

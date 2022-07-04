@@ -23,6 +23,8 @@ Pick = Object representing a position in a specific colour. When a pick is used 
 Part = Object representing a part of a screen (Inside, Outside, Edge, Corner)
 Route = An object containing the steps we took to pick a screen
 
+Yank = Sometimes, the 'camera' needs to be adjusted to keep things in the same place (eg: the cursor) - I call this process 'yanking' (mainly appears in github issues)
+
 ==============================================================
 
 Pick

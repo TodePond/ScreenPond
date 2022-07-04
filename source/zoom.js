@@ -16,7 +16,7 @@ export const makeZoomer = () => {
 
 export const registerMouseWheel = (zoomer) => {
 	
-	on.mousewheel(e => {
+	on.wheel(e => {
 		const dspeed = Math.sign(e.deltaY)
 		zoomer.desiredSpeed += dspeed
 	})

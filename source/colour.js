@@ -109,12 +109,15 @@ export const moveAddressToBack = (address, route = undefined) => {
 export const getColourParents = (childColour, colours) => {
 	const parents = []
 	for (const colour of colours) {
+		let i = 0
 		for (const screen of colour.screens) {
 			if (screen.colour === childColour) {
 				const inverseCorners = getMappedPositions(VIEW_CORNERS, screen.corners)
 				const parent = makeScreen(colour, inverseCorners)
+				parent.number = i
 				parents.push(parent)
 			}
+			i++
 		}
 	}
 	return parents

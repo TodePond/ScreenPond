@@ -1,7 +1,8 @@
 import { getColourParents } from "./colour.js"
-import { makeRectangleCorners, VIEW_CORNERS } from "./corners.js"
+import { getAddedCorners, getClonedCorners, getCornersPosition, getMovedCorners, getSubtractedCorners, makeRectangleCorners, VIEW_CORNERS } from "./corners.js"
 import { getMappedPositionPart, PART_TYPE } from "./part.js"
 import { getMappedPositions, getRelativePositions } from "./position.js"
+import { addStep, getDrawnScreenFromRoute, makeRoute } from "./route.js"
 import { makeScreen } from "./screen.js"
 
 //=======//
@@ -44,9 +45,18 @@ export const setWorldCorners = (world, corners, colours) => {
 	if (world.colour.parentNumber >= parents.length) {
 		world.colour.parentNumber = 0
 	}
-
+	
 	const parent = parents[world.colour.parentNumber]
-	world.corners = getRelativePositions(parent.corners, world.corners)
+	const parentCorners = getRelativePositions(parent.corners, world.corners)
+
+	const child = parent.colour.screens[parent.number]
+	const relativeChildCorners = getRelativePositions(child.corners, parentCorners)
+	const viewChildCorners = getMappedPositions(VIEW_CORNERS, relativeChildCorners)
+
+	const difference = getSubtractedCorners(mappedViewCorners, viewChildCorners)
+	const yankedCorners = getAddedCorners(parentCorners, difference)
+
+	world.corners = yankedCorners
 	world.colour = parent.colour
 	
 }

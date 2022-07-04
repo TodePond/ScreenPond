@@ -168,8 +168,32 @@ HAND_STATE.FREE = {
 
 		}
 
+		else if (Mouse.Middle) {
+			
+			//======== COLOUR ========//
+			const addressedScreen = getScreenFromAddress(hand.pick.address, world)
+			if (addressedScreen.colour !== hand.colour) {
+				addressedScreen.colour = hand.colour
+				clearQueue(context, queue, world)
+			}
+			return HAND_STATE.COLOURING
+
+		}
+
 		return HAND_STATE.FREE
 	},
+}
+
+HAND_STATE.COLOURING = {
+	cursor: "default",
+	tick: ({context, hand, world, queue}) => {
+		if (Mouse.Middle) {
+			return HAND_STATE.COLOURING
+		}
+
+		return HAND_STATE.FREE
+	},
+
 }
 
 HAND_STATE.MOVING = {
@@ -275,7 +299,7 @@ HAND_STATE.WARPING = {
 			const worldCorners = getAddedCorners(world.corners, parentDifferences)
 			setWorldCorners(world, worldCorners, colours)
 			*/
-			
+
 			hand.startDrawnParent = getDrawnScreenFromRoute(hand.pick.route, hand.pick.route.length - 2)
 			hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
 			

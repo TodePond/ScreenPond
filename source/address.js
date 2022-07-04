@@ -6,7 +6,8 @@ export const makeAddress = (colour, number) => {
 	return address
 }
 
-export const getScreenFromAddress = (address) => {
+export const getScreenFromAddress = (address, world = undefined) => {
+	if (address === undefined) return world
 	const {colour, number} = address
 	const screen = colour.screens[number]
 	return screen

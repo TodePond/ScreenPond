@@ -1,3 +1,5 @@
+import { wrap } from "./number.js"
+
 //======//
 // PART //
 //======//
@@ -9,6 +11,12 @@
 //  0
 // 1 2
 //  3
+export const getEdgeCorners = (edgeNumber) => {
+	const unwrappedCornerNumbers = [edgeNumber-1, edgeNumber+1]
+	const cornerNumbers = unwrappedCornerNumbers.map(v => wrap(v, 0, 3))
+	return cornerNumbers
+}
+
 export const PART_TYPE = {
 	OUTSIDE: Symbol("PART_TYPE.OUTSIDE"),
 	INSIDE: Symbol("PART_TYPE.INSIDE"),

@@ -99,10 +99,10 @@ export const getRotatedToPositionCorners = (corners, number, position) => {
 	const newDistance = distanceBetweenVectors(center, position)
 	const newAngle = angleBetweenVectors(center, position)
 
-	const ddistance = newDistance - oldDistance
+	const mdistance = newDistance / oldDistance
 	const dangle = newAngle - oldAngle
 
-	const newDistances = distances.map(distance => distance + ddistance)
+	const newDistances = distances.map(distance => distance * mdistance)
 	const newAngles = angles.map(angle => angle + dangle)
 
 	const rotatedCorners = corners.map((corner, i) => {

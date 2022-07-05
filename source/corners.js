@@ -1,4 +1,4 @@
-import { addVector, scaleVector, distanceBetweenVectors, subtractVector } from "./vector.js"
+import { addVector, scaleVector, distanceBetweenVectors, subtractVector, angleBetweenVectors } from "./vector.js"
 import { getRotatedPosition } from "./position.js"
 
 //=========//
@@ -85,4 +85,33 @@ export const getAddedCorners = (a, b) => {
 		totals.push(total)
 	}
 	return totals
+}
+
+export const getRotatedToPositionCorners = (corners, number, position) => {
+
+	const center = getCornersCenter(corners)
+	const distances = corners.map(corner => distanceBetweenVectors(center, corner))
+	const angles = corners.map(corner => angleBetweenVectors(center, corner))
+
+	const oldDistance = distances[number]
+	const oldAngle = angles[number]
+
+	const newDistance = distanceBetweenVectors(center, position)
+	const newAngle = angleBetweenVectors(center, position)
+
+	const ddistance = newDistance - oldDistance
+	const dangle = newAngle - oldAngle
+
+	const newDistances = distances.map(distance => distance + ddistance)
+	const newAngles = angles.map(angle => angle + dangle)
+
+	const rotatedCorners = corners.map((corner, i) => {
+		const x = Math.cos(newAngles[i]) * newDistances[i]
+		const y = Math.sin(newAngles[i]) * newDistances[i]
+		return subtractVector(center, [x, y])
+	})
+
+	//const rotatedCorners = getClonedCorners(corners)
+	//rotatedCorners[number] = position
+	return rotatedCorners
 }

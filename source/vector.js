@@ -31,3 +31,10 @@ export const distanceBetweenVectors = (a, b) => {
 	const distance = Math.hypot(dx, dy)
 	return distance
 }
+
+export const angleBetweenVectors = (a, b) => {
+	const displacement = subtractVector(a, b)
+	const [dx, dy] = displacement
+	const angle = Math.atan2(dy, dx)
+	return angle
+}

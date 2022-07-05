@@ -1,5 +1,5 @@
 import { getMappedPosition, getMappedPositions, getMousePosition, getRelativePositions, getScaledPosition } from "./position.js"
-import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners, getClonedCorners, getSubtractedCorners, getAddedCorners } from "./corners.js"
+import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners, getClonedCorners, getSubtractedCorners, getAddedCorners, getRotatedToPositionCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
 import { subtractVector, addVector, scaleVector } from "./vector.js"
@@ -134,7 +134,17 @@ HAND_STATE.FREE = {
 
 			//======== ROTATE + SCALE ========//
 			} else if (pick.part.type === PART_TYPE.CORNER) {
-				
+
+				const [newAddress, newRoute] = moveAddressToBack(pick.address, pick.route)
+				hand.pick.address = newAddress
+				hand.pick.route = newRoute
+
+				hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
+				hand.startPositions = getClonedCorners(hand.startCorners) //probably don't need to clone but let's do it just in case
+				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
+
+				hand.hasChangedParent = false
+				return HAND_STATE.ROTATING
 			}
 
 			//======== DRAW ========//
@@ -201,7 +211,7 @@ HAND_STATE.FREE = {
 
 HAND_STATE.COLOURING = {
 	cursor: "default",
-	tick: ({context, hand, world, queue}) => {
+	tick: () => {
 		if (Mouse.Middle) {
 			return HAND_STATE.COLOURING
 		}
@@ -281,8 +291,6 @@ HAND_STATE.STRETCHING = {
 		const [a, b] = getEdgeCorners(pick.part.number)
 		movedCorners[a] = movedPosition1
 		movedCorners[b] = movedPosition2
-		
-		//movedCorners[wrap(pick.part.number-1, 0, 3)] = movedPosition2
 
 		// Replace screen with moved screen
 		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
@@ -323,6 +331,56 @@ HAND_STATE.STRETCHING = {
 
 		clearQueue(context, queue, world)
 		return HAND_STATE.STRETCHING
+	},
+}
+
+HAND_STATE.ROTATING = {
+	cursor: "pointer",
+	tick: ({context, hand, world, queue, colours}) => {
+		const {pick} = hand
+
+		// Work out mouse movement
+		const mousePosition = getMousePosition(context, VIEW_CORNERS)
+		const movement = subtractVector(mousePosition, hand.handStart)
+
+		// Work out screen movement
+		const movedPosition = addVector(hand.startPositions[pick.part.number], movement)
+		const movedCorners = getRotatedToPositionCorners(hand.startCorners, pick.part.number, movedPosition)
+
+		// Replace screen with moved screen
+		const movedScreen = makeScreen(pick.screen.colour, movedCorners)
+		const newPick = replaceAddress({
+			address: pick.address,
+			screen: movedScreen,
+			target: world,
+			parent: pick.parent,
+			depth: pick.depth,
+		})
+		
+		pick.address = newPick.address
+		pick.parent = newPick.parent
+		pick.depth = newPick.depth
+		
+		// Yank the camera
+		if (!hand.hasChangedParent && newPick.isWithinParent) {
+			const newCorners = getDrawnScreenFromRoute(pick.route).corners
+			const newPosition = newCorners[hand.pick.part.number]
+			const difference = subtractVector(movedPosition, newPosition)
+			const worldCorners = getMovedCorners(world.corners, difference)
+			setWorldCorners(world, worldCorners, colours)
+			hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
+		} else {
+			hand.hasChangedParent = true
+		}
+
+		if (!Mouse.Left) {
+			tryToSurroundScreens(hand.pick.address)
+			clearQueue(context, queue, world)
+			return HAND_STATE.FREE
+		}
+
+		clearQueue(context, queue, world)
+		return HAND_STATE.ROTATING
 	},
 }
 

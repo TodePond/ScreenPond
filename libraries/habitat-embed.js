@@ -683,24 +683,59 @@ Habitat.install = (global) => {
 	}
 	
 	const buttonMap = ["Left", "Middle", "Right", "Back", "Forward"]
-	
+	const touchEventEquivalents = {
+		touchstart: "mousedown",
+		touchmove: "mousemove",
+		touchend: "mouseup",
+		touchcancel: "mouseup",
+	}
+
 	Reflect.defineProperty(Mouse, "install", {
 		value(global) {
 			global.Mouse = Mouse
-			global.addEventListener("mousedown", e => {
+			global.addEventListener("pointerdown", (e) => {
+				Mouse.position[0] = e.clientX
+				Mouse.position[1] = e.clientY
 				const buttonName = buttonMap[e.button]
 				Mouse[buttonName] = true
-			})
-			
-			global.addEventListener("mouseup", e => {
+			});
+		
+			global.addEventListener("pointerup", (e) => {
+				Mouse.position[0] = e.clientX
+				Mouse.position[1] = e.clientY
 				const buttonName = buttonMap[e.button]
 				Mouse[buttonName] = false
-			})
+			});
+		
+			global.addEventListener("pointermove", (e) => {
+				Mouse.position[0] = e.clientX
+				Mouse.position[1] = e.clientY
+			});
+
+			const handleTouchEvent = (event) => {
+				const [touch] = event.changedTouches
+				const type = touchEventEquivalents[event.type]
+				const {screenX, screenY, clientX, clientY} = touch
+				const mouseEvent = new MouseEvent(type, {
+					type,
+					bubbles: true,
+					cancelable: true,
+					view: global,
+					detail: 1,
+					screenX,
+					screenY,
+					clientX,
+					clientY,
+				})
 			
-			global.addEventListener("mousemove", e => {
-				Mouse.position[0] = event.clientX
-				Mouse.position[1] = event.clientY
-			})
+				touch.target.dispatchEvent(mouseEvent);
+				event.preventDefault();
+			}
+
+			global.addEventListener("touchstart", handleTouchEvent, true)
+			global.addEventListener("touchmove", handleTouchEvent, true)
+			global.addEventListener("touchend", handleTouchEvent, true)
+			global.addEventListener("touchcancel", handleTouchEvent, true)
 			
 			Reflect.defineProperty(Mouse, "installed", {
 				value: true,

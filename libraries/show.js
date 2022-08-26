@@ -21,6 +21,11 @@ const Show = {}
 		if (show.canvas === undefined) {
 			document.body.style["margin"] = "0px"
 			document.body.style["overflow"] = "hidden"
+			document.body.style.setProperty("position", "fixed")
+			document.body.style.setProperty("width", "100vw")
+			document.body.style.setProperty("height", "100vh")
+			document.body.style.setProperty("pointer-events", "all")
+			document.body.style.setProperty("touch-action", "none")
 
 			show.canvas = document.createElement("canvas")
 			show.canvas.style["background-color"] = Colour.Void

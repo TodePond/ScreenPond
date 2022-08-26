@@ -10,6 +10,16 @@ import { registerMouseWheel, updateZoom } from "./zoom.js"
 //======//
 const {show} = global
 show.resize = (context) => {
+
+	// Oversize the canvas to ensure a square canvas (messy fix for dodgy rotation)
+	const {canvas} = context
+	const {width, height} = canvas
+	const max = Math.max(width, height)
+	canvas.width = max
+	canvas.height = max
+	canvas.style["width"] = max
+	canvas.style["height"] = max
+
 	const {queue, world} = global
 	clearQueue(context, queue, world)
 	show.tick(context)

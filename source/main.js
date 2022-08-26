@@ -1,5 +1,5 @@
 import { global } from "./global.js"
-import { fireHandEvent, registerColourPickers, registerRightClick } from "./hand.js"
+import { fireHandEvent, registerColourPickers, registerDeleteKey, registerRightClick } from "./hand.js"
 import { loadPresetName } from "./preset.js"
 import { clearQueue, continueDrawingQueue } from "./draw.js"
 import { COLOUR_HEXES } from "./colour.js"
@@ -30,4 +30,5 @@ show.supertick = (context) => {
 registerColourPickers(global.hand, COLOUR_HEXES, global.colours)
 registerMouseWheel(global.zoomer)
 registerRightClick()
+registerDeleteKey(global.hand)
 loadPresetName(global, "EMPTY")

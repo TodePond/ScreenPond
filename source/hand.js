@@ -8,7 +8,7 @@ import { onkeydown } from "./keyboard.js"
 import { getEdgeCorners, PART_TYPE } from "./part.js"
 import { areRoutesEqual, getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
 import { areAddressesEqual, getScreenFromAddress, makeAddress } from "./address.js"
-import { moveAddressToBack } from "./colour.js"
+import { moveAddressToBack, removeScreenAddress } from "./colour.js"
 import { setWorldCorners } from "./world.js"
 import { wrap } from "./number.js"
 
@@ -24,15 +24,14 @@ export const makeHand = (colours) => ({
 	
 	// What is the hand holding?
 	pick: undefined,
+	selectedAddress: undefined,
 
 	// Where is the hand coming from?
 	handStart: [undefined, undefined],
 	pickStart: [undefined, undefined],
-
 	startAddressedScreen: undefined,
 	startDrawnParent: undefined,
 	hasChangedParent: false,
-	//startRoute: undefined,
 
 })
 
@@ -65,6 +64,15 @@ export const fireHandEvent = (context, hand, eventName, args = {}) => {
 
 export const registerRightClick = () => {
 	on.contextmenu(e => e.preventDefault(), {passive: false})
+}
+
+export const registerDeleteKey = (hand) => {
+	onkeydown("Delete", () => {
+		if (hand.selectedAddress === undefined) return
+		removeScreenAddress(hand.selectedAddress)
+		hand.selectedAddress = undefined
+		clearQueue(global.show.context, global.queue, global.world)
+	})
 }
 
 //==========//
@@ -129,7 +137,9 @@ HAND_STATE.FREE = {
 				hand.startCorners = getDrawnScreenFromRoute(pick.route).corners
 				hand.startPosition = getCornersPosition(hand.startCorners)
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
+
 				hand.hasChangedParent = false
+				hand.selectedAddress = hand.pick.address
 				return HAND_STATE.MOVING
 
 			//======== ROTATE + SCALE ========//
@@ -144,6 +154,7 @@ HAND_STATE.FREE = {
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
 
 				hand.hasChangedParent = false
+				hand.selectedAddress = hand.pick.address
 				return HAND_STATE.ROTATING
 			}
 
@@ -154,6 +165,8 @@ HAND_STATE.FREE = {
 
 			hand.pick = placeScreen(screen, world)
 			hand.pickStart = getCornersPosition(hand.pick.screen.corners)
+
+			hand.selectedAddress = hand.pick.address
 			return HAND_STATE.DRAWING
 		}
 		
@@ -171,6 +184,7 @@ HAND_STATE.FREE = {
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
 
 				hand.hasChangedParent = false
+				hand.selectedAddress = hand.pick.address
 				return HAND_STATE.WARPING
 
 			//======== STRETCH ========//
@@ -187,6 +201,7 @@ HAND_STATE.FREE = {
 				hand.startDrawnParent = getDrawnScreenFromRoute(pick.route, pick.route.length - 2)
 
 				hand.hasChangedParent = false
+				hand.selectedAddress = hand.pick.address
 				return HAND_STATE.STRETCHING
 
 			}
@@ -197,6 +212,7 @@ HAND_STATE.FREE = {
 			
 			//======== COLOUR ========//
 			const addressedScreen = getScreenFromAddress(hand.pick.address, world)
+			hand.selectedAddress = hand.pick.address
 			if (addressedScreen.colour !== hand.colour) {
 				addressedScreen.colour = hand.colour
 				clearQueue(context, queue, world)
@@ -251,6 +267,7 @@ HAND_STATE.MOVING = {
 		pick.address = newPick.address
 		pick.parent = newPick.parent
 		pick.depth = newPick.depth
+		hand.selectedAddress = pick.address
 		
 		// Yank the camera
 		if (!hand.hasChangedParent && newPick.isWithinParent) {
@@ -265,7 +282,8 @@ HAND_STATE.MOVING = {
 		}
 
 		if (!Mouse.Left) {
-			tryToSurroundScreens(hand.pick.address)
+			hand.pick.address = tryToSurroundScreens(hand.pick.address)
+			hand.selectedAddress = hand.pick.address
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}
@@ -305,6 +323,7 @@ HAND_STATE.STRETCHING = {
 		pick.address = newPick.address
 		pick.parent = newPick.parent
 		pick.depth = newPick.depth
+		hand.selectedAddress = pick.address
 		
 		// Yank the camera
 		if (!hand.hasChangedParent && newPick.isWithinParent) {
@@ -324,7 +343,8 @@ HAND_STATE.STRETCHING = {
 		}
 
 		if (!Mouse.Right) {
-			tryToSurroundScreens(hand.pick.address)
+			hand.pick.address = tryToSurroundScreens(hand.pick.address)
+			hand.selectedAddress = hand.pick.address
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}
@@ -360,6 +380,7 @@ HAND_STATE.ROTATING = {
 		pick.address = newPick.address
 		pick.parent = newPick.parent
 		pick.depth = newPick.depth
+		hand.selectedAddress = pick.address
 		
 		// Yank the camera
 		if (!hand.hasChangedParent && newPick.isWithinParent) {
@@ -374,7 +395,8 @@ HAND_STATE.ROTATING = {
 		}
 
 		if (!Mouse.Left) {
-			tryToSurroundScreens(hand.pick.address)
+			hand.pick.address = tryToSurroundScreens(hand.pick.address)
+			hand.selectedAddress = hand.pick.address
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}
@@ -411,6 +433,7 @@ HAND_STATE.WARPING = {
 		pick.address = newPick.address
 		pick.parent = newPick.parent
 		pick.depth = newPick.depth
+		hand.selectedAddress = pick.address
 		
 		// Yank the camera
 		if (!hand.hasChangedParent && newPick.isWithinParent) {
@@ -425,7 +448,8 @@ HAND_STATE.WARPING = {
 		}
 
 		if (!Mouse.Right) {
-			tryToSurroundScreens(hand.pick.address)
+			hand.pick.address = tryToSurroundScreens(hand.pick.address)
+			hand.selectedAddress = hand.pick.address
 			clearQueue(context, queue, world)
 			return HAND_STATE.FREE
 		}
@@ -460,12 +484,13 @@ HAND_STATE.DRAWING = {
 			//maxBruteForce: HAND_MAX_BRUTE_FORCE,
 		})
 
-		if (!Mouse.Left) {
+		hand.selectedAddress = hand.pick.address
 
+		if (!Mouse.Left) {
 			// Check for surrounded screens
-			tryToSurroundScreens(hand.pick.address)
+			hand.pick.address = tryToSurroundScreens(hand.pick.address)
+			hand.selectedAddress = hand.pick.address
 			clearQueue(context, queue, world)
-			
 			return HAND_STATE.FREE
 		}
 

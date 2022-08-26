@@ -2,7 +2,7 @@ import { getMappedPosition, getRelativePositions, getRelativePosition, getScaled
 import { makeScreen } from "./screen.js"
 import { PART_TYPE, getMappedPositionPart } from "./part.js"
 import { addScreen, removeScreenAddress, removeScreensSet, setScreenNumber } from "./colour.js"
-import { getScreenFromAddress, makeAddress } from "./address.js"
+import { getAddressFromScreen, getScreenFromAddress, makeAddress } from "./address.js"
 import { addStep, makeRoute, popStep } from "./route.js"
 
 //======//
@@ -269,5 +269,8 @@ export const tryToSurroundScreens = (address) => {
 	}
 
 	removeScreensSet(colour, surroundedScreensSet)
+	
+	const newAddress = getAddressFromScreen(screen, colour)
+	return newAddress
 
 }

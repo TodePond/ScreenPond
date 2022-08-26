@@ -18,3 +18,9 @@ export const areAddressesEqual = (a, b) => {
 	if (a.number !== b.number) return false
 	return true
 }
+
+export const getAddressFromScreen = (screen, colour) => {
+	const number = colour.screens.indexOf(screen)
+	if (number === -1) return undefined
+	return makeAddress(colour, number)
+}

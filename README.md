@@ -18,7 +18,7 @@ you need to run a local server because it uses javascript modules.<br>
 I recommend getting [deno](https://deno.land)
 and then installing `file_server` with this command:
 ```
-deno install --allow-read --allow-net -f https://deno.land/std@0.142.0/http/file_server.ts
+deno install --allow-read --allow-net https://deno.land/std@0.142.0/http/file_server.ts
 ```
 Then you can run this command to run a local server:
 ```

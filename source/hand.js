@@ -1,4 +1,4 @@
-import { getMappedPosition, getMappedPositions, getMousePosition, getRelativePositions, getScaledPosition } from "./position.js"
+import { getMappedPosition, getMousePosition } from "./position.js"
 import { makeRectangleCorners, getPositionedCorners, getCornersPosition, VIEW_CORNERS, getMovedCorners, getClonedCorners, getSubtractedCorners, getAddedCorners, getRotatedToPositionCorners } from "./corners.js"
 import { makeScreen } from "./screen.js"
 import { pickInScreen, placeScreen, replaceAddress, tryToSurroundScreens } from "./pick.js"
@@ -6,11 +6,10 @@ import { subtractVector, addVector, scaleVector } from "./vector.js"
 import { clearQueue } from "./draw.js"
 import { onkeydown } from "./keyboard.js"
 import { getEdgeCorners, PART_TYPE } from "./part.js"
-import { areRoutesEqual, getAddressedScreenFromRoute, getDrawnScreenFromRoute } from "./route.js"
-import { areAddressesEqual, getScreenFromAddress, makeAddress } from "./address.js"
+import { getDrawnScreenFromRoute } from "./route.js"
+import { getScreenFromAddress } from "./address.js"
 import { moveAddressToBack, removeScreenAddress } from "./colour.js"
 import { setWorldCorners } from "./world.js"
-import { wrap } from "./number.js"
 
 //======//
 // HAND //
@@ -372,7 +371,7 @@ HAND_STATE.ROTATING = {
 		const newPick = replaceAddress({
 			address: pick.address,
 			screen: movedScreen,
-			target: world,
+			target: pick.parent,
 			parent: pick.parent,
 			depth: pick.depth,
 		})

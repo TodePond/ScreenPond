@@ -93,12 +93,14 @@ export const registerRightClick = () => {
 };
 
 export const registerDeleteKey = (hand) => {
-  onkeydown("Delete", () => {
+  function deleteSelectedScreen() {
     if (hand.selectedAddress === undefined) return;
     removeScreenAddress(hand.selectedAddress);
     hand.selectedAddress = undefined;
     clearQueue(global.show.context, global.queue, global.world);
-  });
+  }
+  onkeydown("Delete", deleteSelectedScreen);
+  onkeydown("Backspace", deleteSelectedScreen);
 };
 
 //==========//

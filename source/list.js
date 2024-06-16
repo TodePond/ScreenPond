@@ -2,87 +2,84 @@
 // LIST //
 //======//
 export class LinkedList {
-	constructor(iterable = []) {
-		this.start = undefined
-		this.end = undefined
-		this.isEmpty = true
+  constructor(iterable = []) {
+    this.start = undefined;
+    this.end = undefined;
+    this.isEmpty = true;
 
-		for (const item of iterable) {
-			this.push(item)
-		}
-	}
-	
-	*[Symbol.iterator]() {
-		let link = this.start
-		while (link !== undefined) {
-			yield link
-			link = link.next
-		}
-	}
+    for (const item of iterable) {
+      this.push(item);
+    }
+  }
 
-	push(item) {
-		const link = makeLink(item)
-		if (this.isEmpty) {
-			this.start = link
-			this.end = link
-			this.isEmpty = false
-		} else {
-			this.end.next = link
-			link.previous = this.end
-			this.end = link
-		}
-	}
+  *[Symbol.iterator]() {
+    let link = this.start;
+    while (link !== undefined) {
+      yield link;
+      link = link.next;
+    }
+  }
 
-	pop() {
-		
-		if (this.isEmpty) {
-			return undefined
-		}
+  push(item) {
+    const link = makeLink(item);
+    if (this.isEmpty) {
+      this.start = link;
+      this.end = link;
+      this.isEmpty = false;
+    } else {
+      this.end.next = link;
+      link.previous = this.end;
+      this.end = link;
+    }
+  }
 
-		const item = this.start.item
-		if (this.start === this.end) {
-			this.clear()
-			return item
-		}
+  pop() {
+    if (this.isEmpty) {
+      return undefined;
+    }
 
-		this.end = this.end.previous
-		this.end.next = undefined
-		return item
-	}
+    const item = this.start.item;
+    if (this.start === this.end) {
+      this.clear();
+      return item;
+    }
 
-	shift() {
+    this.end = this.end.previous;
+    this.end.next = undefined;
+    return item;
+  }
 
-		if (this.isEmpty) {
-			return undefined
-		}
+  shift() {
+    if (this.isEmpty) {
+      return undefined;
+    }
 
-		const item = this.start.item
-		if (this.start === this.end) {
-			this.clear()
-			return item
-		}
+    const item = this.start.item;
+    if (this.start === this.end) {
+      this.clear();
+      return item;
+    }
 
-		this.start = this.start.next
-		this.start.previous = undefined
-		return item
-	}
+    this.start = this.start.next;
+    this.start.previous = undefined;
+    return item;
+  }
 
-	clear() {
-		this.start = undefined
-		this.end = undefined
-		this.isEmpty = true
-	}
+  clear() {
+    this.start = undefined;
+    this.end = undefined;
+    this.isEmpty = true;
+  }
 
-	setStart(link) {
-		this.start = link
-		link.previous = undefined
-	}
-
+  setStart(link) {
+    this.start = link;
+    link.previous = undefined;
+  }
 }
 
 const makeLink = (item) => {
-	const previous = undefined
-	const next = undefined
-	const link = {item, previous, next}
-	return link
-}
+  const previous = undefined;
+  const next = undefined;
+  const link = { item, previous, next };
+  return link;
+};

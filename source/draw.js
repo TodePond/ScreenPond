@@ -6,20 +6,28 @@ import { makeScreen } from "./screen.js";
 //======//
 // This file contains primitive + agnostic drawing functions
 // For higher-level drawing functions, go to 'colour.js'
-export const SCREEN_BORDER_WIDTH = 1;
+export const SCREEN_BORDER_WIDTH = 2;
 export const drawBorder = (context, screen) => {
   const { colour, corners } = screen;
-  fillBackground(context, { colour: Colour.Black, corners });
+  //   fillBackground(context, { colour: Colour.Black, corners });
 
   const canvasCornerPositions = getCanvasPositions(context, corners);
   const [a, b, c, d] = canvasCornerPositions;
 
+  let { depth } = screen;
+
+  //   console.log(depth);
+  context.globalAlpha = 1 - depth / 500;
+  //   if (context.globalAlpha <= 0.1) return;
   context.beginPath();
   context.moveTo(...a);
   context.lineTo(...b);
   context.lineTo(...d);
   context.lineTo(...c);
   context.closePath();
+
+  context.fillStyle = Colour.Black;
+  //   context.fill();
 
   context.lineWidth = SCREEN_BORDER_WIDTH;
   context.strokeStyle = colour.hex;
@@ -52,17 +60,17 @@ export const clearQueue = (context, queue, world) => {
   const { colour } = world;
   const screen = makeScreen(colour, world.corners);
   queue.clear();
-  queue.push(screen);
+  queue.push({ ...screen, depth: 0 });
 };
 
-export const addChildrenToQueue = (queue, screen) => {
+export const addChildrenToQueue = (queue, parent) => {
   let i = 1;
-  const { colour, corners } = screen;
+  const { colour, corners } = parent;
   for (let c = colour.screens.length - 1; c >= 0; c--) {
     const child = colour.screens[c];
     const relativeCorners = getRelativePositions(child.corners, corners);
     const screen = makeScreen(child.colour, relativeCorners);
-    queue.push(screen);
+    queue.push({ ...screen, depth: parent.depth + 1 });
     i++;
   }
   return i;

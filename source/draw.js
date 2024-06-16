@@ -68,7 +68,7 @@ export const addChildrenToQueue = (queue, screen) => {
   return i;
 };
 
-export const DRAW_COUNT = 4_000;
+export const DRAW_COUNT = 8_000;
 export const continueDrawingQueue = (context, queue) => {
   // If the draw queue is empty, that means we've drawn everything already :)
   if (queue.isEmpty) {

@@ -26,8 +26,8 @@ export const drawBorder = (context, screen) => {
   context.lineTo(...c);
   context.closePath();
 
-  context.fillStyle = Colour.Black;
-  //   context.fill();
+  context.fillStyle = "#232940aa";
+  context.fill();
 
   context.lineWidth = SCREEN_BORDER_WIDTH;
   context.strokeStyle = colour.hex;

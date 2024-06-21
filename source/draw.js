@@ -6,7 +6,7 @@ import { makeScreen } from "./screen.js";
 //======//
 // This file contains primitive + agnostic drawing functions
 // For higher-level drawing functions, go to 'colour.js'
-export const SCREEN_BORDER_WIDTH = 2;
+export const SCREEN_BORDER_WIDTH = 1;
 export const drawBorder = (context, screen) => {
   const { colour, corners } = screen;
   //   fillBackground(context, { colour: Colour.Black, corners });

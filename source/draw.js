@@ -17,7 +17,12 @@ export const drawBorder = (context, screen) => {
   let { depth } = screen;
 
   //   console.log(depth);
-  context.globalAlpha = 1 - depth / 500;
+  const overflow = depth - 500;
+  if (overflow > 0) {
+    const alpha = 1 - overflow / 500;
+    if (alpha < 0.01) return;
+    context.globalAlpha = 1 - overflow / 500;
+  }
   //   if (context.globalAlpha <= 0.1) return;
   context.beginPath();
   context.moveTo(...a);
@@ -26,12 +31,17 @@ export const drawBorder = (context, screen) => {
   context.lineTo(...c);
   context.closePath();
 
-  context.fillStyle = "#232940aa";
+  // context.fillStyle = "#232940aa";
+  context.fillStyle = colour.hex + "ff";
   context.fill();
 
   context.lineWidth = SCREEN_BORDER_WIDTH;
-  context.strokeStyle = colour.hex;
+  // context.strokeStyle = colour.hex + "aa";
+  // context.strokeStyle = "#232940aa";
   context.stroke();
+  if (overflow > 0) {
+    context.globalAlpha = 1;
+  }
 };
 
 export const fillBackground = (context, screen) => {
@@ -70,13 +80,16 @@ export const addChildrenToQueue = (queue, parent) => {
     const child = colour.screens[c];
     const relativeCorners = getRelativePositions(child.corners, corners);
     const screen = makeScreen(child.colour, relativeCorners);
-    queue.push({ ...screen, depth: parent.depth + 1 });
-    i++;
+    const depth = parent.depth + 1;
+    if (depth < 1000) {
+      queue.push({ ...screen, depth: parent.depth + 1 });
+      i++;
+    }
   }
   return i;
 };
 
-export const DRAW_COUNT = 4_000;
+export const DRAW_COUNT = 6_000;
 export const continueDrawingQueue = (context, queue) => {
   // If the draw queue is empty, that means we've drawn everything already :)
   if (queue.isEmpty) {

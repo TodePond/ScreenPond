@@ -44,7 +44,8 @@ const Show = {};
       document.body.style.setProperty("touch-action", "none");
 
       show.canvas = document.createElement("canvas");
-      show.canvas.style["background-color"] = Colour.Void;
+      // show.canvas.style["background-color"] = Colour.Void;
+      show.canvas.style["background-color"] = Colour.Black;
       show.canvas.style["image-rendering"] = "pixelated";
       document.body.appendChild(show.canvas);
     }

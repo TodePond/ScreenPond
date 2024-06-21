@@ -9,4 +9,5 @@ const ROSE = Colour.Rose.hex;
 const CYAN = Colour.Cyan.hex;
 const PURPLE = Colour.Purple.hex;
 // const GREY = Colour.Grey.hex
-const GREY = "#ffffff";
+// const GREY = "#ffffff";
+const GREY = "#232940";

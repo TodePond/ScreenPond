@@ -17,7 +17,7 @@ export const drawBorder = (context, screen) => {
   let { depth } = screen;
 
   //   console.log(depth);
-  context.globalAlpha = 1 - depth / 500;
+  // context.globalAlpha = 1 - depth / 500;
   //   if (context.globalAlpha <= 0.1) return;
   context.beginPath();
   context.moveTo(...a);
@@ -26,27 +26,53 @@ export const drawBorder = (context, screen) => {
   context.lineTo(...c);
   context.closePath();
 
-  context.fillStyle = "#232940aa";
+  context.fillStyle = "#232940ff";
   context.fill();
 
   context.lineWidth = SCREEN_BORDER_WIDTH;
   context.strokeStyle = colour.hex;
   context.stroke();
-};
 
-export const fillBackground = (context, screen) => {
-  const { colour, corners } = screen;
-  const canvasCornerPositions = getCanvasPositions(context, corners);
-  const [a, b, c, d] = canvasCornerPositions;
+  context.fillStyle = "white";
+  context.font = `${30 / devicePixelRatio}px Arial`;
+  context.fillText(
+    `${corners[0][0].toFixed(2)}, ${corners[0][1].toFixed(2)}`,
+    a[0] + 10 / devicePixelRatio,
+    a[1] - 10 / devicePixelRatio
+  );
+
+  context.fillText(
+    `${corners[1][0].toFixed(2)}, ${corners[1][1].toFixed(2)}`,
+    b[0] + 10 / devicePixelRatio,
+    b[1] - 10 / devicePixelRatio
+  );
+
+  context.fillText(
+    `${corners[2][0].toFixed(2)}, ${corners[2][1].toFixed(2)}`,
+    c[0] + 10 / devicePixelRatio,
+    c[1] - 10 / devicePixelRatio
+  );
+
+  context.fillText(
+    `${corners[3][0].toFixed(2)}, ${corners[3][1].toFixed(2)}`,
+    d[0] + 10 / devicePixelRatio,
+    d[1] - 10 / devicePixelRatio
+  );
 
   context.beginPath();
-  context.moveTo(...a);
-  context.lineTo(...b);
-  context.lineTo(...d);
-  context.lineTo(...c);
-  context.closePath();
+  context.arc(a[0], a[1], 8 / devicePixelRatio, 0, 2 * Math.PI);
+  context.fill();
 
-  context.fillStyle = colour.hex;
+  context.beginPath();
+  context.arc(b[0], b[1], 8 / devicePixelRatio, 0, 2 * Math.PI);
+  context.fill();
+
+  context.beginPath();
+  context.arc(c[0], c[1], 8 / devicePixelRatio, 0, 2 * Math.PI);
+  context.fill();
+
+  context.beginPath();
+  context.arc(d[0], d[1], 8 / devicePixelRatio, 0, 2 * Math.PI);
   context.fill();
 };
 
@@ -76,7 +102,7 @@ export const addChildrenToQueue = (queue, parent) => {
   return i;
 };
 
-export const DRAW_COUNT = 4_000;
+export const DRAW_COUNT = 2_000;
 export const continueDrawingQueue = (context, queue) => {
   // If the draw queue is empty, that means we've drawn everything already :)
   if (queue.isEmpty) {

@@ -17,7 +17,12 @@ export const drawBorder = (context, screen) => {
   let { depth } = screen;
 
   //   console.log(depth);
-  // context.globalAlpha = 1 - depth / 500;
+  const overflow = depth - 500;
+  if (overflow > 0) {
+    const alpha = 1 - overflow / 500;
+    if (alpha < 0.01) return;
+    context.globalAlpha = 1 - overflow / 500;
+  }
   //   if (context.globalAlpha <= 0.1) return;
   context.beginPath();
   context.moveTo(...a);
@@ -26,14 +31,16 @@ export const drawBorder = (context, screen) => {
   context.lineTo(...c);
   context.closePath();
 
-  context.fillStyle = "#232940ff";
+  // context.fillStyle = "#232940aa";
+  context.fillStyle = "#232940" + "ff";
   context.fill();
 
   context.lineWidth = SCREEN_BORDER_WIDTH;
-  context.strokeStyle = colour.hex;
+  context.strokeStyle = colour.hex + "ff";
+  // context.strokeStyle = "#232940aa";
   context.stroke();
 
-  context.fillStyle = "white";
+  context.fillStyle = "#ffffff99";
   context.font = `${30 / devicePixelRatio}px Arial`;
   context.fillText(
     `${corners[0][0].toFixed(2)}, ${corners[0][1].toFixed(2)}`,
@@ -74,6 +81,9 @@ export const drawBorder = (context, screen) => {
   context.beginPath();
   context.arc(d[0], d[1], 8 / devicePixelRatio, 0, 2 * Math.PI);
   context.fill();
+  if (overflow > 0) {
+    context.globalAlpha = 1;
+  }
 };
 
 //=======//
@@ -96,8 +106,11 @@ export const addChildrenToQueue = (queue, parent) => {
     const child = colour.screens[c];
     const relativeCorners = getRelativePositions(child.corners, corners);
     const screen = makeScreen(child.colour, relativeCorners);
-    queue.push({ ...screen, depth: parent.depth + 1 });
-    i++;
+    const depth = parent.depth + 1;
+    if (depth < 1000) {
+      queue.push({ ...screen, depth: parent.depth + 1 });
+      i++;
+    }
   }
   return i;
 };

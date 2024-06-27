@@ -22,7 +22,7 @@ export const registerMouseWheel = (zoomer) => {
 
   on.wheel((e) => {
     const dspeed = Math.sign(e.deltaY);
-    zoomer.desiredSpeed += dspeed * (zoomer.smoothMode ? 1 : 10);
+    zoomer.desiredSpeed += dspeed * (zoomer.smoothMode ? 0.1 : 3);
   });
 };
 

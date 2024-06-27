@@ -99,16 +99,25 @@ PRESET.DOUBLE = createPreset({
   key: "d",
   colours: {
     [GREY]: [
-      { hex: BLUE, corners: makeRectangleCorners(0.05, 0.05, 0.425, 0.9) },
-      { hex: RED, corners: makeRectangleCorners(0.525, 0.05, 0.425, 0.9) },
+      {
+        hex: BLUE,
+        corners: [
+          [0.4, 0.4],
+          [0.1, 0.4],
+
+          [0.4, 0.1],
+          [0.1, 0.1],
+        ],
+      },
+      // { hex: RED, corners: makeRectangleCorners(0.525, 0.05, 0.425, 0.9) },
     ],
-    [BLUE]: [{ hex: BLUE, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8) }],
-    [RED]: [{ hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8) }],
+    // [BLUE]: [],
+    // [RED]: [{ hex: RED, corners: makeRectangleCorners(0.1, 0.1, 0.8, 0.8) }],
   },
   update: ({ colours, queue, show, world }) => {
-    rotateScreenNumber(colours[RED], 0, 0.002);
-    const { context } = show;
-    clearQueue(context, queue, world);
+    // rotateScreenNumber(colours[RED], 0, 0.002);
+    // const { context } = show;
+    // clearQueue(context, queue, world);
   },
 });
 
@@ -140,28 +149,28 @@ PRESET.GRID = createPreset({
   key: "v",
   colours: {
     [GREY]: [
-      { hex: YELLOW, corners: makeRectangleCorners(0, 0, 1 / 3, 1 / 3) },
-      { hex: GREEN, corners: makeRectangleCorners(1 / 3, 0, 1 / 3, 1 / 3) },
-      { hex: GREY, corners: makeRectangleCorners(2 / 3, 0, 1 / 3, 1 / 3) },
-      { hex: BLUE, corners: makeRectangleCorners(0, 1 / 3, 1 / 3, 1 / 3) },
+      { hex: GREEN, corners: makeRectangleCorners(0, 0, 1 / 3, 1 / 3) },
+      { hex: BLUE, corners: makeRectangleCorners(1 / 3, 0, 1 / 3, 1 / 3) },
+      { hex: RED, corners: makeRectangleCorners(2 / 3, 0, 1 / 3, 1 / 3) },
+      { hex: YELLOW, corners: makeRectangleCorners(0, 1 / 3, 1 / 3, 1 / 3) },
       {
         hex: GREY,
         corners: getRotatedCorners(
           makeRectangleCorners(1 / 3, 1 / 3, 1 / 3, 1 / 3),
-          0.1
+          0.0
         ),
       },
       {
-        hex: ORANGE,
+        hex: PURPLE,
         corners: makeRectangleCorners(2 / 3, 1 / 3, 1 / 3, 1 / 3),
       },
       { hex: ROSE, corners: makeRectangleCorners(0, 2 / 3, 1 / 3, 1 / 3) },
       { hex: CYAN, corners: makeRectangleCorners(1 / 3, 2 / 3, 1 / 3, 1 / 3) },
       {
-        hex: GREY,
+        hex: ORANGE,
         corners: getRotatedCorners(
-          makeRectangleCorners(2 / 3, 2 / 3, 1 / 3, 1 / 3),
-          -0.1
+          makeRectangleCorners(2 / 3 - 0, 2 / 3 - 0, 1 / 3 - 0.0, 1 / 3 - 0.0),
+          -0.0
         ),
       },
     ],
@@ -194,7 +203,7 @@ PRESET.MINI_GRID = createPreset({
           -0.0
         ),
       },
-      { hex: BLUE, corners: makeRectangleCorners(1 / 2, 0.0, 1 / 2, 1 / 2) },
+      // { hex: BLUE, corners: makeRectangleCorners(1 / 2, 0.0, 1 / 2, 1 / 2) },
     ],
   },
   update: (colours) => {
@@ -209,9 +218,9 @@ PRESET.GRID2 = createPreset({
   colours: {
     [GREY]: [
       {
-        hex: RED,
+        hex: GREY,
         corners: getRotatedCorners(
-          makeRectangleCorners(0.25, 0.25, 0.5, 0.5),
+          makeRectangleCorners(0.25, 0.2, 0.5, 0.5),
           0.0
         ),
       },
@@ -219,19 +228,19 @@ PRESET.GRID2 = createPreset({
       //{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.6, 0.1, 0.3, 0.3), 0.0)},
       //{hex: RED, corners: getRotatedCorners(makeRectangleCorners(0.1, 0.6, 0.3, 0.3), 0.0)},
     ],
-    [RED]: [
-      {
-        hex: BLUE,
-        corners: getRotatedCorners(
-          makeRectangleCorners(0.25, 0.25, 0.3, 0.3),
-          0.0
-        ),
-      },
-    ],
+    // [RED]: [
+    //   {
+    //     hex: BLUE,
+    //     corners: getRotatedCorners(
+    //       makeRectangleCorners(0.25, 0.25, 0.3, 0.3),
+    //       0.0
+    //     ),
+    //   },
+    // ],
   },
   update: ({ colours, queue, world, show, hand }) => {
-    //rotateScreenNumber(colours[GREY], 0, 0.005)
-    //const {context} = show
-    //clearQueue(context, queue, world)
+    rotateScreenNumber(colours[GREY], 0, 0.0005);
+    const { context } = show;
+    clearQueue(context, queue, world);
   },
 });

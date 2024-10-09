@@ -273,5 +273,11 @@ PRESET.IMPOSSIBLE = createPreset({
         corners: makeRectangleCorners(0.1, 0.1, 0.3, 0.3),
       },
     ],
+    [BLUE]: [
+      {
+        hex: YELLOW,
+        corners: makeRectangleCorners(0.1, 0.5, 0.3, 0.3),
+      },
+    ],
   },
 });

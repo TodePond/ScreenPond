@@ -244,3 +244,34 @@ PRESET.GRID2 = createPreset({
     clearQueue(context, queue, world);
   },
 });
+
+const IMPOSSIBLE_SCREEN_A = {
+  hex: GREEN,
+  corners: makeRectangleCorners(0.5, 0.5, 0.4, 0.4),
+};
+
+PRESET.IMPOSSIBLE = createPreset({
+  key: "i",
+  colours: {
+    [GREY]: [
+      {
+        hex: GREEN,
+        corners: makeRectangleCorners(0.1, 0.1, 0.7, 0.7),
+      },
+    ],
+    [GREEN]: [
+      IMPOSSIBLE_SCREEN_A,
+      {
+        hex: RED,
+        corners: makeRectangleCorners(0.1, 0.1, 0.3, 0.3),
+      },
+    ],
+    [RED]: [
+      IMPOSSIBLE_SCREEN_A,
+      {
+        hex: BLUE,
+        corners: makeRectangleCorners(0.1, 0.1, 0.3, 0.3),
+      },
+    ],
+  },
+});

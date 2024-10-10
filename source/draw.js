@@ -50,8 +50,7 @@ export const drawBorder = (context, screen) => {
     context.moveTo(...pa);
     context.lineTo(...a);
     context.closePath();
-    context.lineWidth = SCREEN_BORDER_WIDTH * 5;
-    // context.lineCap = "round";
+    context.lineWidth = SCREEN_BORDER_WIDTH;
     context.strokeStyle = "white";
     context.stroke();
   }

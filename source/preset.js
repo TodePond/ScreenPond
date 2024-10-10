@@ -285,12 +285,12 @@ PRESET.IMPOSSIBLE = createPreset({
 PRESET.TREE = createPreset({
   key: "t",
   colours: {
-    // [GREY]: [
-    //   {
-    //     hex: GREEN,
-    //     corners: makeRectangleCorners(0.1, 0.1, 0.1, 0.1),
-    //   },
-    // ],
+    [GREY]: [
+      {
+        hex: GREEN,
+        corners: makeRectangleCorners(0.1, 0.1, 0.1, 0.1),
+      },
+    ],
     [GREEN]: [
       {
         hex: GREEN,

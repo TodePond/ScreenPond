@@ -282,4 +282,40 @@ PRESET.IMPOSSIBLE = createPreset({
   },
 });
 
-// PRESET.
+PRESET.TREE = createPreset({
+  key: "t",
+  colours: {
+    [GREY]: [
+      {
+        hex: GREEN,
+        corners: makeRectangleCorners(0.1, 0.1, 0.1, 0.1),
+      },
+    ],
+    [GREEN]: [
+      {
+        hex: GREEN,
+        corners: makeRectangleCorners(0.6, 1.2, 1, 1),
+      },
+      {
+        hex: RED,
+        corners: makeRectangleCorners(1.1, 0.1, 1, 1),
+      },
+    ],
+    [RED]: [
+      {
+        hex: GREEN,
+        corners: makeRectangleCorners(-0.5, 1.1, 1, 1),
+      },
+      {
+        hex: BLUE,
+        corners: makeRectangleCorners(1.1, 0.1, 1, 1),
+      },
+    ],
+    [BLUE]: [
+      {
+        hex: YELLOW,
+        corners: makeRectangleCorners(1.1, -0.1, 1, 1),
+      },
+    ],
+  },
+});

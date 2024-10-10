@@ -40,6 +40,22 @@ export const drawBorder = (context, screen) => {
   // context.strokeStyle = "#232940aa";
   context.stroke();
 
+  if (screen.parent) {
+    const canvasParentPositions = getCanvasPositions(
+      context,
+      screen.parent.corners
+    );
+    const [pa] = canvasParentPositions;
+    context.beginPath();
+    context.moveTo(...pa);
+    context.lineTo(...a);
+    context.closePath();
+    context.lineWidth = SCREEN_BORDER_WIDTH * 5;
+    // context.lineCap = "round";
+    context.strokeStyle = "white";
+    context.stroke();
+  }
+
   if (window.debugCorners) {
     context.fillStyle = "#ffffff99";
     context.font = `${30 / devicePixelRatio}px Arial`;
@@ -104,7 +120,7 @@ export const clearQueue = (context, queue, world) => {
   const { colour } = world;
   const screen = makeScreen(colour, world.corners);
   queue.clear();
-  queue.push({ ...screen, depth: 0 });
+  queue.push({ ...screen, depth: 0, parent: null });
 };
 
 export const addChildrenToQueue = (queue, parent) => {
@@ -116,7 +132,7 @@ export const addChildrenToQueue = (queue, parent) => {
     const screen = makeScreen(child.colour, relativeCorners);
     const depth = parent.depth + 1;
     if (depth < 1000) {
-      queue.push({ ...screen, depth: parent.depth + 1 });
+      queue.push({ ...screen, depth: parent.depth + 1, parent });
     }
     i++;
   }

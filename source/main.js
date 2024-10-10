@@ -45,4 +45,5 @@ registerColourPickers(global.hand, COLOUR_HEXES, global.colours);
 registerMouseWheel(global.zoomer);
 registerRightClick();
 registerDeleteKey(global.hand);
-loadPresetName(global, "TREE");
+loadPresetName(global, "EMPTY");
+// loadPresetName(global, "TREE");

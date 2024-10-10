@@ -247,7 +247,7 @@ PRESET.GRID2 = createPreset({
 
 const IMPOSSIBLE_SCREEN_A = {
   hex: GREEN,
-  corners: makeRectangleCorners(0.5, 0.5, 0.4, 0.4),
+  corners: makeRectangleCorners(0.4, 0.5, 0.4, 0.4),
 };
 
 PRESET.IMPOSSIBLE = createPreset({
@@ -263,7 +263,7 @@ PRESET.IMPOSSIBLE = createPreset({
       IMPOSSIBLE_SCREEN_A,
       {
         hex: RED,
-        corners: makeRectangleCorners(0.1, 0.1, 0.3, 0.3),
+        corners: makeRectangleCorners(0.2, 0.1, 0.3, 0.3),
       },
     ],
     [RED]: [
@@ -281,3 +281,5 @@ PRESET.IMPOSSIBLE = createPreset({
     ],
   },
 });
+
+// PRESET.

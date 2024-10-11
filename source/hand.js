@@ -302,7 +302,7 @@ HAND_STATE.MOVING = {
     const newPick = replaceAddress({
       address: pick.address,
       screen: movedScreen,
-      target: world,
+      target: Keyboard[" "] ? pick.parent : world,
       parent: pick.parent,
       depth: pick.depth,
     });
@@ -367,7 +367,7 @@ HAND_STATE.STRETCHING = {
     const newPick = replaceAddress({
       address: pick.address,
       screen: movedScreen,
-      target: world,
+      target: Keyboard[" "] ? pick.parent : world,
       parent: pick.parent,
       depth: pick.depth,
     });
@@ -431,7 +431,7 @@ HAND_STATE.ROTATING = {
     const newPick = replaceAddress({
       address: pick.address,
       screen: movedScreen,
-      target: world,
+      target: Keyboard[" "] ? pick.parent : world,
       parent: pick.parent,
       depth: pick.depth,
     });
@@ -484,7 +484,7 @@ HAND_STATE.WARPING = {
     const newPick = replaceAddress({
       address: pick.address,
       screen: movedScreen,
-      target: world,
+      target: Keyboard[" "] ? pick.parent : world,
       parent: pick.parent,
       depth: pick.depth,
     });
@@ -535,7 +535,7 @@ HAND_STATE.DRAWING = {
     hand.pick = replaceAddress({
       address: pick.address,
       screen: drawnScreen,
-      target: world,
+      target: Keyboard[" "] ? pick.parent : world,
       parent: pick.parent,
       depth: pick.depth,
       //bruteForceDepth: HAND_PICK_BRUTE_FORCE_DEPTH,

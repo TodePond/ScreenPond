@@ -141,11 +141,17 @@ HAND_STATE.FREE = {
       //maxBruteForce: HAND_MAX_BRUTE_FORCE,
       safe: false,
     });
+
     hand.pick = pick;
 
-    if (pick.part.type === PART_TYPE.EDGE) {
+    if (pick.address && pick.part.type === PART_TYPE.EDGE) {
       HAND_STATE.FREE.cursor = "move";
-    } else if (pick.part.type === PART_TYPE.CORNER) {
+    } else if (pick.address && pick.part.type === PART_TYPE.CORNER) {
+      HAND_STATE.FREE.cursor = "pointer";
+    } else if (
+      !pick.address &&
+      (pick.part.type === PART_TYPE.EDGE || pick.part.type === PART_TYPE.CORNER)
+    ) {
       HAND_STATE.FREE.cursor = "pointer";
     } else {
       HAND_STATE.FREE.cursor = "default";
@@ -153,7 +159,7 @@ HAND_STATE.FREE = {
 
     if (Mouse.Left) {
       //======== MOVE ========//
-      if (pick.part.type === PART_TYPE.EDGE) {
+      if (pick.address && pick.part.type === PART_TYPE.EDGE) {
         const [newAddress, newRoute] = moveAddressToBack(
           pick.address,
           pick.route
@@ -173,7 +179,7 @@ HAND_STATE.FREE = {
         return HAND_STATE.MOVING;
 
         //======== ROTATE + SCALE ========//
-      } else if (pick.part.type === PART_TYPE.CORNER) {
+      } else if (pick.address && pick.part.type === PART_TYPE.CORNER) {
         const [newAddress, newRoute] = moveAddressToBack(
           pick.address,
           pick.route
@@ -205,7 +211,7 @@ HAND_STATE.FREE = {
       return HAND_STATE.DRAWING;
     } else if (Mouse.Right) {
       //======== WARP ========//
-      if (pick.part.type === PART_TYPE.CORNER) {
+      if (pick.address && pick.part.type === PART_TYPE.CORNER) {
         const [newAddress, newRoute] = moveAddressToBack(
           pick.address,
           pick.route
@@ -228,7 +234,7 @@ HAND_STATE.FREE = {
         return HAND_STATE.WARPING;
 
         //======== STRETCH ========//
-      } else if (pick.part.type === PART_TYPE.EDGE) {
+      } else if (pick.address && pick.part.type === PART_TYPE.EDGE) {
         const [newAddress, newRoute] = moveAddressToBack(
           pick.address,
           pick.route
@@ -249,7 +255,7 @@ HAND_STATE.FREE = {
         hand.selectedAddress = hand.pick.address;
         return HAND_STATE.STRETCHING;
       }
-    } else if (Mouse.Middle) {
+    } else if (Mouse.Middle || Keyboard["m"]) {
       //======== COLOUR ========//
       const addressedScreen = getScreenFromAddress(hand.pick.address, world);
       hand.selectedAddress = hand.pick.address;
@@ -267,7 +273,7 @@ HAND_STATE.FREE = {
 HAND_STATE.COLOURING = {
   cursor: "default",
   tick: () => {
-    if (Mouse.Middle) {
+    if (Mouse.Middle || Keyboard["m"]) {
       return HAND_STATE.COLOURING;
     }
 

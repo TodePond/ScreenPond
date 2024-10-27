@@ -41,18 +41,18 @@ export const drawBorder = (context, screen) => {
   context.stroke();
 
   if (screen.parent) {
-    const canvasParentPositions = getCanvasPositions(
-      context,
-      screen.parent.corners
-    );
-    const [pa] = canvasParentPositions;
-    context.beginPath();
-    context.moveTo(...pa);
-    context.lineTo(...a);
-    context.closePath();
-    context.lineWidth = SCREEN_BORDER_WIDTH;
-    context.strokeStyle = "white";
-    context.stroke();
+    // const canvasParentPositions = getCanvasPositions(
+    //   context,
+    //   screen.parent.corners
+    // );
+    // const [pa] = canvasParentPositions;
+    // context.beginPath();
+    // context.moveTo(...pa);
+    // context.lineTo(...a);
+    // context.closePath();
+    // context.lineWidth = SCREEN_BORDER_WIDTH;
+    // context.strokeStyle = "white";
+    // context.stroke();
   }
 
   if (window.debugCorners) {

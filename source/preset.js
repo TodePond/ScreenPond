@@ -33,7 +33,9 @@ export const loadPreset = (global, preset) => {
     }
   }
 
-  if (preset.world === undefined) {
+  if (preset.world) {
+    preset.world.colour = colours[preset.world.hex];
+  } else {
     preset.world = makeWorld(colours);
   }
 
@@ -319,3 +321,31 @@ PRESET.TREE = createPreset({
     ],
   },
 });
+
+PRESET.EXPORT = createPreset({
+  key: "p",
+  ...JSON.parse(
+    `{"world":{"hex":"#4680ff","corners":[[-0.3575603892456025,-0.43701263825246073],[1.7461078182554122,-0.43701263825246073],[-0.3575603892456025,1.719508651689953],[1.7461078182554122,1.719508651689953]]},"colours":{"#46ff80":[],"#4680ff":[{"hex":"#374362","corners":[[0.15265138424912664,0.2208257843043769],[0.6950044157739126,0.2208257843043769],[0.15265138424912664,0.7547058262610854],[0.6950044157739126,0.7547058262610854]]}],"#ff4346":[],"#ffcc46":[],"#ff8046":[],"#ff80cc":[],"#46ccff":[],"#8043f7":[],"#374362":[{"hex":"#4680ff","corners":[[0.42942222902747573,0.3199990986656474],[0.781510332802464,0.3199990986656474],[0.42942222902747573,0.6744463536178704],[0.781510332802464,0.6744463536178704]]}]}}`
+  ),
+});
+
+export function getPresetFromCurrentState() {
+  const { colours } = global;
+  const preset = {
+    world: { hex: global.world.colour.hex, corners: global.world.corners },
+    colours: {},
+  };
+  for (const colourName in colours) {
+    const colour = colours[colourName];
+    preset.colours[colourName] = [];
+    for (const screen of colour.screens) {
+      preset.colours[colourName].push({
+        hex: screen.colour.hex,
+        corners: screen.corners,
+      });
+    }
+  }
+  return preset;
+}
+
+window.PRESET = PRESET;

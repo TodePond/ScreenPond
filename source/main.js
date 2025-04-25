@@ -5,7 +5,7 @@ import {
   registerDeleteKey,
   registerRightClick,
 } from "./hand.js";
-import { loadPresetName } from "./preset.js";
+import { getPresetFromCurrentState, loadPresetName } from "./preset.js";
 import { clearQueue, continueDrawingQueue } from "./draw.js";
 import { COLOUR_HEXES } from "./colour.js";
 import { registerMouseWheel, updateZoom } from "./zoom.js";
@@ -56,6 +56,13 @@ window.getPondiverseThumbnail = () => {
     return null;
   }
   return canvas.toDataURL("image/png");
+};
+
+window.getPondiverseData = () => {
+  const preset = getPresetFromCurrentState();
+  const data = JSON.stringify(preset);
+  console.log(data);
+  return data;
 };
 
 addPondiverseButton();

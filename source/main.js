@@ -49,4 +49,13 @@ registerDeleteKey(global.hand);
 loadPresetName(global, "EMPTY");
 // loadPresetName(global, "TREE");
 
+window.getPondiverseThumbnail = () => {
+  const canvas = document.querySelector("canvas");
+  if (!canvas) {
+    console.warn("No canvas found for thumbnail");
+    return null;
+  }
+  return canvas.toDataURL("image/png");
+};
+
 addPondiverseButton();

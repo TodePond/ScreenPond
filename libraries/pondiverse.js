@@ -83,25 +83,8 @@ export function addPondiverseButton() {
 		outline-offset: 0px;
 	}
 
-
-
 	#pondiverse-dialog button {
 		// background-color: white;
-		background-color: #4680ff;
-		padding: 10px 20px;
-		border-radius: 10px;
-		cursor: pointer;
-		font-size: 16px;
-		// color: #4680ff;
-		color: white;
-		// text-shadow: 1px 1px 0px rgba(0, 0, 0, 1);
-		// font-weight: bold;F
-		margin-top: 10px;
-		border: 3px outset #3670ee;
-		// height: 10px;
-	}
-
-	#pondiverse-dialog button.secondary {
 		background-color: #4680ff;
 		padding: 10px 20px;
 		border-radius: 10px;
@@ -113,22 +96,19 @@ export function addPondiverseButton() {
 	}
 
 	#pondiverse-dialog button:focus {
-		outline: 2px solid #46ff80;
-	}
-
-	#pondiverse-dialog button[type="submit"]:focus {
-		outline: 2px solid #46ff80;
-		outline-offset: 0px;
-	}
-
-	#pondiverse-dialog hgroup.right {
-		text-align: right;
+		border: 3px inset #3670ee;
 	}
 
 	#pondiverse-dialog hgroup.space {
 		display: flex;
 		justify-content: space-between;
 		align-items: baseline;
+	}
+
+	#pondiverse-dialog #preview-image {
+		max-width: 100%;
+		max-height: 300px;
+		margin: 10px auto;
 	}
   `;
 

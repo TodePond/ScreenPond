@@ -173,7 +173,7 @@ export function addPondiverseButton() {
     }
   });
 
-  openPondiverseDialog();
+  //   openPondiverseDialog();
 }
 
 export function openPondiverseDialog() {

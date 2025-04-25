@@ -84,7 +84,6 @@ export function addPondiverseButton() {
 	}
 
 	#pondiverse-dialog button {
-		// background-color: white;
 		background-color: #4680ff;
 		padding: 10px 20px;
 		border-radius: 10px;
@@ -93,6 +92,7 @@ export function addPondiverseButton() {
 		color: white;
 		margin-top: 10px;
 		border: 3px outset #3670ee;
+		user-select: none;
 	}
 
 	#pondiverse-dialog button:focus {
@@ -166,6 +166,7 @@ export function addPondiverseButton() {
   );
 
   dialog.addEventListener("pointerdown", (e) => e.stopPropagation());
+  button.addEventListener("pointerdown", (e) => e.stopPropagation());
   button.addEventListener("click", (e) => {
     e.stopPropagation();
     openPondiverseDialog();
@@ -178,7 +179,7 @@ export function addPondiverseButton() {
     closePondiverseDialog();
   });
 
-  openPondiverseDialog();
+  //   openPondiverseDialog();
 }
 
 export function openPondiverseDialog() {

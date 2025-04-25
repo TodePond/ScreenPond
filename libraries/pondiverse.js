@@ -54,7 +54,7 @@ export function addPondiverseButton() {
 	}
 
 	#pondiverse-dialog form {
-		box-sizing: border-box;
+		// box-sizing: border-box;
 		background-color: #4680ff;
 		border-radius: 20px;
 		outline: none;
@@ -83,19 +83,37 @@ export function addPondiverseButton() {
 		outline-offset: 0px;
 	}
 
-	#pondiverse-dialog button[type="submit"] {
-		background-color: white;
+
+
+	#pondiverse-dialog button {
+		// background-color: white;
+		background-color: #4680ff;
 		padding: 10px 20px;
 		border-radius: 10px;
 		cursor: pointer;
 		font-size: 16px;
+		// color: #4680ff;
+		color: white;
+		// text-shadow: 1px 1px 0px rgba(0, 0, 0, 1);
+		// font-weight: bold;F
 		margin-top: 10px;
 		border: 3px outset #3670ee;
-		// outline: 1px solid white;
+		// height: 10px;
 	}
 
-	#pondiverse-dialog button[type="submit"]:hover {
-		background-color: #46ff80;
+	#pondiverse-dialog button.secondary {
+		background-color: #4680ff;
+		padding: 10px 20px;
+		border-radius: 10px;
+		cursor: pointer;
+		font-size: 16px;
+		color: white;
+		margin-top: 10px;
+		border: 3px outset #3670ee;
+	}
+
+	#pondiverse-dialog button:focus {
+		outline: 2px solid #46ff80;
 	}
 
 	#pondiverse-dialog button[type="submit"]:focus {
@@ -105,6 +123,12 @@ export function addPondiverseButton() {
 
 	#pondiverse-dialog hgroup.right {
 		text-align: right;
+	}
+
+	#pondiverse-dialog hgroup.space {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
 	}
   `;
 
@@ -134,7 +158,8 @@ export function addPondiverseButton() {
 	<label for="name">Title</label>
 	<input type="text" id="name" name="name" required autocomplete="off" spellcheck="false" />
 	<input type="hidden" name="data" value="" />
-	<hgroup class="right">
+	<hgroup class="space">
+		<button type="button" class="secondary" id="cancel">Cancel</button>
 		<button type="submit">Publish</button>
 	</hgroup>
   </form>
@@ -161,19 +186,19 @@ export function addPondiverseButton() {
   );
 
   dialog.addEventListener("pointerdown", (e) => e.stopPropagation());
-  button.addEventListener("pointerdown", (e) => {
+  button.addEventListener("click", (e) => {
     e.stopPropagation();
     openPondiverseDialog();
   });
 
-  dialog.addEventListener("pointerdown", (e) => {
-    if (e.target === dialog) {
-      e.stopPropagation();
-      closePondiverseDialog();
-    }
+  const cancelButton = dialog.querySelector("#cancel");
+  cancelButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    closePondiverseDialog();
   });
 
-  //   openPondiverseDialog();
+  openPondiverseDialog();
 }
 
 export function openPondiverseDialog() {
@@ -186,7 +211,6 @@ export function openPondiverseDialog() {
   dialog.showModal();
   const titleInput = dialog.querySelector("#name");
   titleInput.value = "";
-  titleInput.focus();
   const previewImage = dialog.querySelector("#preview-image");
   const getPreviewImage = window.getPondiverseThumbnail;
   if (!getPreviewImage) {
@@ -212,6 +236,7 @@ export function openPondiverseDialog() {
       hiddenInput.value = data;
     }
   }
+  titleInput.focus();
 }
 
 export function closePondiverseDialog() {

@@ -9,6 +9,7 @@ import { loadPresetName } from "./preset.js";
 import { clearQueue, continueDrawingQueue } from "./draw.js";
 import { COLOUR_HEXES } from "./colour.js";
 import { registerMouseWheel, updateZoom } from "./zoom.js";
+import { addPondiverseButton } from "../libraries/pondiverse.js";
 
 //======//
 // MAIN //
@@ -47,3 +48,5 @@ registerRightClick();
 registerDeleteKey(global.hand);
 loadPresetName(global, "EMPTY");
 // loadPresetName(global, "TREE");
+
+addPondiverseButton();

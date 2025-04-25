@@ -155,12 +155,19 @@ export function addPondiverseButton() {
 
   const nameInput = dialog.querySelector("#name");
   nameInput.addEventListener(
-    "input",
+    "keydown",
     (e) => {
       e.stopPropagation();
-      e.preventDefault();
       e.stopImmediatePropagation();
-      console.log("test");
+    },
+    { passive: false, bubble: false }
+  );
+
+  dialog.addEventListener(
+    "keydown",
+    (e) => {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
     },
     { passive: false, bubble: false }
   );
@@ -179,7 +186,10 @@ export function addPondiverseButton() {
     closePondiverseDialog();
   });
 
-  //   openPondiverseDialog();
+  dialog.addEventListener("wheel", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  });
 }
 
 export function openPondiverseDialog() {

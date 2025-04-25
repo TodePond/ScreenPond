@@ -138,6 +138,7 @@ export function addPondiverseButton() {
 	<label for="name">Title</label>
 	<input type="text" id="name" name="name" required autocomplete="off" spellcheck="false" />
 	<input type="hidden" name="data" value="" />
+	<input type="hidden" name="type" value="" />
 	<hgroup class="space">
 		<button type="button" class="secondary" id="cancel">Cancel</button>
 		<button type="submit">Publish</button>
@@ -186,6 +187,20 @@ export function addPondiverseButton() {
     closePondiverseDialog();
   });
 
+  const form = dialog.querySelector("form");
+  form.addEventListener("submit", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const request = {
+      title: nameInput.value,
+      data: form.querySelector("input[name='data']").value,
+      thumbnail: previewImage.src,
+    };
+
+    console.log("Request to send:", request);
+  });
+
   dialog.addEventListener("wheel", (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -203,29 +218,27 @@ export function openPondiverseDialog() {
   const titleInput = dialog.querySelector("#name");
   titleInput.value = "";
   const previewImage = dialog.querySelector("#preview-image");
-  const getPreviewImage = window.getPondiverseThumbnail;
-  if (!getPreviewImage) {
-    console.warn(
-      "window.getPondiverseThumbnail() function not found. If you want your creation to have a thumbnail, add a function that returns a base64 image string to window.getPondiverseThumbnail()"
+
+  const getCreation = window.getPondiverseCreation;
+  if (!getCreation) {
+    throw new Error(
+      `\n\nwindow.getPondiverseCreation() function not found.\n\nIf you want your creation to be sent to the Pondiverse, add a window.getPondiverseCreation() function that returns a JSON object. The JSON object can provide:\n- type: A string to identify what kind of creation it is. For example, "screenpond" if it's intended to be loaded into screenpond.\n- data: A string containing the data of your creation, so that it can be loaded up again.\n- image: A base64 data URL string to be used as a thumbnail for your creation.\n\nAll properties are optional.`
     );
-  } else {
-    const image = getPreviewImage();
-    if (image) {
-      previewImage.src = image;
-    }
+  }
+
+  const creation = getCreation();
+
+  if (creation.image) {
+    previewImage.src = creation.image;
   }
 
   const hiddenInput = dialog.querySelector("input[name='data']");
-  const getData = window.getPondiverseData;
-  if (!getData) {
-    console.warn(
-      "window.getPondiverseData() function not found. If you want your creation to have some data attached to it, add a function that returns a string to window.getPondiverseData()"
-    );
-  } else {
-    const data = getData();
-    if (data) {
-      hiddenInput.value = data;
-    }
+  const typeInput = dialog.querySelector("input[name='type']");
+  if (creation.data) {
+    hiddenInput.value = creation.data;
+  }
+  if (creation.type) {
+    typeInput.value = creation.type;
   }
   titleInput.focus();
 }

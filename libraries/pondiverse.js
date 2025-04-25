@@ -188,17 +188,38 @@ export function addPondiverseButton() {
   });
 
   const form = dialog.querySelector("form");
-  form.addEventListener("submit", (e) => {
+
+  const hiddenInput = dialog.querySelector("input[name='data']");
+  const typeInput = dialog.querySelector("input[name='type']");
+  form.addEventListener("submit", async (e) => {
     e.stopPropagation();
     e.preventDefault();
 
     const request = {
       title: nameInput.value,
-      data: form.querySelector("input[name='data']").value,
-      thumbnail: previewImage.src,
+      data: hiddenInput.value,
+      type: typeInput.value,
+      image: previewImage.src,
     };
 
-    console.log("Request to send:", request);
+    const publishButton = form.querySelector("button[type='submit']");
+    publishButton.disabled = true;
+    publishButton.textContent = "Publishing...";
+    publishButton.style.cursor = "not-allowed";
+
+    const response = await fetch(
+      "https://todepond--e03ca2bc21bb11f094e3569c3dd06744.web.val.run",
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+      }
+    );
+
+    if (response.ok) {
+      closePondiverseDialog();
+    } else {
+      alert("Upload failed. Oh no!");
+    }
   });
 
   dialog.addEventListener("wheel", (e) => {
@@ -245,10 +266,15 @@ export function openPondiverseDialog() {
 
 export function closePondiverseDialog() {
   const dialog = document.getElementById("pondiverse-dialog");
+
   if (!dialog) {
     throw new Error(
       "Pondiverse dialog not found. Make sure you run addPondiverseButton() first."
     );
   }
+  const publishButton = dialog.querySelector("button[type='submit']");
+  publishButton.disabled = false;
+  publishButton.textContent = "Publish";
+  publishButton.style.cursor = "pointer";
   dialog.close();
 }

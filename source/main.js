@@ -49,16 +49,6 @@ registerDeleteKey(global.hand);
 loadPresetName(global, "EMPTY");
 // loadPresetName(global, "TREE");
 
-window.getPondiverseCreation = () => {
-  const canvas = document.querySelector("canvas");
-  const preset = getPresetFromCurrentState();
-  return {
-    type: "screenpond",
-    data: JSON.stringify(preset),
-    image: canvas?.toDataURL("image/png"),
-  };
-};
-
 addPondiverseButton(() => {
   const canvas = document.querySelector("canvas");
   const preset = getPresetFromCurrentState();

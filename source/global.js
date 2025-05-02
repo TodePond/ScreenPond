@@ -9,7 +9,7 @@ import { makeZoomer } from "./zoom.js";
 //========//
 const colours = makeColours();
 const hand = makeHand(colours);
-const world = makeWorld(colours);
+const world = makeWorld(colours, GREY);
 const queue = new LinkedList();
 const show = Show.start();
 const zoomer = makeZoomer();

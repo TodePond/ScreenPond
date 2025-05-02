@@ -16,8 +16,8 @@ import { makeScreen } from "./screen.js";
 //=======//
 // WORLD //
 //=======//
-export const makeWorld = (colours) => {
-  const colour = colours[GREY];
+export const makeWorld = (colours, hex = GREY) => {
+  const colour = colours[hex];
   const corners = makeRectangleCorners(0, 0, 1, 1);
   const world = makeScreen(colour, corners);
   return world;

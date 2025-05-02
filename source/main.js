@@ -9,7 +9,7 @@ import { getPresetFromCurrentState, loadPresetName } from "./preset.js";
 import { clearQueue, continueDrawingQueue } from "./draw.js";
 import { COLOUR_HEXES } from "./colour.js";
 import { registerMouseWheel, updateZoom } from "./zoom.js";
-import { addPondiverseButton } from "https://www.pondiverse.com/script/pondiverse.js";
+import { addPondiverseButton } from "https://www.pondiverse.com/pondiverse.js";
 
 //======//
 // MAIN //

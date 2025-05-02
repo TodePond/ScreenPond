@@ -5,11 +5,18 @@ import {
   registerDeleteKey,
   registerRightClick,
 } from "./hand.js";
-import { getPresetFromCurrentState, loadPresetName } from "./preset.js";
+import {
+  getPresetFromCurrentState,
+  loadPreset,
+  loadPresetName,
+} from "./preset.js";
 import { clearQueue, continueDrawingQueue } from "./draw.js";
 import { COLOUR_HEXES } from "./colour.js";
 import { registerMouseWheel, updateZoom } from "./zoom.js";
-import { addPondiverseButton } from "https://www.pondiverse.com/pondiverse.js";
+import {
+  addPondiverseButton,
+  fetchPondiverseCreation,
+} from "https://www.pondiverse.com/pondiverse.js";
 
 //======//
 // MAIN //
@@ -46,8 +53,18 @@ registerColourPickers(global.hand, COLOUR_HEXES, global.colours);
 registerMouseWheel(global.zoomer);
 registerRightClick();
 registerDeleteKey(global.hand);
-loadPresetName(global, "EMPTY");
-// loadPresetName(global, "TREE");
+
+const urlSearchParams = new URLSearchParams(window.location.search);
+const pondiverseCreationId = urlSearchParams.get("creation");
+if (pondiverseCreationId) {
+  fetchPondiverseCreation(pondiverseCreationId).then((creation) => {
+    const data = JSON.parse(creation.data);
+    loadPreset(global, data);
+  });
+} else {
+  loadPresetName(global, "EMPTY");
+  // loadPresetName(global, "TREE");
+}
 
 addPondiverseButton(() => {
   const canvas = document.querySelector("canvas");

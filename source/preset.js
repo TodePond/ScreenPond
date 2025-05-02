@@ -34,7 +34,7 @@ export const loadPreset = (global, preset) => {
   }
 
   global.world = makeWorld(colours, preset.world?.hex ?? GREY);
-  global.update = preset.update;
+  global.update = preset.update ?? (() => {});
 
   const { show, queue, world } = global;
   const { context } = show;
